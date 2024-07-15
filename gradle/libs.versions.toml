@@ -1,0 +1,45 @@
+[versions]
+v-commons-csv = "1.10.0"
+v-jsonwebtoken = "0.11.5"
+v-kotlin = "1.9.23"
+v-ktlint = "11.0.0"
+v-poi = "5.2.5"     # from https://www.baeldung.com/java-microsoft-excel
+v-postgresql-driver = "42.7.3"
+v-spring-boot = "3.2.4"
+v-springdependency = "1.1.4"
+v-springdoc = "2.0.2"
+
+
+[libraries]
+# from https://www.baeldung.com/java-microsoft-excel
+apache-poi = { module = "org.apache.poi:poi", version.ref = "v-poi" }
+apache-poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "v-poi" }
+commons-csv = { module = "org.apache.commons:commons-csv", version.ref = "v-commons-csv" }
+h2database = { module = "com.h2database:h2" }
+jackson = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
+jsonwebtoken = { module = "io.jsonwebtoken:jjwt-api", version.ref = "v-jsonwebtoken" }
+jsonwebtoken-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "v-jsonwebtoken" }
+jsonwebtoken-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "v-jsonwebtoken" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+postgresql-driver = { module = "org.postgresql:postgresql", version.ref = "v-postgresql-driver" }
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-mustache = { module = "org.springframework.boot:spring-boot-starter-mustache" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+springdoc-common = { module = "org.springdoc:springdoc-openapi-starter-common", version.ref = "v-springdoc" }
+springdoc-webmvc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "v-springdoc" }
+
+[bundles]
+
+[plugins]
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "v-ktlint" }
+kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "v-kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "v-kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "v-kotlin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "v-spring-boot" }
+spring-dependency = { id = "io.spring.dependency-management", version.ref = "v-springdependency" }
+

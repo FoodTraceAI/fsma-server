@@ -1,0 +1,30 @@
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: pw
+
+  # my code
+  application:
+    name: fsma
+
+## From https://spring.io/guides/tutorials/spring-boot-kotlin
+#spring.jpa.properties.hibernate.globally_quoted_identifiers=true
+#spring.jpa.properties.hibernate.globally_quoted_identifiers_skip_column_definitions=true
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        globally_quoted_identifiers_skip_column_definitions: true
+
+blog:
+  title: FSMA
+  banner:
+    title: Warning
+    content: The blog will be down tomorrow.
