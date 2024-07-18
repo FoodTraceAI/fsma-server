@@ -24,7 +24,7 @@ private const val ADDRESS_BASE_URL = "/api/v1/address"
 class AddressController : BaseController() {
 
     // -- Return a specific Address
-    // -    http://localhost:8080/api/v1/addresses/1
+    // -    http://localhost:8080/api/v1/address/1
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
