@@ -42,10 +42,10 @@ data class LocationDto(
     val contactEmail: String?,
     val addressId: Long,
     val isBillable: Boolean,
-    val dateCreated: OffsetDateTime= OffsetDateTime.now(),
-    val dateModified: OffsetDateTime= OffsetDateTime.now(),
+    val dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    val dateModified: OffsetDateTime = OffsetDateTime.now(),
     val isDeleted: Boolean = false,
-    val dateDeleted: OffsetDateTime?=null,
+    val dateDeleted: OffsetDateTime? = null,
 )
 
 fun Location.toLocationDto() = LocationDto(

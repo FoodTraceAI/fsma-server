@@ -23,8 +23,8 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.apache.poi)         // to create xlsx file
-    implementation(libs.apache.poi.ooxml)   // to create xlsx file
+    implementation(libs.apache.poi) // to create xlsx file
+    implementation(libs.apache.poi.ooxml) // to create xlsx file
     implementation(libs.commons.csv)
     implementation(libs.jackson)
     implementation(libs.jsonwebtoken)
