@@ -4,13 +4,14 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.kotlin.jpa)
-    alias(libs.plugins.ktlint)
+// SGE - ktlint is too restrictive
+//    alias(libs.plugins.ktlint)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency)
     kotlin("kapt") version "1.9.23"
 }
 
-group = "com.example"
+group = "com.foodtraceai"
 version = "0.0.1-SNAPSHOT"
 
 java {

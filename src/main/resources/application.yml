@@ -3,13 +3,16 @@ spring:
     ansi:
       enabled: ALWAYS
   datasource:
+# for running in IntelliJ
     url: jdbc:postgresql://localhost:5432/postgres
+# for running in a separate docker container
+#    url: jdbc:postgresql://host.docker.internal:5432/postgres
     username: postgres
     password: pw
 
   # my code
   application:
-    name: fsma
+    name: fsma-server
 
 ## From https://spring.io/guides/tutorials/spring-boot-kotlin
 #spring.jpa.properties.hibernate.globally_quoted_identifiers=true

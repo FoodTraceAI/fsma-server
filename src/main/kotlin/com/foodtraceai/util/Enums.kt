@@ -171,4 +171,3 @@ enum class UsaCanadaState(val stateName: String) {
 inline fun <reified T : Enum<*>> enumValueOrNull(name: String?): T? =
     if (name != null) T::class.java.enumConstants.firstOrNull { it.name == name }
     else null
-
