@@ -176,7 +176,7 @@ class DataLoader : ApplicationRunner {
     }
 
     fun addResellers() {
-        var resellerDto = ResellerDto(
+        val resellerDto = ResellerDto(
             addressDto = addressList[0].toAddressDto(),
             accountRep = "Steve",
             businessName = "FoodTraceAI",
@@ -191,7 +191,7 @@ class DataLoader : ApplicationRunner {
             billingAddressDto = addressList[0].toAddressDto(),
         )
         val resellerId = 1L // for testing
-        var reseller = resellerDto.toReseller(resellerId)
+        val reseller = resellerDto.toReseller(resellerId)
         resellerList.add(resellerService.insert(reseller))
     }
 

@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+# Uncomment if you need the portal service
+#  portal:
+#    image: 'kscopeinc/portal:dev'
+#    container_name: portal
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - server
+
+  server:
+    container_name: fsma-spring-boot
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=pw
+
+  database:
+    image: postgres:16.2
+    container_name: fsma-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pw
+    ports:
+      - "5432:5432"

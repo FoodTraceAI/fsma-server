@@ -75,9 +75,9 @@ class CteIPackProdController : BaseController() {
             location, cteHarvest, harvestLocation, harvestBusiness,
             coolLocation, packTlc, packTlcSource
         )
-        val cteIPackProdDto = cteIPackProdService.insert(cteIPackProd).toCteIPackProdDto()
+        val cteIPackProdDtoResponse = cteIPackProdService.insert(cteIPackProd).toCteIPackProdDto()
         return ResponseEntity.created(URI.create(CTE_IPACK_PROD_BASE_URL.plus("/${cteIPackProdDto.id}")))
-            .body(cteIPackProdDto)
+            .body(cteIPackProdDtoResponse)
     }
 
     // -- Update an existing Location
