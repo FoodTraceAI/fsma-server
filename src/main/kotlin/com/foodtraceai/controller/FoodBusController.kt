@@ -25,7 +25,7 @@ private const val FOOD_BUS_ALT_BASE_URL = "/api/v1/food-bus"
 class FoodBusController : BaseController() {
 
     // -- Return a specific foodBusiness
-    // -    http://localhost:8080/api/v1/fooodbus/1
+    // -    http://localhost:8080/api/v1/foodbus/1
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,

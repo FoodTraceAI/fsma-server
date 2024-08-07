@@ -74,13 +74,13 @@ class WebSecurityConfiguration {
             .authorizeHttpRequests { authz ->
                 authz.requestMatchers(
                     "/api/v1/auth/**", // login & register
-                    "/api/v1/reseller/domain/**",
-                    "/api/v1/equipment/position",
-                    "/api/v1/quickbooks/login", // Quickbooks login
-                    "/api/v1/quickbooks/oauth2callback", // Quickbooks login callback
-                    "/api/v1/estimate-tracking/**",
-                    "/api/v1/sheet",
-                    "/api/v1/sheet/**",
+//                    "/api/v1/reseller/domain/**",
+//                    "/api/v1/equipment/position",
+//                    "/api/v1/quickbooks/login", // Quickbooks login
+//                    "/api/v1/quickbooks/oauth2callback", // Quickbooks login callback
+//                    "/api/v1/estimate-tracking/**",
+//                    "/api/v1/sheet",
+//                    "/api/v1/sheet/**",
                 )
                     .permitAll()
                     .anyRequest()
