@@ -26,3 +26,6 @@ docker run --name fsma-spring -p 8080:8080 fsma-spring
 #to run both postgres & fsma-server together
 # first stop fsma-pg to free up port 5432
 docker compose up
+
+# to identify processes running on port 8080
+sudo lsof -i :8080
