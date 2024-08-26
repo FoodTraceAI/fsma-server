@@ -3,8 +3,8 @@ version: "3.8"
 services:
 # Uncomment if you need the portal service
 #  portal:
-#    image: 'kscopeinc/portal:dev'
-#    container_name: portal
+#    image: 'stepheneick/fsma-portal:dev'
+#    container_name: fsma-portal
 #    ports:
 #      - "3000:3000"
 #    depends_on:
@@ -12,8 +12,11 @@ services:
 
   server:
     container_name: fsma-spring-boot
-    build:
-      context: .
+# for local development
+#    build:
+#      context: .
+# To run the version on DockerHub
+    image: stepheneick/fsma-server:latest
     ports:
       - "8080:8080"
     depends_on:
