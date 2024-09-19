@@ -4,10 +4,10 @@ spring:
       enabled: ALWAYS
   datasource:
 # for running in IntelliJ
-#    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/postgres
 # for running in a separate docker container
 # or bundled with Postgres using docker-compose
-    url: jdbc:postgresql://host.docker.internal:5432/postgres
+    #url: jdbc:postgresql://host.docker.internal:5432/postgres
     username: postgres
     password: pw
 
