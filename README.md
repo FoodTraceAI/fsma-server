@@ -45,12 +45,17 @@ sudo lsof -i :8080
 4. docker run --name fsma-spring -p 8080:8080 fsma-spring
 
 # Docker Compose: launching both fsma-spring and docker with docker-compose.yml
-1. Select image to run.  For local development uncomment as follows
+1. Change application.yml
+- datasource:
+  url: jdbc:postgresql://host.docker.internal:5432/postgres
+2. In docker-compose.yml select image to run or for local development 
+uncomment as follows
    build:
      context: .
-2. ./gradlew clean build
-3. Stop any local postgres's
-4. docker compose up
+   #image: fsma-spring:latest
+3. ./gradlew clean build
+4. Stop any local postgres's
+5. docker compose up
 
 # Docker Compose: Launch an Image with Docker Compose
 1. Change docker-compose as follows
@@ -65,6 +70,25 @@ sudo lsof -i :8080
   url: jdbc:postgresql://localhost:5432/postgres
 2. Build and verify that running in IntelliJ works
 - ./gradlew clean build
-- Run FsmaApplicationKt in IntelliJ
-3. Create a docker image for fsma-spring
-4. Tag the image to 
+- Run FsmaApplicationKt in IntelliJ to verify that the build works
+3. If you want to create a docker image for dockerhub.com
+   docker tag fsma-spring stepheneick/fsma-spring 
+   # Push image to dockerhub.com
+   docker push stepheneick/fsma-spring
+4. Create a docker image for Amazon ECR
+   docker tag fsma-spring:latest 381492154593.dkr.ecr.us-east-2.amazonaws.com/fsma/fsma-spring:latest 
+   # Authenticate Docker client to Amazon ECR 
+   aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 381492154593.dkr.ecr.us-east-2.amazonaws.com
+   # Push image to AWS ECR
+   docker push 381492154593.dkr.ecr.us-east-2.amazonaws.com/fsma/fsma-spring:latest
+5. Create a new task revision
+   # On Amazon go to ECS>Task definitions>Revision X>Containers
+   # Select Create new revision & take all defaults & Create 
+6. Update fsma-service to launch new task
+    # On the Revision drop-down select new revision
+    # Change the number of active instances from 0 to 1
+    # Update the service
+7. To shutdown service
+    # go to fsma-service>Update
+    # Set desired tasks to 0
+8. 

@@ -53,7 +53,7 @@ data class CteHarvest(
 
     // The harvest quantity and unit of measure
     // (a)(1)(iii) The quantity and unit of measure of the food (e.g., 75 bins, 200 pounds);
-    override val quantity: Short,
+    override val quantity: Int,
     @Enumerated(EnumType.STRING)
     override val unitOfMeasure: UnitOfMeasure,
 
@@ -107,7 +107,7 @@ data class CteHarvestDto(
     val ftlItem: FtlItem,
     val commodityVariety: String,
     val foodDesc: String,
-    val quantity: Short,
+    val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val harvestLocationId: Long,
     val fieldName: String,

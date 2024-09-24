@@ -113,7 +113,7 @@ data class CteIPackSprouts(
 
     // Quantity packed and pack unit of measure.
     // (a)(13) The quantity and unit of measure of the packed food (e.g., 6 cases, 25 reusable plastic containers, 100 tanks, 200 pounds);
-    override val quantity: Short,
+    override val quantity: Int,
     @Enumerated(EnumType.STRING)
     override val unitOfMeasure: UnitOfMeasure,
 
@@ -222,7 +222,7 @@ data class CteIPackSproutsDto(
     val coolDate: LocalDate?,
     val packTlcId: Long,
     val packFoodDesc: String,
-    val quantity: Short,
+    val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val packTlcSourceId: Long?,
     val packTlcSourceReference: String? = null,

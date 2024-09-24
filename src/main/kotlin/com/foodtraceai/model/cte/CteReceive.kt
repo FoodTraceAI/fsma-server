@@ -47,7 +47,7 @@ data class CteReceive(
 
     // (a)(2) The quantity and unit of measure of the food
     // (e.g., 6 cases, 25 reusable plastic containers, 100 tanks, 200 pounds);
-    override val quantity: Short,
+    override val quantity: Int,
     @Enumerated(EnumType.STRING)
     override val unitOfMeasure: UnitOfMeasure,
 
@@ -125,7 +125,7 @@ data class CteReceiveDto(
     val ftlItem: FtlItem,
     val variety: String,
     val traceLotCodeId: Long,
-    val quantity: Short,
+    val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val foodDesc: String,
     val ipsLocationId: Long,

@@ -47,7 +47,7 @@ data class CteFirstLand(
     override val foodDesc: String,
 
     //(c) The quantity and unit of measure of the food (e.g., 300 kg);
-    override val quantity: Short,
+    override val quantity: Int,
     @Enumerated(EnumType.STRING)
     override val unitOfMeasure: UnitOfMeasure,
 
@@ -93,7 +93,7 @@ data class CteFirstLandDto(
     val tlc: TraceLotCode,
     val variety: String,
     val foodDesc: String,
-    val quantity: Short,
+    val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val harvestDateBegin: LocalDate,
     val harvestDateEnd: LocalDate,

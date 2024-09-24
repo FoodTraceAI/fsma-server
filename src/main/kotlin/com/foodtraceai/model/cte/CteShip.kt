@@ -45,7 +45,7 @@ data class CteShip(
 
     // (a)(2) The quantity and unit of measure of the food
     // (e.g., 6 cases, 25 reusable plastic containers, 100 tanks, 200 pounds);
-    override val quantity: Short,   // from Initial Packer or Transformer
+    override val quantity: Int,   // from Initial Packer or Transformer
     @Enumerated(EnumType.STRING)
     override val unitOfMeasure: UnitOfMeasure,   // from Initial Packer or Transformer
 
@@ -106,7 +106,7 @@ data class CteShipDto(
     val ftlItem: FtlItem,
     val variety: String,
     val tlcId: Long,
-    val quantity: Short,
+    val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val foodDesc: String,
     val shipToLocationId: Long,

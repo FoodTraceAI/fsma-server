@@ -52,7 +52,7 @@ data class CteCool(
     override val foodDesc: String,  // not required for this CTE
 
     // (b)(1)(iii) The quantity and unit of measure of the food (e.g., 75 bins, 200 pounds);
-    override val quantity: Short,
+    override val quantity: Int,
     @Enumerated(EnumType.STRING)
     override val unitOfMeasure: UnitOfMeasure,
 
@@ -94,7 +94,7 @@ data class CteCoolDto(
     val ftlItem: FtlItem,
     val variety: String,
     val foodDesc: String,
-    val quantity: Short,
+    val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val coolLocation: Location,
     val coolDate: LocalDate,

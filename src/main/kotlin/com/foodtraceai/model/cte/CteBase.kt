@@ -25,7 +25,7 @@ abstract class CteBase<T> : BaseLocationModel<T>() {
     // TODO: Do it as a json text
 
     // quantity & unitOfMeasure is the amount after CTE is finished
-    abstract val quantity: Short   // from Initial Packer or Transformer
+    abstract val quantity: Int   // from Initial Packer or Transformer
     abstract val unitOfMeasure: UnitOfMeasure   // from Initial Packer or Transformer
 
     // TODO: need retain a list referenceDocuments for debugging

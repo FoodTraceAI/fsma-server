@@ -86,7 +86,7 @@ data class CteTrans(
     // (a)(2)(v) The quantity and unit of measure of the
     // food (e.g., 6 cases, 25 reusable plastic containers,
     // 100 tanks, 200 pounds); and
-    override val quantity: Short,
+    override val quantity: Int,
     @Enumerated(EnumType.STRING)
     override val unitOfMeasure: UnitOfMeasure,
 
@@ -130,7 +130,7 @@ data class CteTransDto(
     val newTlcSourceReference: String? = null,
     val transDate: LocalDate,
     val foodDesc: String,
-    val quantity: Short,
+    val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
