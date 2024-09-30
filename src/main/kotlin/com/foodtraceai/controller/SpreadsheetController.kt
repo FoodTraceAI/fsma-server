@@ -31,7 +31,7 @@ class SpreadsheetController : BaseController() {
     @GetMapping("/cte")
     fun downloadSortableWorksheet(
         @RequestParam(value = "which", required = true) which: String,
-        @AuthenticationPrincipal fsaUser: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<ByteArrayResource> {
         val header = HttpHeaders()
         header.contentType = MediaType("application", "force-download")

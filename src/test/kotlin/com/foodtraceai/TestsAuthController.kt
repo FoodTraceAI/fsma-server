@@ -73,7 +73,7 @@ class TestsAuthController {
         val rootAuthLogin = AuthLogin(email = rootDto.email, password = rootDto.password, refreshToken = null)
         val accessToken: String = authenticate(rootAuthLogin)[0]
         val rootId: Long = rootDto.id
-        mockMvc.get("/api/v1/fsauser/$rootId") {
+        mockMvc.get("/api/v1/fsmauser/$rootId") {
             header("Authorization", "Bearer $accessToken")
         }.andExpect {
             status { isOk() }

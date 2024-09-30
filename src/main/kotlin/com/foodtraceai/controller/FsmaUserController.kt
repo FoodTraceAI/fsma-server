@@ -16,8 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
-private const val FSMA_USER_BASE_URL = "/api/v1/fsauser"
-private const val FSMA_USER_ALT_BASE_URL = "/api/v1/fsa_user"
+private const val FSMA_USER_BASE_URL = "/api/v1/fsmauser"
+private const val FSMA_USER_ALT_BASE_URL = "/api/v1/fsma_user"
 
 @RestController
 @RequestMapping(value = [FSMA_USER_BASE_URL, FSMA_USER_ALT_BASE_URL])
