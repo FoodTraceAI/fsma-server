@@ -13,13 +13,13 @@ data class TraceLotCode(
     @Id @GeneratedValue
     override val id: Long = 0,
     val tlcVal: String,
-    val gtin: String? = null,   // not required
-    val batch: String? = null,  // not required
+    val gtin: String? = null,   // AI(01) Case GTIN - not required
+    val batch: String? = null,  // AI(10) Case Batch/Lot - not required
     val tlcDate: LocalDate? = null,    // not required
     @Enumerated(EnumType.STRING)
     val tlcDateType: TlcDateType? = null,   // not required
     // Serial Shipping Container Code
-    val sscc: String? = null,   // not required
+    val sscc: String? = null,   // AI(00) not required
 
     @Column(updatable = false)
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
