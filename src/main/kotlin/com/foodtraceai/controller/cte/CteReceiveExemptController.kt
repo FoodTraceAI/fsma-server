@@ -2,8 +2,6 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.Location
-import com.foodtraceai.model.cte.CteReceiveExempt
 import com.foodtraceai.model.cte.CteReceiveExemptDto
 import com.foodtraceai.model.cte.toCteReceiveExempt
 import com.foodtraceai.model.cte.toCteReceiveExemptDto
