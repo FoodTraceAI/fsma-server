@@ -29,6 +29,9 @@ data class CteHarvest(
     @Enumerated(EnumType.STRING)
     override val cteType: CteType = CteType.Harvest,
 
+    @Enumerated(EnumType.STRING)
+    override val ftlItem: FtlItem,
+
     // Location for this CTE
     @ManyToOne @JoinColumn
     override val location: Location,
@@ -46,10 +49,9 @@ data class CteHarvest(
     val isrLocation: Location,
 
     // (a)(1)(ii) The commodity and, if applicable, variety of the food;
-    @Enumerated(EnumType.STRING)
-    override val ftlItem: FtlItem, // Called commodity for Harvest CTEs
-    override val variety: String,   // variety of commodity
-    override val foodDesc: String,  // Not required by Rule 204
+    // Called commodity for Harvest CTEs
+    override val foodDesc: String,  // Commodity for this CTE
+    override val variety: String? = null,   // variety of commodity if applicable
 
     // The harvest quantity and unit of measure
     // (a)(1)(iii) The quantity and unit of measure of the food (e.g., 75 bins, 200 pounds);
@@ -102,11 +104,11 @@ data class CteHarvest(
 data class CteHarvestDto(
     val id: Long,
     val cteType: CteType,
+    val ftlItem: FtlItem,
     val locationId: Long,
     val isrLocationId: Long,
-    val ftlItem: FtlItem,
-    val commodityVariety: String,
-    val foodDesc: String,
+    val foodDesc: String,   // Commodity
+    val variety: String?,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val harvestLocationId: Long,
@@ -126,11 +128,11 @@ data class CteHarvestDto(
 fun CteHarvest.toCteHarvestDto() = CteHarvestDto(
     id = id,
     cteType = cteType,
+    ftlItem = ftlItem,
     locationId = location.id,
     isrLocationId = isrLocation.id,
-    ftlItem = ftlItem,
-    commodityVariety = variety,
     foodDesc = foodDesc,
+    variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     harvestLocationId = harvestLocation.id,
@@ -154,11 +156,11 @@ fun CteHarvestDto.toCteHarvest(
 ) = CteHarvest(
     id = id,
     cteType = cteType,
+    ftlItem = ftlItem,
     location = location,
     isrLocation = isrLocation,
-    ftlItem = ftlItem,
-    variety = commodityVariety,
     foodDesc = foodDesc,
+    variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     harvestLocation = harvestLocation,

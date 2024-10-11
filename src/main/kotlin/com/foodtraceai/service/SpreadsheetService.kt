@@ -65,7 +65,7 @@ class SpreadsheetService(
         "(b)(1) TLC - Assigned By",
         "(a)(2) Qty & UOM",
         "(a)(3) Product Description",
-        "(a)(4) IPS Location", //"(a)(4) Immediate Previous Source (IPS) Location - (Shipped from Location)",
+        "(a)(4) IPS Location", //(a)(4) Immediate Previous Source (IPS) Location - (Shipped from Location)
         "(a)(5) Receive Location",
         "(a)(6) Receive Date",
         "(a)(7) TLC Source ReferenceGLN",
@@ -123,10 +123,10 @@ class SpreadsheetService(
                 cell.cellStyle = style
                 when (triple.third) {
                     'A' -> cell.setCellValue(cte.traceLotCode.tlcVal)
-                    'B' -> cell.setCellValue(cte.traceLotCode.batch)
-                    'C' -> cell.setCellValue(cte.traceLotCode.tlcDate)
-                    'D' -> cell.setCellValue(cte.traceLotCode.tlcDateType?.name)
-                    'E' -> cell.setCellValue(cte.traceLotCode.sscc)
+                    'B' -> cell.setCellValue(cte.traceLotCode.batchLot?.value)
+                    'C' -> cell.setCellValue(cte.traceLotCode.packDate)
+                    'D' -> cell.setCellValue(cte.traceLotCode.bestByDate)
+                    'E' -> cell.setCellValue(cte.traceLotCode.sscc?.sscc)
                     'F' -> {}
                     'G' -> cell.setCellValue("${cte.quantity} ${cte.unitOfMeasure.name}")
                     'H' -> cell.setCellValue(cte.foodDesc)

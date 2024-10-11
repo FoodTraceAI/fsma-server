@@ -18,7 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
-private const val CTE_FIRST_LAND_BASE_URL = "/api/v1/ctefirstland"
+private const val CTE_FIRST_LAND_BASE_URL = "/api/v1/cte/firstland"
 private const val CTE_FIRST_LAND_ALT_BASE_URL = "/api/v1/cte/first-land"
 
 @RestController

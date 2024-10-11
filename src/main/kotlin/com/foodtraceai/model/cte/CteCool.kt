@@ -30,6 +30,9 @@ data class CteCool(
     @Enumerated(EnumType.STRING)
     override val cteType: CteType = CteType.Cool,
 
+    @Enumerated(EnumType.STRING)
+    override val ftlItem: FtlItem,  // Commodity cooled
+
     // Location for this CTE
     @ManyToOne @JoinColumn
     override val location: Location,
@@ -46,10 +49,8 @@ data class CteCool(
     val isrLocation: Location,
 
     // (b)(1)(ii) The commodity and, if applicable, variety of the food;
-    @Enumerated(EnumType.STRING)
-    override val ftlItem: FtlItem,  // Commodity harvested
-    override val variety: String,
-    override val foodDesc: String,  // not required for this CTE
+    override val foodDesc: String,  // commodity for this CTE
+    override val variety: String? = null,
 
     // (b)(1)(iii) The quantity and unit of measure of the food (e.g., 75 bins, 200 pounds);
     override val quantity: Int,
@@ -60,7 +61,7 @@ data class CteCool(
     @ManyToOne @JoinColumn
     val coolLocation: Location,
 
-    // (b)(1)(v) The date of cooling;
+    // (b)(1)(v) The date of cooling
     val coolDate: LocalDate,
 
     // (b)(1)(vi) The location description for the farm where the food was harvested;
@@ -89,11 +90,11 @@ data class CteCool(
 data class CteCoolDto(
     val id: Long,
     val cteType: CteType = CteType.Cool,
+    val ftlItem: FtlItem,
     val locationId: Long,
     val isrLocationId: Long,
-    val ftlItem: FtlItem,
-    val variety: String,
     val foodDesc: String,
+    val variety: String?,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val coolLocation: Location,
@@ -110,11 +111,11 @@ data class CteCoolDto(
 fun CteCool.toCteCoolDto() = CteCoolDto(
     id = id,
     cteType = cteType,
+    ftlItem = ftlItem,
     locationId = location.id,
     isrLocationId = isrLocation.id,
-    ftlItem = ftlItem,
-    variety = variety,
     foodDesc = foodDesc,
+    variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     coolLocation = coolLocation,
@@ -134,11 +135,11 @@ fun CteCoolDto.toCteCool(
 ) = CteCool(
     id = id,
     cteType = cteType,
+    ftlItem = ftlItem,
     location = location,
     isrLocation = isrLocation,
-    ftlItem = ftlItem,
-    variety = variety,
     foodDesc = foodDesc,
+    variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     coolLocation = coolLocation,

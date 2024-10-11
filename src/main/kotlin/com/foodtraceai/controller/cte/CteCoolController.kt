@@ -20,11 +20,10 @@ import org.springframework.web.bind.annotation.*
 // ----------------------------------------------------------------------------
 import java.net.URI
 
-private const val CTE_COOL_BASE_URL = "/api/v1/ctecool"
-private const val CTE_COOL_ALT_BASE_URL = "/api/v1/cte/cool"
+private const val CTE_COOL_BASE_URL = "/api/v1/cte/cool"
 
 @RestController
-@RequestMapping(value = [CTE_COOL_BASE_URL, CTE_COOL_ALT_BASE_URL])
+@RequestMapping(value = [CTE_COOL_BASE_URL])
 @SecurityRequirement(name = "bearerAuth")
 class CteCoolController : BaseController() {
 

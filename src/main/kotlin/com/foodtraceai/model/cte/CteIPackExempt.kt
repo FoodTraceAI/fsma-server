@@ -31,6 +31,9 @@ data class CteIPackExempt(
     @Enumerated(EnumType.STRING)
     override val cteType: CteType = CteType.InitPackExempt,
 
+    @Enumerated(EnumType.STRING)
+    override val ftlItem: FtlItem,
+
     // Location for this CTE
     @ManyToOne @JoinColumn
     override val location: Location,
@@ -44,10 +47,8 @@ data class CteIPackExempt(
     // information to the traceability lot:
 
     // (c)(1) The commodity and, if applicable, variety of the food received;
-    @Enumerated(EnumType.STRING)
-    override val ftlItem: FtlItem, // or commodity
+    override val foodDesc: String,  // Commodity for this CTE
     override val variety: String,
-    override val foodDesc: String,  // not required for this CTE
 
     // (c)(2) The date you received the food;
     val receiveDate: LocalDate,
@@ -78,9 +79,9 @@ data class CteIPackExempt(
 
     // (c)(7) The quantity and unit of measure of the packed food
     // (e.g., 6 cases, 25 reusable plastic containers, 100 tanks, 200 pounds);
-    override val quantity: Int,
+    override val quantity: Int, // pack quantity
     @Enumerated(EnumType.STRING)
-    override val unitOfMeasure: UnitOfMeasure,
+    override val unitOfMeasure: UnitOfMeasure,  // packed unit of measure
 
     // (c)(8) The location description for where you initially packed the food
     // (i.e., the traceability lot code source), and (if applicable) the traceability
@@ -107,10 +108,10 @@ data class CteIPackExempt(
 data class CteIPackExemptDto(
     val id: Long,
     val cteType: CteType,
-    val locationId: Long,
     val ftlItem: FtlItem,
-    val variety: String,
+    val locationId: Long,
     val foodDesc: String,
+    val variety: String,
     val receiveDate: LocalDate,
     val receiveTime: OffsetDateTime,
     val receiveQuantity: Double,

@@ -30,12 +30,12 @@ data class CteFirstLand(
     @Enumerated(EnumType.STRING)
     override val cteType: CteType = CteType.FirstLandReceive,
 
+    @Enumerated(EnumType.STRING)
+    override val ftlItem: FtlItem,
+
     // Location for this CTE
     @ManyToOne @JoinColumn
     override val location: Location,
-
-    @Enumerated(EnumType.STRING)
-    override val ftlItem: FtlItem,
 
     // (a) The traceability lot code you assigned;
     @ManyToOne @JoinColumn
@@ -43,8 +43,8 @@ data class CteFirstLand(
 
     // (b) The species and/or acceptable market name for unpackaged food,
     // or the product description for packaged food;
+    override val foodDesc: String,  // Species for unpacked food or product description for packaged food
     override val variety: String,
-    override val foodDesc: String,
 
     //(c) The quantity and unit of measure of the food (e.g., 300 kg);
     override val quantity: Int,
@@ -59,7 +59,7 @@ data class CteFirstLand(
     // the food was caught;
     val harvestDateBegin: LocalDate,
     val harvestDateEnd: LocalDate,
-    val harvestLocation: String,
+    val harvestArea: String,
 
     //(e) The location description for the first land-based receiver
     // (i.e., the traceability lot code source), and (if applicable)
@@ -88,16 +88,16 @@ data class CteFirstLand(
 data class CteFirstLandDto(
     val id: Long,
     val cteType: CteType,
-    val locationId: Long,
     val ftlItem: FtlItem,
+    val locationId: Long,
     val tlc: TraceLotCode,
-    val variety: String,
     val foodDesc: String,
+    val variety: String,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val harvestDateBegin: LocalDate,
     val harvestDateEnd: LocalDate,
-    val harvestLocation: String,
+    val harvestArea: String,
     val tlcSourceId: Long?,
     val tlcSourceReference: String?,
     val landedDate: LocalDate,
@@ -113,16 +113,16 @@ data class CteFirstLandDto(
 fun CteFirstLand.toCteFirstLandDto() = CteFirstLandDto(
     id = id,
     cteType = cteType,
-    locationId = location.id,
     ftlItem = ftlItem,
+    locationId = location.id,
     tlc = tlc,
-    variety = variety,
     foodDesc = foodDesc,
+    variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     harvestDateBegin = harvestDateBegin,
     harvestDateEnd = harvestDateEnd,
-    harvestLocation = harvestLocation,
+    harvestArea = harvestArea,
     tlcSourceId = tlcSource?.id,
     tlcSourceReference = tlcSourceReference,
     landedDate = landedDate,
@@ -141,16 +141,16 @@ fun CteFirstLandDto.toCteFirstLand(
 ) = CteFirstLand(
     id = id,
     cteType = cteType,
-    location = location,
     ftlItem = ftlItem,
+    location = location,
     tlc = tlc,
-    variety = variety,
     foodDesc = foodDesc,
+    variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     harvestDateBegin = harvestDateBegin,
     harvestDateEnd = harvestDateEnd,
-    harvestLocation = harvestLocation,
+    harvestArea = harvestArea,
     tlcSource = tlcSource,
     tlcSourceReference = tlcSourceReference,
     landedDate = landedDate,

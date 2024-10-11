@@ -28,3 +28,5 @@ class RoleToJsonConverter : AttributeConverter<List<Role>, String> {
             enumValueOrNull(it) ?: throw Exception("Enum '$it' converted to null")
         }
 }
+
+

@@ -18,11 +18,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
-private const val CTE_IPACK_EXEMPT_BASE_URL = "/api/v1/cteexempt"
-private const val CTE_IPACK_EXEMPT_ALT_BASE_URL = "/api/v1/cte/exempt"
+private const val CTE_IPACK_EXEMPT_BASE_URL = "/api/v1/cte/ipackexempt"
+private const val CTE_IPACK_EXEMPT_ALT_BASE_URL = "/api/v1/cte/ipack-exempt"
+private const val CTE_IPACK_EXEMPT_ALT2_BASE_URL = "/api/v1/cte/ipack/exempt"
 
 @RestController
-@RequestMapping(value = [CTE_IPACK_EXEMPT_BASE_URL, CTE_IPACK_EXEMPT_ALT_BASE_URL])
+@RequestMapping(
+    value = [CTE_IPACK_EXEMPT_BASE_URL, CTE_IPACK_EXEMPT_ALT_BASE_URL,
+        CTE_IPACK_EXEMPT_ALT2_BASE_URL]
+)
 @SecurityRequirement(name = "bearerAuth")
 class CteIPackExemptController : BaseController() {
 

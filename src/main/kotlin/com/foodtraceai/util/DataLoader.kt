@@ -305,28 +305,28 @@ class DataLoader : ApplicationRunner {
     fun addTlcs() {
         var tlc = TraceLotCode(
             tlcVal = "TraceLotCode1",
-            gtin = "10333830000016",
-            batch = "187",
-            tlcDate = LocalDate.of(2023, 7, 12),
-            tlcDateType = TlcDateType.PackDate,
+            gtin = GTIN("10333830000016"),
+            batchLot = BatchLot("187"),
+            packDate = LocalDate.of(2023, 7, 12),
+            harvestDate = LocalDate.of(2024, 10, 12),
         )
         tlcList.add(tlcService.insert(tlc))
 
         tlc = TraceLotCode(
             tlcVal = "TraceLotCode2",
-            gtin = "10333830000016",
-            batch = "188",
-            tlcDate = LocalDate.of(2023, 7, 13),
-            tlcDateType = TlcDateType.PackDate,
+            gtin = GTIN("10333830000016"),
+            batchLot = BatchLot("188"),
+            packDate = LocalDate.of(2023, 7, 12),
+            harvestDate = LocalDate.of(2024, 10, 12),
         )
         tlcList.add(tlcService.insert(tlc))
 
         tlc = TraceLotCode(
             tlcVal = "TraceLotCode3",
-            gtin = "10333830000016",
-            batch = "123456",
-            tlcDate = LocalDate.of(2023, 7, 15),
-            tlcDateType = TlcDateType.PackDate,
+            gtin = GTIN("10333830000016"),
+            batchLot = BatchLot("123456"),
+            packDate = LocalDate.of(2023, 7, 12),
+            harvestDate = LocalDate.of(2024, 10, 12),
         )
         tlcList.add(tlcService.insert(tlc))
     }

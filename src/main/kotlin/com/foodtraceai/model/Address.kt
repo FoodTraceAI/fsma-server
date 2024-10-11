@@ -22,8 +22,9 @@ data class Address(
     val postalCode: String,
     @Enumerated(EnumType.STRING)
     val country: Country, // Country = Country.USA,
-    val lat: Double,
-    val lng: Double,
+    val lat: Double? = null,
+    val lng: Double? = null,
+    val gln: String? = null, // AI(254) Global Location Numbere
 
     @Column(updatable = false)
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
@@ -42,10 +43,11 @@ data class AddressDto(
     val state: UsaCanadaState,
     val postalCode: String,
     val country: Country,
-    val lat: Double,
-    val lng: Double,
-    val dateCreated: OffsetDateTime= OffsetDateTime.now(),
-    val dateModified: OffsetDateTime= OffsetDateTime.now(),
+    val lat: Double? = null,
+    val lng: Double? = null,
+    val gln: String? = null,
+    val dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    val dateModified: OffsetDateTime = OffsetDateTime.now(),
     val isDeleted: Boolean = false,
     val dateDeleted: OffsetDateTime? = null,
 )
@@ -61,6 +63,7 @@ fun Address.toAddressDto() = AddressDto(
     country = country,
     lat = lat,
     lng = lng,
+    gln = gln,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,
@@ -78,4 +81,5 @@ fun AddressDto.toAddress(resellerId: Long) = Address(
     country = country,
     lat = lat,
     lng = lng,
+    gln = gln,
 )

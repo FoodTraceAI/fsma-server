@@ -7,7 +7,6 @@ import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
-import com.foodtraceai.model.cte.CteHarvest
 import com.foodtraceai.model.cte.CteIPackSproutsDto
 import com.foodtraceai.model.cte.toCteIPackSprouts
 import com.foodtraceai.model.cte.toCteIPackSproutsDto
@@ -20,11 +19,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
-private const val CTE_IPACK_SPROUTS_BASE_URL = "/api/v1/ctesprouts"
-private const val CTE_IPACK_SPROUTS_ALT_BASE_URL = "/api/v1/cte/sprouts"
+private const val CTE_IPACK_SPROUTS_BASE_URL = "/api/v1/cte/ipacksprouts"
+private const val CTE_IPACK_SPROUTS_ALT_BASE_URL = "/api/v1/cte/ipack-sprouts"
+private const val CTE_IPACK_SPROUTS_ALT2_BASE_URL = "/api/v1/cte/ipack/sprouts"
 
 @RestController
-@RequestMapping(value = [CTE_IPACK_SPROUTS_BASE_URL, CTE_IPACK_SPROUTS_ALT_BASE_URL])
+@RequestMapping(value = [CTE_IPACK_SPROUTS_BASE_URL,CTE_IPACK_SPROUTS_ALT_BASE_URL,
+    CTE_IPACK_SPROUTS_ALT2_BASE_URL])
 @SecurityRequirement(name = "bearerAuth")
 class CteIPackSproutsController : BaseController() {
 
@@ -50,11 +51,6 @@ class CteIPackSproutsController : BaseController() {
         val location = locationService.findById(cteIPackSproutsDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${cteIPackSproutsDto.locationId}")
 
-        var cteHarvest: CteHarvest? = null
-        if (cteIPackSproutsDto.cteHarvestId != null)
-            cteHarvest = cteHarvestService.findById(cteIPackSproutsDto.cteHarvestId)
-                ?: throw EntityNotFoundException("CteHaarvest not found: ${cteIPackSproutsDto.cteHarvestId}")
-
         val harvestLocation = locationService.findById(cteIPackSproutsDto.harvestLocationId)
             ?: throw EntityNotFoundException("HarvestLocation not found: ${cteIPackSproutsDto.harvestLocationId}")
 
@@ -102,7 +98,7 @@ class CteIPackSproutsController : BaseController() {
                 ?: throw EntityNotFoundException("SeedSupplierTlc not found: ${cteIPackSproutsDto.seedSupplierTlcId}")
 
         val cteIPackSprouts = cteIPackSproutsDto.toCteIPackSprouts(
-            location, cteHarvest, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
+            location, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
             seedGrowerLocation, seedConditionerLocation, seedTlc, seedPackingHouseLocation, seedPackingHouseTlc,
             seedSupplierLocation, seedSupplierTlc,
         )
@@ -124,12 +120,7 @@ class CteIPackSproutsController : BaseController() {
         val location = locationService.findById(cteIPackSproutsDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${cteIPackSproutsDto.locationId}")
 
-        var cteHarvest: CteHarvest? = null
-        if (cteIPackSproutsDto.cteHarvestId != null)
-            cteHarvest = cteHarvestService.findById(cteIPackSproutsDto.cteHarvestId)
-                ?: throw EntityNotFoundException("CteHaarvest not found: ${cteIPackSproutsDto.cteHarvestId}")
-
-        val harvestLocation = locationService.findById(cteIPackSproutsDto.harvestLocationId)
+         val harvestLocation = locationService.findById(cteIPackSproutsDto.harvestLocationId)
             ?: throw EntityNotFoundException("HarvestLocation not found: ${cteIPackSproutsDto.harvestLocationId}")
 
         val harvestFoodBus = foodBusService.findById(cteIPackSproutsDto.harvestBusinessId)
@@ -176,7 +167,7 @@ class CteIPackSproutsController : BaseController() {
                 ?: throw EntityNotFoundException("SeedSupplierTlc not found: ${cteIPackSproutsDto.seedSupplierTlcId}")
 
         val cteIPackSprouts = cteIPackSproutsDto.toCteIPackSprouts(
-            location, cteHarvest, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
+            location, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
             seedGrowerLocation, seedConditionerLocation, seedTlc, seedPackingHouseLocation, seedPackingHouseTlc,
             seedSupplierLocation, seedSupplierTlc,
         )

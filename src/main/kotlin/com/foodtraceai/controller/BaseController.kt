@@ -50,6 +50,9 @@ class BaseController {
     protected lateinit var cteReceiveService: CteReceiveService
 
     @Autowired
+    protected lateinit var cteReceiveExemptService: CteReceiveExemptService
+
+    @Autowired
     protected lateinit var cteShipService: CteShipService
 
     @Autowired

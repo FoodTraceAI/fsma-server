@@ -76,11 +76,11 @@ data class CteTrans(
     // (a)(2)(iii) The date transformation was completed;
     val transDate: LocalDate,
 
-    // (a)(2)(iv) The product description for the new food;
+    // (a)(2)(iv) The product description for the transformed food;
     @Enumerated(EnumType.STRING)
     override val ftlItem: FtlItem, // new food item
-    override val variety: String,   // new variety
     override val foodDesc: String,  // new food description
+    override val variety: String,   // new variety
 
     // For the transformed food
     // (a)(2)(v) The quantity and unit of measure of the

@@ -18,11 +18,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
-private const val CTE_RECEIVE_BASE_URL = "/api/v1/ctereceive"
-private const val CTE_RECEIVE_ALT_BASE_URL = "/api/v1/cte/receive"
+private const val CTE_RECEIVE_BASE_URL = "/api/v1/cte/receive"
 
 @RestController
-@RequestMapping(value = [CTE_RECEIVE_BASE_URL, CTE_RECEIVE_ALT_BASE_URL])
+@RequestMapping(value = [CTE_RECEIVE_BASE_URL])
 @SecurityRequirement(name = "bearerAuth")
 class CteReceiveController : BaseController() {
 

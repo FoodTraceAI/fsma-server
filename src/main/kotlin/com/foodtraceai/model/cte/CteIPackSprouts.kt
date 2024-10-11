@@ -32,14 +32,16 @@ data class CteIPackSprouts(
     @Enumerated(EnumType.STRING)
     override val cteType: CteType = CteType.InitPackSprouts,
 
+    @Enumerated(EnumType.STRING)
+    override val ftlItem: FtlItem,
+
     // Location for this CTE
     @ManyToOne @JoinColumn
     override val location: Location,
 
     // Not required but likely useful to save associated Cte Harvest. See p.22 in
     // https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
-    @ManyToOne(cascade = [CascadeType.ALL]) @JoinColumn
-    val cteHarvest: CteHarvest? = null,
+    val cteHarvestId: Long = 0,
 
     // ************** KDEs *************
     // (a) Except as specified in paragraph (c) of this section, for each traceability
@@ -49,10 +51,8 @@ data class CteIPackSprouts(
     // traceability lot:
 
     // (a)(1) The commodity and, if applicable, variety of the food;
-    @Enumerated(EnumType.STRING)
-    override val ftlItem: FtlItem, // or commodity
-    override val variety: String,
-    override val foodDesc: String,  // not required for this CTE
+    override val foodDesc: String,  // Commodity for this CTE
+    override val variety: String? = null,
 
     // (a)(2) The date you received the food;
     val receiveDate: LocalDate,
@@ -202,11 +202,11 @@ data class CteIPackSprouts(
 data class CteIPackSproutsDto(
     val id: Long,
     val cteType: CteType,
-    val locationId: Long,
-    val cteHarvestId: Long?,
     val ftlItem: FtlItem,
-    val variety: String,
+    val locationId: Long,
+    val cteHarvestId: Long=0,
     val foodDesc: String,
+    val variety: String? = null,
     val receiveDate: LocalDate,
     val receiveTime: OffsetDateTime,
     val receiveQuantity: Double,
@@ -259,11 +259,11 @@ data class CteIPackSproutsDto(
 fun CteIPackSprouts.toCteIPackSproutsDto() = CteIPackSproutsDto(
     id = id,
     cteType = cteType,
-    locationId = location.id,
-    cteHarvestId = cteHarvest?.id,
     ftlItem = ftlItem,
-    variety = variety,
+    locationId = location.id,
+    cteHarvestId = cteHarvestId,
     foodDesc = foodDesc,
+    variety = variety,
     receiveDate = receiveDate,
     receiveTime = receiveTime,
     receiveQuantity = receiveQuantity,
@@ -314,7 +314,6 @@ fun CteIPackSprouts.toCteIPackSproutsDto() = CteIPackSproutsDto(
 
 fun CteIPackSproutsDto.toCteIPackSprouts(
     location: Location,
-    cteHarvest: CteHarvest?,
     harvestLocation: Location,
     harvestFoodBus: FoodBus,
     coolLocation: Location?,
@@ -330,11 +329,11 @@ fun CteIPackSproutsDto.toCteIPackSprouts(
 ) = CteIPackSprouts(
     id = id,
     cteType = cteType,
-    location = location,
-    cteHarvest = cteHarvest,
     ftlItem = ftlItem,
-    variety = variety,
+    location = location,
+    cteHarvestId = cteHarvestId,
     foodDesc = foodDesc,
+    variety = variety,
     receiveDate = receiveDate,
     receiveTime = receiveTime,
     receiveQuantity = receiveQuantity,

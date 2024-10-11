@@ -17,11 +17,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
-private const val CTE_SHIP_BASE_URL = "/api/v1/cteship"
-private const val CTE_SHIP_ALT_BASE_URL = "/api/v1/cte/ship"
+private const val CTE_SHIP_BASE_URL = "/api/v1/cte/ship"
 
 @RestController
-@RequestMapping(value = [CTE_SHIP_BASE_URL, CTE_SHIP_ALT_BASE_URL])
+@RequestMapping(value = [CTE_SHIP_BASE_URL])
 @SecurityRequirement(name = "bearerAuth")
 class CteShipController : BaseController() {
 
@@ -50,16 +49,13 @@ class CteShipController : BaseController() {
         val traceLotCode = traceLotCodeService.findById(cteShipDto.tlcId)
             ?: throw EntityNotFoundException("TraceLotCode not found: ${cteShipDto.tlcId}")
 
-        val shipFromLocation = locationService.findById(cteShipDto.shipFromLocationId)
-            ?: throw EntityNotFoundException("ShipFromLocation not found: ${cteShipDto.shipFromLocationId}")
-
         val shipToLocation = locationService.findById(cteShipDto.shipToLocationId)
             ?: throw EntityNotFoundException("ShipToLocation not found: ${cteShipDto.shipToLocationId}")
 
         val tlcSource = locationService.findById(cteShipDto.tlcSourceId)
             ?: throw EntityNotFoundException("TlcSource not found: ${cteShipDto.tlcSourceId}")
 
-        val cteShip = cteShipDto.toCteShip(location, traceLotCode, shipToLocation, shipFromLocation, tlcSource)
+        val cteShip = cteShipDto.toCteShip( traceLotCode, shipToLocation,location, tlcSource)
         val cteShipResponse = cteShipService.insert(cteShip).toCteShipDto()
         return ResponseEntity.created(URI.create(CTE_SHIP_BASE_URL.plus("/${cteShipResponse.id}")))
             .body(cteShipResponse)
@@ -81,16 +77,13 @@ class CteShipController : BaseController() {
         val traceLotCode = traceLotCodeService.findById(cteShipDto.tlcId)
             ?: throw EntityNotFoundException("TraceLotCode not found: ${cteShipDto.tlcId}")
 
-        val shipFromLocation = locationService.findById(cteShipDto.shipFromLocationId)
-            ?: throw EntityNotFoundException("ShipFromLocation not found: ${cteShipDto.shipFromLocationId}")
-
         val shipToLocation = locationService.findById(cteShipDto.shipToLocationId)
             ?: throw EntityNotFoundException("ShipToLocation not found: ${cteShipDto.shipToLocationId}")
 
         val tlcSource = locationService.findById(cteShipDto.tlcSourceId)
             ?: throw EntityNotFoundException("TlcSource not found: ${cteShipDto.tlcSourceId}")
 
-        val cteShip = cteShipDto.toCteShip(location, traceLotCode, shipToLocation, shipFromLocation, tlcSource)
+        val cteShip = cteShipDto.toCteShip(traceLotCode, shipToLocation, location, tlcSource)
         val cteShipCto = cteShipService.update(cteShip).toCteShipDto()
         return ResponseEntity.ok().body(cteShipCto)
     }

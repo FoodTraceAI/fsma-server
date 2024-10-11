@@ -25,6 +25,7 @@ enum class CteType {
     FirstLandReceive,
     Ship,
     Receive,
+    ReceiveExempt,
     Transform,
 }
 
@@ -59,17 +60,12 @@ enum class FtlItem {
     Vegetables,
 }
 
-enum class TlcDateType {
-    PackDate,
-    ShipDate,
-}
-
 enum class ReferenceDocumentType {
-    ASN,
-    BOL,
+    ASN,    // Advance Shipping Notice
+    BOL,    // Bill of Lading
     CTE,
-    PO,
-    WO,
+    PO,     // Purchase Orders
+    WO,     // Work Order
     OTHER,
 }
 

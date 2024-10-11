@@ -29,9 +29,8 @@ data class CteShip(
     @Enumerated(EnumType.STRING)
     override val cteType: CteType = CteType.Ship,
 
-    // Location for this CTE
-    @ManyToOne @JoinColumn
-    override val location: Location,
+    @Enumerated(EnumType.STRING)
+    override val ftlItem: FtlItem,
 
     // ************** KDEs *************
     // (a) For each traceability lot of a food on the Food Traceability List
@@ -50,10 +49,8 @@ data class CteShip(
     override val unitOfMeasure: UnitOfMeasure,   // from Initial Packer or Transformer
 
     // (a)(3) The product description for the food;
-    @Enumerated(EnumType.STRING)
-    override val ftlItem: FtlItem,
-    override val variety: String,
     override val foodDesc: String,
+    override val variety: String,
 
     // (a)(4) The location description for the immediate subsequent recipient
     // (other than a transporter) of the food;
@@ -61,11 +58,10 @@ data class CteShip(
     @JoinColumn
     val shipToLocation: Location,
 
-    // (a)(5) The location description for the location from which you shipped
-    // the food;
-    @ManyToOne(cascade = [CascadeType.ALL])
+    // (a)(5) The location description for the location from which you shipped the food;
+    @ManyToOne
     @JoinColumn
-    val shipFromLocation: Location,
+    override val location: Location,    // location = shipFromLocation
 
     // (a)(6) The date you shipped the food;
     val shipDate: LocalDate,
@@ -102,15 +98,14 @@ data class CteShip(
 data class CteShipDto(
     val id: Long,
     val cteType: CteType,
-    val locationId: Long,
     val ftlItem: FtlItem,
-    val variety: String,
     val tlcId: Long,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val foodDesc: String,
+    val variety: String,
     val shipToLocationId: Long,
-    val shipFromLocationId: Long,
+    val locationId: Long,   // ShipFromLocaion
     val shipDate: LocalDate,
     val shipTime: OffsetDateTime,
     val tlcSourceId: Long,
@@ -126,15 +121,14 @@ data class CteShipDto(
 fun CteShip.toCteShipDto() = CteShipDto(
     id = id,
     cteType = cteType,
-    locationId = location.id,
     ftlItem = ftlItem,
-    variety = variety,
     tlcId = tlc.id,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     foodDesc = foodDesc,
+    variety = variety,
     shipToLocationId = shipToLocation.id,
-    shipFromLocationId = shipFromLocation.id,
+    locationId = location.id,   // ShipFromLocation
     shipDate = shipDate,
     shipTime = shipTime,
     tlcSourceId = tlcSource.id,
@@ -148,23 +142,21 @@ fun CteShip.toCteShipDto() = CteShipDto(
 )
 
 fun CteShipDto.toCteShip(
-    location: Location,
     tlc: TraceLotCode,
     shipToLocation: Location,
-    shipFromLocation: Location,
+    location: Location,
     tlcSource: Location,
 ) = CteShip(
     id = id,
     cteType = cteType,
-    location = location,
     ftlItem = ftlItem,
-    variety = variety,
     tlc = tlc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     foodDesc = foodDesc,
+    variety = variety,
     shipToLocation = shipToLocation,
-    shipFromLocation = shipFromLocation,
+    location = location,    // ShipFromLocation
     shipDate = shipDate,
     shipTime = shipTime,
     tlcSource = tlcSource,

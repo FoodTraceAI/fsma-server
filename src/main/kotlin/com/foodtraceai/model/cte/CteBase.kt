@@ -15,10 +15,10 @@ import com.foodtraceai.util.UnitOfMeasure
 abstract class CteBase<T> : BaseLocationModel<T>() {
     abstract val cteType: CteType
 
-    // Common to all CTEs.  For raw agricultural commodities use commodity name
-    abstract val ftlItem: FtlItem  // or commodity
-    abstract val variety: String
-    abstract val foodDesc: String
+    // Common to all CTEs.
+    abstract val ftlItem: FtlItem
+    abstract val foodDesc: String   // or commodity for Harvest CTE
+    abstract val variety: String?
     //TODO: Add product name, brand, commodity, and variety,
     // packaging size, packing style,
     // for fish: may include species and/or market name

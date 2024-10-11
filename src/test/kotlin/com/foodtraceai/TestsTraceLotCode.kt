@@ -6,6 +6,7 @@ package com.foodtraceai
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.foodtraceai.auth.AuthLogin
 import com.foodtraceai.model.TraceLotCodeDto
+import com.foodtraceai.util.BatchLot
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -67,10 +68,10 @@ class TestsTraceLotCode {
 
         traceLotCodeDto = TraceLotCodeDto(
             tlcVal = "trace lot code 1",
-            batch = "batch trace lot code 1",
+            batchLot = BatchLot("batchLot_1001") ,
             gtin = null,
-            tlcDate = null,
-            tlcDateType = null,
+            packDate = null,
+            harvestDate = null,
             sscc = null,
         )
 
@@ -88,7 +89,7 @@ class TestsTraceLotCode {
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(traceLotCodeId) }
             jsonPath("$.tlcVal") { value("trace lot code 1") }
-            jsonPath(".batch") { value("batch trace lot code 1") }
+            jsonPath("batchLot.value") { value("batchLot_1001") }
         }
     }
 }

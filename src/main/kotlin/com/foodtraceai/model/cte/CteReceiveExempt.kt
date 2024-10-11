@@ -23,59 +23,57 @@ Food Traceability List?
  **/
 
 @Entity
-data class CteReceive(
+data class CteReceiveExempt(
     @Id @GeneratedValue override val id: Long = 0,
 
     @Enumerated(EnumType.STRING)
-    override val cteType: CteType = CteType.Receive,
+    override val cteType: CteType = CteType.ReceiveExempt,
 
     @Enumerated(EnumType.STRING)
     override val ftlItem: FtlItem,
 
     // ************** KDEs *************
-    // (a) Except as specified in paragraphs (b) and (c) of this section,
-    // for each traceability lot of a food on the Food Traceability List
-    // you receive, you must maintain records containing the following
-    // information and linking this information to the traceability lot:
+    // (b) For each traceability lot of a food on the Food Traceability List
+    // you receive from a person to whom this subpart does not apply,
+    // you must maintain records containing the following information and
+    // linking this information to the traceability lot:
 
-    // (a)(1) The traceability lot code for the food;
+    // (b)(1) The traceability lot code for the food, which you must assign if
+    // one has not already been assigned (except that this paragraph does not
+    // apply if you are a retail food establishment or restaurant);
     @ManyToOne
     @JoinColumn
     val traceLotCode: TraceLotCode,
 
-    // (a)(2) The quantity and unit of measure of the food
+    // (b)(2) The quantity and unit of measure of the food
     // (e.g., 6 cases, 25 reusable plastic containers, 100 tanks, 200 pounds);
     override val quantity: Int,
     @Enumerated(EnumType.STRING)
     override val unitOfMeasure: UnitOfMeasure,
 
-    // (a)(3) The product description for the food;
+    // (b)(3) The product description for the food;
     override val foodDesc: String,
     override val variety: String,
 
-    // (a)(4) The location description for the immediate previous source
+    // (b)(4) The location description for the immediate previous source
     // (other than a transporter) for the food;
     @ManyToOne
     @JoinColumn
     val ipsLocation: Location,   // e.g. ShipFromLocation on CteShip
 
-    // (a)(5) The location description for where the food was received;
+    // (b)(5) The location description for where the food was received
+    // (i.e., the traceability lot code source), and (if applicable)
+    // the traceability lot code source reference;
     @ManyToOne
     @JoinColumn
-    override val location: Location,
+    override val location: Location,    // location = tlcSource for this Cte
+    val tlcSourceReference: String? = null,
 
-    // (a)(6) The date you received the food;
+    // (b)(6) The date you received the food;
     val receiveDate: LocalDate,
     val receiveTime: OffsetDateTime? = null,    // Not required but useful
 
-    // (a)(7) The location description for the traceability lot code source,
-    // or the traceability lot code source reference; and
-    @ManyToOne
-    @JoinColumn
-    val tlcSource: Location? = null,
-    val tlcSourceReference: String? = null,
-
-    // (a)(8) The reference document type and reference document number.
+    // (b)(7) The reference document type and reference document number.
     @Enumerated(EnumType.STRING)
     override val referenceDocumentType: ReferenceDocumentType,
     override val referenceDocumentNum: String,
@@ -91,23 +89,22 @@ data class CteReceive(
     // commodity not obtained from a fishing vessel) or to the receipt
     // of a food by the first land-based receiver (if the food is obtained
     // from a fishing vessel).
-) : CteBase<CteReceive>()
+) : CteBase<CteReceiveExempt>()
 
-data class CteReceiveDto(
+data class CteReceiveExemptDto(
     val id: Long,
     val cteType: CteType,
-    val locationId: Long,   // Receive location
     val ftlItem: FtlItem,
-    val variety: String,
     val traceLotCodeId: Long,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val foodDesc: String,
+    val variety: String,
     val ipsLocationId: Long,
+    val locationId: Long,   // Receive location
+    val tlcSourceReference: String?,
     val receiveDate: LocalDate,
     val receiveTime: OffsetDateTime?,
-    val tlcSourceId: Long?,
-    val tlcSourceReference: String?,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
     val dateCreated: OffsetDateTime,
@@ -116,20 +113,19 @@ data class CteReceiveDto(
     val dateDeleted: OffsetDateTime?,
 )
 
-fun CteReceive.toCteReceiveDto() = CteReceiveDto(
+fun CteReceiveExempt.toCteReceiveExemptDto() = CteReceiveExemptDto(
     id = id,
     cteType = cteType,
-    locationId = location.id,
     ftlItem = ftlItem,
-    variety = variety,
     traceLotCodeId = traceLotCode.id,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     foodDesc = foodDesc,
+    variety = variety,
     ipsLocationId = ipsLocation.id,
+    locationId = location.id,
     receiveDate = receiveDate,
     receiveTime = receiveTime,
-    tlcSourceId = tlcSource?.id,
     tlcSourceReference = tlcSourceReference,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
@@ -139,25 +135,23 @@ fun CteReceive.toCteReceiveDto() = CteReceiveDto(
     dateDeleted = dateDeleted,
 )
 
-fun CteReceiveDto.toCteReceive(
-    location: Location,
+fun CteReceiveExemptDto.toCteReceiveExempt(
     traceLotCode: TraceLotCode,
     ipsLocation: Location,
-    tlcSource: Location?,
-) = CteReceive(
+    location: Location,
+) = CteReceiveExempt(
     id = id,
     cteType = cteType,
-    location = location,
     ftlItem = ftlItem,
-    variety = variety,
     traceLotCode = traceLotCode,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     foodDesc = foodDesc,
+    variety = variety,
     ipsLocation = ipsLocation,
+    location = location,
     receiveDate = receiveDate,
     receiveTime = receiveTime,
-    tlcSource = tlcSource,
     tlcSourceReference = tlcSourceReference,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,

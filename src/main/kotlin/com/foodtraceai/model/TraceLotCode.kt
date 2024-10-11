@@ -3,8 +3,13 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model
 
-import com.foodtraceai.util.TlcDateType
+import com.foodtraceai.util.BatchLot
+import com.foodtraceai.util.GTIN
+import com.foodtraceai.util.SSCC
+import com.foodtraceai.util.Serial
 import jakarta.persistence.*
+import org.hibernate.annotations.JdbcType
+import org.hibernate.annotations.Type
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
@@ -13,13 +18,15 @@ data class TraceLotCode(
     @Id @GeneratedValue
     override val id: Long = 0,
     val tlcVal: String,
-    val gtin: String? = null,   // AI(01) Case GTIN - not required
-    val batch: String? = null,  // AI(10) Case Batch/Lot - not required
-    val tlcDate: LocalDate? = null,    // not required
-    @Enumerated(EnumType.STRING)
-    val tlcDateType: TlcDateType? = null,   // not required
-    // Serial Shipping Container Code
-    val sscc: String? = null,   // AI(00) not required
+    @Embedded val gtin: GTIN? = null,   // AI(01) Case GTIN - not required
+    val batchLot: BatchLot? = null,  // AI(10) Case Batch/Lot - not required
+
+    // Optional GS1 parameters
+    val sscc: SSCC? = null,   // AI(00) - Pallet Serial Shipping Container Code
+    val packDate: LocalDate? = null,    // AI(13)
+    val harvestDate: LocalDate? = null, // AI(13)
+    val bestByDate: LocalDate? = null,  // AI(15)
+    val serial: Serial? = null, // AI(21) - Logistics Serial Number
 
     @Column(updatable = false)
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
@@ -31,11 +38,16 @@ data class TraceLotCode(
 data class TraceLotCodeDto(
     val id: Long = 0,
     val tlcVal: String,
-    val gtin: String?,
-    val batch: String?,
-    val tlcDate: LocalDate?,
-    val tlcDateType: TlcDateType?,
-    val sscc: String?,
+    val gtin: GTIN?,
+    val batchLot: BatchLot?,
+
+    // Optional
+    val sscc: SSCC? = null,   // AI(00) - Pallet Serial Shipping Container Code
+    val packDate: LocalDate? = null,    // AI(13)
+    val harvestDate: LocalDate? = null, // AI(13)
+    val bestByDate: LocalDate? = null,  // AI(15)
+    val serial: Serial? = null, // AI(21) - Logistics Serial Number
+
     val dateCreated: OffsetDateTime = OffsetDateTime.now(),
     val dateModified: OffsetDateTime = OffsetDateTime.now(),
     val isDeleted: Boolean = false,
@@ -48,10 +60,12 @@ fun TraceLotCode.toTraceLotCodeDto() = TraceLotCodeDto(
     id = id,
     tlcVal = tlcVal,
     gtin = gtin,
-    batch = batch,
-    tlcDate = tlcDate,
-    tlcDateType = tlcDateType,
+    batchLot = batchLot,
     sscc = sscc,
+    packDate = packDate,
+    harvestDate = harvestDate,
+    bestByDate = bestByDate,
+    serial = serial,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,
@@ -61,11 +75,13 @@ fun TraceLotCode.toTraceLotCodeDto() = TraceLotCodeDto(
 fun TraceLotCodeDto.toTraceLotCode() = TraceLotCode(
     id = id,
     tlcVal = tlcVal,
-    batch = batch,
     gtin = gtin,
-    tlcDate = tlcDate,
-    tlcDateType = tlcDateType,
+    batchLot = batchLot,
     sscc = sscc,
+    packDate = packDate,
+    harvestDate = harvestDate,
+    bestByDate = bestByDate,
+    serial = serial,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,

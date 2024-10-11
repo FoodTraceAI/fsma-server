@@ -4,6 +4,7 @@
 package com.foodtraceai.repository.cte
 
 import com.foodtraceai.model.cte.CteReceive
+import com.foodtraceai.model.cte.CteReceiveExempt
 import com.foodtraceai.repository.BaseRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -11,9 +12,9 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
 @Repository
-interface CteReceiveRepository : BaseRepository<CteReceive> {
+interface CteReceiveExemptRepository : BaseRepository<CteReceiveExempt> {
     @Query(
-        value = "select cte from CteReceive cte join traceLotCode tlc on cte.traceLotCode.id = tlc.id " +
+        value = "select cte from CteReceiveExempt cte join traceLotCode tlc on cte.traceLotCode.id = tlc.id " +
                 "where (:tlcVal is null or tlc.tlcVal = :tlcVal) and " +
                 "(:ipsLocationId is null or cte.ipsLocation.id = :ipsLocationId) and " +
                 "(:locationId is null or cte.location.id = :locationId) and " +
@@ -28,5 +29,5 @@ interface CteReceiveRepository : BaseRepository<CteReceive> {
         @Param("locationId") locationId: Long? = null,
         @Param("dayFrom") dayFrom: LocalDate? = null,
         @Param("dayTo") dayTo: LocalDate? = null,
-    ): List<CteReceive>
+    ): List<CteReceiveExempt>
 }
