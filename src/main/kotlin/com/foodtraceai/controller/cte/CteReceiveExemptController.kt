@@ -1,3 +1,6 @@
+// ----------------------------------------------------------------------------
+// Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
+// ----------------------------------------------------------------------------
 package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
@@ -19,8 +22,10 @@ private const val CTE_RECEIVE_EXEMPT_ALT_BASE_URL = "/api/v1/cte/receive-exempt"
 private const val CTE_RECEIVE_EXEMPT_ALT2_BASE_URL = "/api/v1/cte/receive/exempt"
 
 @RestController
-@RequestMapping(value = [CTE_RECEIVE_EXEMPT_BASE_URL, CTE_RECEIVE_EXEMPT_ALT_BASE_URL,
-    CTE_RECEIVE_EXEMPT_ALT2_BASE_URL])
+@RequestMapping(
+    value = [CTE_RECEIVE_EXEMPT_BASE_URL, CTE_RECEIVE_EXEMPT_ALT_BASE_URL,
+        CTE_RECEIVE_EXEMPT_ALT2_BASE_URL]
+)
 @SecurityRequirement(name = "bearerAuth")
 class cteReceiveExemptController : BaseController() {
 

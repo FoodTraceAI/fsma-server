@@ -8,9 +8,7 @@ import com.foodtraceai.model.FoodBus
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.model.cte.CteReceive
-import com.foodtraceai.util.FtlItem
-import com.foodtraceai.util.SupCteStatus
-import com.foodtraceai.util.UnitOfMeasure
+import com.foodtraceai.util.*
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -35,6 +33,10 @@ data class SupShipCte(
     // The status of the shipment
     @Enumerated(EnumType.STRING)
     val supCteStatus: SupCteStatus = SupCteStatus.Pending,
+
+    // Optional GS1 parameters
+    val sscc: SSCC?,   // AI(00) - Pallet Serial Shipping Container Code
+    val serial: LogSerialNum? = null, // AI(21) - Logistics Serial Number
 
     // Gets populated when the shipment is received
     @ManyToOne(cascade = [CascadeType.ALL])
@@ -109,8 +111,10 @@ data class SupShipCte(
 
 data class SupShipCteDto(
     val id: Long,
+    val sscc: SSCC?,
+    val serial: LogSerialNum?,
     val supCteStatus: SupCteStatus,
-    val cteReceive: CteReceive?,
+    val cteReceiveId: Long?,
     val ftlItem: FtlItem,
     val variety: String,
     val tlcId: Long,
@@ -130,8 +134,10 @@ data class SupShipCteDto(
 
 fun SupShipCte.toSupShipCteDto() = SupShipCteDto(
     id = id,
+    sscc = sscc,
+    serial = serial,
     supCteStatus = supCteStatus,
-    cteReceive = cteReceive,
+    cteReceiveId = cteReceive?.id,
     ftlItem = ftlItem,
     variety = variety,
     tlcId = tlc.id,
@@ -150,12 +156,15 @@ fun SupShipCte.toSupShipCteDto() = SupShipCteDto(
 )
 
 fun SupShipCteDto.toSupCteShip(
+    cteReceive: CteReceive?,
     tlc: TraceLotCode,
     shipToLocation: Location,
     shipFromLocation: Location,
     tlcSource: Location?
 ) = SupShipCte(
     id = id,
+    sscc = sscc,
+    serial = serial,
     supCteStatus = supCteStatus,
     cteReceive = cteReceive,
     ftlItem = ftlItem,

@@ -156,8 +156,8 @@ class SpreadsheetService(
         makeLocationsTab(workbook)
         makeProductsTab(workbook)
 
-        val currDir: File = File(".")
-        val path: String = currDir.getAbsolutePath()
+        val currDir = File(".")
+        val path: String = currDir.absolutePath
         val fileLocation = path.substring(0, path.length - 1) + "temp.xlsx"
 
         val outputStream = FileOutputStream(fileLocation)
@@ -172,8 +172,8 @@ class SpreadsheetService(
         makeLocationsTab(workbook)
         makeProductsTab(workbook)
 
-        val currDir: File = File(".")
-        val path: String = currDir.getAbsolutePath()
+        val currDir= File(".")
+        val path: String = currDir.absolutePath
         val fileLocation = path.substring(0, path.length - 1) + "temp.xlsx"
 
 //        val outputStream = FileOutputStream(fileLocation)

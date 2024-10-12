@@ -45,13 +45,13 @@ class BatchLotConverter : AttributeConverter<BatchLot?, String?> {
     override fun convertToEntityAttribute(batchLot: String?): BatchLot? = batchLot?.let { BatchLot(it) }
 }
 
-data class Serial(
+data class LogSerialNum(
     val serial: String // A(21) - pallet serial number
 )
 
 @Converter(autoApply = true)
-class SerialConverter : AttributeConverter<Serial?, String?> {
-    override fun convertToDatabaseColumn(serial: Serial?): String? = serial?.serial
+class SerialConverter : AttributeConverter<LogSerialNum?, String?> {
+    override fun convertToDatabaseColumn(serial: LogSerialNum?): String? = serial?.serial
 
-    override fun convertToEntityAttribute(serial: String?): Serial? = serial?.let { Serial(it) }
+    override fun convertToEntityAttribute(serial: String?): LogSerialNum? = serial?.let { LogSerialNum(it) }
 }

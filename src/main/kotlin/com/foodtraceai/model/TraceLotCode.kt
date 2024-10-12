@@ -5,11 +5,9 @@ package com.foodtraceai.model
 
 import com.foodtraceai.util.BatchLot
 import com.foodtraceai.util.GTIN
+import com.foodtraceai.util.LogSerialNum
 import com.foodtraceai.util.SSCC
-import com.foodtraceai.util.Serial
 import jakarta.persistence.*
-import org.hibernate.annotations.JdbcType
-import org.hibernate.annotations.Type
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
@@ -26,7 +24,7 @@ data class TraceLotCode(
     val packDate: LocalDate? = null,    // AI(13)
     val harvestDate: LocalDate? = null, // AI(13)
     val bestByDate: LocalDate? = null,  // AI(15)
-    val serial: Serial? = null, // AI(21) - Logistics Serial Number
+    val serial: LogSerialNum? = null, // AI(21) - Logistics Serial Number
 
     @Column(updatable = false)
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
@@ -46,7 +44,7 @@ data class TraceLotCodeDto(
     val packDate: LocalDate? = null,    // AI(13)
     val harvestDate: LocalDate? = null, // AI(13)
     val bestByDate: LocalDate? = null,  // AI(15)
-    val serial: Serial? = null, // AI(21) - Logistics Serial Number
+    val serial: LogSerialNum? = null, // AI(21) - Logistics Serial Number
 
     val dateCreated: OffsetDateTime = OffsetDateTime.now(),
     val dateModified: OffsetDateTime = OffsetDateTime.now(),

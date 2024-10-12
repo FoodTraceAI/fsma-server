@@ -21,9 +21,9 @@ private const val TRACE_LOT_CODE_ALT_BASE_URL = "/api/v1/trace-lot-code"
 private const val TRACE_LOT_CODE_ALT2_BASE_URL = "/api/v1/tlc"
 
 @RestController
-@RequestMapping(value = [com.foodtraceai.controller.TRACE_LOT_CODE_BASE_URL, com.foodtraceai.controller.TRACE_LOT_CODE_ALT_BASE_URL, com.foodtraceai.controller.TRACE_LOT_CODE_ALT2_BASE_URL])
+@RequestMapping(value = [TRACE_LOT_CODE_BASE_URL, TRACE_LOT_CODE_ALT_BASE_URL, TRACE_LOT_CODE_ALT2_BASE_URL])
 @SecurityRequirement(name = "bearerAuth")
-class TraceLotCodeController : com.foodtraceai.controller.BaseController() {
+class TraceLotCodeController : BaseController() {
 
     // -- Return a specific TraceLotCode
     // -    http://localhost:8080/api/v1/tlc/1
@@ -46,7 +46,7 @@ class TraceLotCodeController : com.foodtraceai.controller.BaseController() {
     ): ResponseEntity<TraceLotCodeDto> {
         val traceLotCode = traceLotCodeDto.toTraceLotCode()
         val traceLotCodeResponse = traceLotCodeService.insert(traceLotCode).toTraceLotCodeDto()
-        return ResponseEntity.created(URI.create(com.foodtraceai.controller.TRACE_LOT_CODE_BASE_URL.plus("/${traceLotCodeResponse.id}")))
+        return ResponseEntity.created(URI.create(TRACE_LOT_CODE_BASE_URL.plus("/${traceLotCodeResponse.id}")))
             .body(traceLotCodeResponse)
     }
 
