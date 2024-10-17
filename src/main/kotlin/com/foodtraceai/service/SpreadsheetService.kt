@@ -122,11 +122,11 @@ class SpreadsheetService(
                 val cell = row.createCell(idx)
                 cell.cellStyle = style
                 when (triple.third) {
-                    'A' -> cell.setCellValue(cte.traceLotCode.tlcVal)
-                    'B' -> cell.setCellValue(cte.traceLotCode.batchLot?.value)
-                    'C' -> cell.setCellValue(cte.traceLotCode.packDate)
-                    'D' -> cell.setCellValue(cte.traceLotCode.bestByDate)
-                    'E' -> cell.setCellValue(cte.traceLotCode.sscc?.sscc)
+                    'A' -> cell.setCellValue(cte.tlc.tlcVal)
+                    'B' -> cell.setCellValue(cte.tlc.batchLot?.value)
+                    'C' -> cell.setCellValue(cte.tlc.packDate)
+                    'D' -> cell.setCellValue(cte.tlc.bestByDate)
+                    'E' -> cell.setCellValue(cte.tlc.sscc?.sscc)
                     'F' -> {}
                     'G' -> cell.setCellValue("${cte.quantity} ${cte.unitOfMeasure.name}")
                     'H' -> cell.setCellValue(cte.foodDesc)

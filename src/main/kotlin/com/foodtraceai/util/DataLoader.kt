@@ -341,7 +341,7 @@ class DataLoader : ApplicationRunner {
         var curLoc = locationList[1]
         var cteReceive = CteReceive(
             location = curLoc,
-            traceLotCode = tlcList[0],
+            tlc = tlcList[0],
             quantity = 15,
             unitOfMeasure = UnitOfMeasure.Case,
             ftlItem = FtlItem.LeafyGreens,
@@ -358,7 +358,7 @@ class DataLoader : ApplicationRunner {
 
         cteReceive = CteReceive(
             location = curLoc,
-            traceLotCode = tlcList[1],
+            tlc = tlcList[1],
             quantity = 10,
             unitOfMeasure = UnitOfMeasure.Case,
             ftlItem = FtlItem.LeafyGreens,
@@ -377,7 +377,7 @@ class DataLoader : ApplicationRunner {
         curLoc = locationList[1]
         cteReceive = CteReceive(
             location = curLoc,
-            traceLotCode = tlcList[2],
+            tlc = tlcList[2],
             quantity = 5,
             unitOfMeasure = UnitOfMeasure.Case,
             ftlItem = FtlItem.LeafyGreens,
@@ -397,8 +397,8 @@ class DataLoader : ApplicationRunner {
 
         var supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
-            sscc = SSCC("sscc_no 1"),
-            serial = LogSerialNum("log_serial_num 1"),
+            sscc = Sscc("sscc1"),
+            serial = LogSerialNum("serial1"),
             cteReceive = null,
             tlc = tlcList[0],
             quantity = 5,
@@ -410,13 +410,15 @@ class DataLoader : ApplicationRunner {
             shipFromLocation = locationList[1],
             shipDate = LocalDate.of(2026, 1, 20),
             tlcSource = locationList[2],
+            referenceDocumentType = ReferenceDocumentType.BOL,
+            referenceDocumentNum = "BOL-sscc1",
         )
         supShipCteList.add(supShipCteService.insert(supShipCte))
 
         supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
-            sscc = SSCC("sscc_no 2"),
-            serial = LogSerialNum("log_serial_num 2"),
+            sscc = Sscc("sscc2"),
+            serial = LogSerialNum("serial2"),
             cteReceive = null,
             tlc = tlcList[1],
             quantity = 10,
@@ -428,13 +430,15 @@ class DataLoader : ApplicationRunner {
             shipFromLocation = locationList[1],
             shipDate = LocalDate.of(2026, 1, 21),
             tlcSource = locationList[2],
+            referenceDocumentType = ReferenceDocumentType.BOL,
+            referenceDocumentNum = "BOL-sscc2",
         )
         supShipCteList.add(supShipCteService.insert(supShipCte))
 
         supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
-            sscc = SSCC("sscc_no 3"),
-            serial = LogSerialNum("log_serial_num 3"),
+            sscc = Sscc("sscc3"),
+            serial = LogSerialNum("serial3"),
             cteReceive = null,
             tlc = tlcList[1],
             quantity = 15,
@@ -446,6 +450,8 @@ class DataLoader : ApplicationRunner {
             shipFromLocation = locationList[1],
             shipDate = LocalDate.of(2026, 1, 22),
             tlcSource = locationList[2],
+            referenceDocumentType = ReferenceDocumentType.BOL,
+            referenceDocumentNum = "BOL-sscc3",
         )
         supShipCteList.add(supShipCteService.insert(supShipCte))
     }

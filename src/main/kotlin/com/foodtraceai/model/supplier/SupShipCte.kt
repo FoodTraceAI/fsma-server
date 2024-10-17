@@ -35,7 +35,7 @@ data class SupShipCte(
     val supCteStatus: SupCteStatus = SupCteStatus.Pending,
 
     // Optional GS1 parameters
-    val sscc: SSCC?,   // AI(00) - Pallet Serial Shipping Container Code
+    val sscc: Sscc?,   // AI(00) - Pallet Serial Shipping Container Code
     val serial: LogSerialNum? = null, // AI(21) - Logistics Serial Number
 
     // Gets populated when the shipment is received
@@ -91,6 +91,11 @@ data class SupShipCte(
     val tlcSource: Location? = null,
     val tlcSourceReference: String? = null,
 
+    // Required to create CteReceive
+    @Enumerated(EnumType.STRING)
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+
     @Column(updatable = false)
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
@@ -111,7 +116,7 @@ data class SupShipCte(
 
 data class SupShipCteDto(
     val id: Long,
-    val sscc: SSCC?,
+    val sscc: Sscc?,
     val serial: LogSerialNum?,
     val supCteStatus: SupCteStatus,
     val cteReceiveId: Long?,
@@ -126,6 +131,8 @@ data class SupShipCteDto(
     val shipDate: LocalDate,
     val tlcSourceId: Long?,
     val tlcSourceReference: String?,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
     val dateCreated: OffsetDateTime,
     val dateModified: OffsetDateTime,
     val isDeleted: Boolean,
@@ -149,6 +156,8 @@ fun SupShipCte.toSupShipCteDto() = SupShipCteDto(
     shipDate = shipDate,
     tlcSourceId = tlcSource?.id,
     tlcSourceReference = tlcSourceReference,
+    referenceDocumentType = referenceDocumentType,
+    referenceDocumentNum = referenceDocumentNum,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,
@@ -178,6 +187,8 @@ fun SupShipCteDto.toSupCteShip(
     shipDate = shipDate,
     tlcSource = tlcSource,
     tlcSourceReference = tlcSourceReference,
+    referenceDocumentType = referenceDocumentType,
+    referenceDocumentNum = referenceDocumentNum,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,

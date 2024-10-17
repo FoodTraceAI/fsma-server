@@ -6,7 +6,7 @@ package com.foodtraceai.model
 import com.foodtraceai.util.BatchLot
 import com.foodtraceai.util.GTIN
 import com.foodtraceai.util.LogSerialNum
-import com.foodtraceai.util.SSCC
+import com.foodtraceai.util.Sscc
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -20,7 +20,7 @@ data class TraceLotCode(
     val batchLot: BatchLot? = null,  // AI(10) Case Batch/Lot - not required
 
     // Optional GS1 parameters
-    val sscc: SSCC? = null,   // AI(00) - Pallet Serial Shipping Container Code
+    val sscc: Sscc? = null,   // AI(00) - Pallet Serial Shipping Container Code
     val packDate: LocalDate? = null,    // AI(13)
     val harvestDate: LocalDate? = null, // AI(13)
     val bestByDate: LocalDate? = null,  // AI(15)
@@ -40,7 +40,7 @@ data class TraceLotCodeDto(
     val batchLot: BatchLot?,
 
     // Optional
-    val sscc: SSCC? = null,   // AI(00) - Pallet Serial Shipping Container Code
+    val sscc: Sscc? = null,   // AI(00) - Pallet Serial Shipping Container Code
     val packDate: LocalDate? = null,    // AI(13)
     val harvestDate: LocalDate? = null, // AI(13)
     val bestByDate: LocalDate? = null,  // AI(15)

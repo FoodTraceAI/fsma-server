@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
 
-private const val SHEET_BASE_URL = "/api/v1/sheet"
+private const val SPREADSHEET_BASE_URL = "/api/v1/sheet"
 private const val SPREADSHEET_ALT_BASE_URL = "/api/v1/spreadsheet"
 
 @RestController
-@RequestMapping(value = [SHEET_BASE_URL, SPREADSHEET_ALT_BASE_URL])
+@RequestMapping(value = [SPREADSHEET_BASE_URL, SPREADSHEET_ALT_BASE_URL])
 @SecurityRequirement(name = "bearerAuth")
 class SpreadsheetController : BaseController() {
 
@@ -57,7 +57,7 @@ class SpreadsheetController : BaseController() {
         @RequestParam("ipsLocationId", required = false) ipsLocationId: Long?,
         @RequestParam("dateFrom", required = false) dateFrom: LocalDate?,
         @RequestParam("dateTo", required = false) dateTo: LocalDate?,
-        @AuthenticationPrincipal fsaUser: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<List<CteReceive>> {
         val cteList = cteReceiveService.findAllByOptionalParams(
             tlcVal,

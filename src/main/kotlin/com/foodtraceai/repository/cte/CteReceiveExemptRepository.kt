@@ -3,7 +3,6 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.repository.cte
 
-import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.model.cte.CteReceiveExempt
 import com.foodtraceai.repository.BaseRepository
 import org.springframework.data.jpa.repository.Query
@@ -14,7 +13,7 @@ import java.time.LocalDate
 @Repository
 interface CteReceiveExemptRepository : BaseRepository<CteReceiveExempt> {
     @Query(
-        value = "select cte from CteReceiveExempt cte join traceLotCode tlc on cte.traceLotCode.id = tlc.id " +
+        value = "select cte from CteReceiveExempt cte join tlc on cte.tlc.id = tlc.id " +
                 "where (:tlcVal is null or tlc.tlcVal = :tlcVal) and " +
                 "(:ipsLocationId is null or cte.ipsLocation.id = :ipsLocationId) and " +
                 "(:locationId is null or cte.location.id = :locationId) and " +

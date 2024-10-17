@@ -7,18 +7,18 @@ import jakarta.persistence.Embeddable
 // GS1 Data Types
 
 @Embeddable
-data class SSCC(        // serial shipping container code
+data class Sscc(        // serial shipping container code
     val sscc: String    // A(00) - 18 numeric digits
 )
 
 @Converter(autoApply = true)
-class SSCCConverter : AttributeConverter<SSCC?, String?> {
-    override fun convertToDatabaseColumn(sscc: SSCC?): String? {
+class SsccConverter : AttributeConverter<Sscc?, String?> {
+    override fun convertToDatabaseColumn(sscc: Sscc?): String? {
         return sscc?.sscc
     }
 
-    override fun convertToEntityAttribute(sscc: String?): SSCC? {
-        return sscc?.let { SSCC(it) }
+    override fun convertToEntityAttribute(sscc: String?): Sscc? {
+        return sscc?.let { Sscc(it) }
     }
 }
 

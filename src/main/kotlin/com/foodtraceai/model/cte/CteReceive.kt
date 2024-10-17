@@ -41,7 +41,7 @@ data class CteReceive(
     // (a)(1) The traceability lot code for the food;
     @ManyToOne
     @JoinColumn
-    val traceLotCode: TraceLotCode,
+    val tlc: TraceLotCode,
 
     // (a)(2) The quantity and unit of measure of the food
     // (e.g., 6 cases, 25 reusable plastic containers, 100 tanks, 200 pounds);
@@ -95,11 +95,11 @@ data class CteReceive(
 
 data class CteReceiveDto(
     val id: Long,
-    val cteType: CteType,
+    val cteType: CteType = CteType.Receive,
     val locationId: Long,   // Receive location
     val ftlItem: FtlItem,
     val variety: String,
-    val traceLotCodeId: Long,
+    val tlcId: Long,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
     val foodDesc: String,
@@ -122,7 +122,7 @@ fun CteReceive.toCteReceiveDto() = CteReceiveDto(
     locationId = location.id,
     ftlItem = ftlItem,
     variety = variety,
-    traceLotCodeId = traceLotCode.id,
+    tlcId = tlc.id,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     foodDesc = foodDesc,
@@ -150,7 +150,7 @@ fun CteReceiveDto.toCteReceive(
     location = location,
     ftlItem = ftlItem,
     variety = variety,
-    traceLotCode = traceLotCode,
+    tlc = traceLotCode,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     foodDesc = foodDesc,

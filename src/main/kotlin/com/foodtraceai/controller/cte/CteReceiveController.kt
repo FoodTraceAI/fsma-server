@@ -47,8 +47,8 @@ class CteReceiveController : BaseController() {
         val location = locationService.findById(cteReceiveDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${cteReceiveDto.locationId}")
 
-        val traceLotCode = traceLotCodeService.findById(cteReceiveDto.traceLotCodeId)
-            ?: throw EntityNotFoundException("TraceLotCode not found: ${cteReceiveDto.traceLotCodeId}")
+        val traceLotCode = traceLotCodeService.findById(cteReceiveDto.tlcId)
+            ?: throw EntityNotFoundException("TraceLotCode not found: ${cteReceiveDto.tlcId}")
 
         val shipFromLocation = locationService.findById(cteReceiveDto.ipsLocationId)
             ?: throw EntityNotFoundException("ShipFromLocation not found: ${cteReceiveDto.ipsLocationId}")
@@ -79,8 +79,8 @@ class CteReceiveController : BaseController() {
         val location = locationService.findById(cteReceiveDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${cteReceiveDto.locationId}")
 
-        val traceLotCode = traceLotCodeService.findById(cteReceiveDto.traceLotCodeId)
-            ?: throw EntityNotFoundException("TraceLotCode not found: ${cteReceiveDto.traceLotCodeId}")
+        val traceLotCode = traceLotCodeService.findById(cteReceiveDto.tlcId)
+            ?: throw EntityNotFoundException("TraceLotCode not found: ${cteReceiveDto.tlcId}")
 
         val shipFromLocation = locationService.findById(cteReceiveDto.ipsLocationId)
             ?: throw EntityNotFoundException("ShipFromLocation not found: ${cteReceiveDto.ipsLocationId}")

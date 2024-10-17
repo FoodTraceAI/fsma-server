@@ -3,11 +3,15 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.service
 
-import com.foodtraceai.model.Location
 import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.model.supplier.SupShipCte
+import com.foodtraceai.repository.supplier.SupShipCteRepository
 import com.foodtraceai.service.cte.CteReceiveService
-import com.foodtraceai.util.ReferenceDocumentType
+import com.foodtraceai.service.supplier.SupShipCteService
+import com.foodtraceai.util.EntityException
+import com.foodtraceai.util.Sscc
+import com.foodtraceai.util.SupCteStatus
+import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -19,33 +23,72 @@ sent CteShip cte
 
 @Service
 class SupplierService(
+    private val supShipCteRepository: SupShipCteRepository,
     private val cteReceiveService: CteReceiveService,
+    private val supShipCteService: SupShipCteService,
 ) {
     // RFE or Restaurant has received a shipment
-    fun receiveSupShipment(
-        supShipCte: SupShipCte,
-        location: Location,
+    fun findSupShipCte(
+        sscc: Sscc,
+        tlcId: Long,
+        shipToLocationId: Long,
+        supCteStatus: SupCteStatus,
+    ): SupShipCte? {
+        val supShipCteList = supShipCteRepository
+            .findAllBySsccAndTlcIdAndShipToLocationIdAndSupCteStatus(
+                sscc = sscc,
+                tlcId = tlcId,
+                shipToLocationId = shipToLocationId,
+                supCteStatus = supCteStatus,
+            )
+
+        return when (supShipCteList.size) {
+            0 -> null
+            1 -> supShipCteList[0]
+            else -> throw EntityException("SupShipCteList size error: ${supShipCteList.size}")
+        }
+    }
+
+    fun makeReceiveCteFromSupShipCte(
+        sscc: Sscc,
+        tlcId: Long,
+        shipToLocationId: Long,
         receiveDate: LocalDate,
-        referenceDocumentType: ReferenceDocumentType,
-        referenceDocumentNum: String,
+        receiveTime: OffsetDateTime,
     ): CteReceive {
-        val cteReceive = CteReceive(
-            location = supShipCte.shipToLocation,
-            traceLotCode = supShipCte.tlc,
-            quantity = supShipCte.quantity,
-            unitOfMeasure = supShipCte.unitOfMeasure,
-            ftlItem = supShipCte.ftlItem,
-            variety = supShipCte.variety,
-            foodDesc = supShipCte.foodDesc,
-            ipsLocation = supShipCte.shipFromLocation,
-            receiveDate = receiveDate,
-            receiveTime = OffsetDateTime.now(),
-            tlcSource = supShipCte.tlcSource,
-            tlcSourceReference = supShipCte.tlcSourceReference,
-            referenceDocumentType = referenceDocumentType,
-            referenceDocumentNum = referenceDocumentNum,
+        val supShipCte = findSupShipCte(
+            sscc = sscc,
+            tlcId = tlcId,
+            shipToLocationId = shipToLocationId,
+            supCteStatus = SupCteStatus.Pending,
+        ) ?: throw EntityNotFoundException("supShipCte not found")
+
+        val cteReceive = cteReceiveService.insert(
+            CteReceive(
+                location = supShipCte.shipToLocation,
+                ftlItem = supShipCte.ftlItem,
+                variety = supShipCte.variety,
+                tlc = supShipCte.tlc,
+                quantity = supShipCte.quantity,
+                unitOfMeasure = supShipCte.unitOfMeasure,
+                foodDesc = supShipCte.foodDesc,
+                ipsLocation = supShipCte.shipFromLocation,
+                receiveDate = LocalDate.now(),
+                receiveTime = OffsetDateTime.now(),
+                tlcSource = supShipCte.tlcSource,
+                tlcSourceReference = supShipCte.tlcSourceReference,
+                referenceDocumentType = supShipCte.referenceDocumentType,
+                referenceDocumentNum = supShipCte.referenceDocumentNum,
+            )
         )
 
-        return cteReceiveService.save(cteReceive)
+        supShipCteService.update(
+            supShipCte.copy(
+                cteReceive = cteReceive,
+                supCteStatus = SupCteStatus.Received
+            )
+        )
+
+        return cteReceive
     }
 }

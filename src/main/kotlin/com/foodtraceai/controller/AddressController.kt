@@ -28,7 +28,7 @@ class AddressController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<AddressDto> {
         val address = addressService.findById(id)
             ?: throw EntityNotFoundException("Address not found = $id")

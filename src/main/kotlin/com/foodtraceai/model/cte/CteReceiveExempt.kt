@@ -43,7 +43,7 @@ data class CteReceiveExempt(
     // apply if you are a retail food establishment or restaurant);
     @ManyToOne
     @JoinColumn
-    val traceLotCode: TraceLotCode,
+    val tlc: TraceLotCode,
 
     // (b)(2) The quantity and unit of measure of the food
     // (e.g., 6 cases, 25 reusable plastic containers, 100 tanks, 200 pounds);
@@ -117,7 +117,7 @@ fun CteReceiveExempt.toCteReceiveExemptDto() = CteReceiveExemptDto(
     id = id,
     cteType = cteType,
     ftlItem = ftlItem,
-    traceLotCodeId = traceLotCode.id,
+    traceLotCodeId = tlc.id,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     foodDesc = foodDesc,
@@ -143,7 +143,7 @@ fun CteReceiveExemptDto.toCteReceiveExempt(
     id = id,
     cteType = cteType,
     ftlItem = ftlItem,
-    traceLotCode = traceLotCode,
+    tlc = traceLotCode,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     foodDesc = foodDesc,

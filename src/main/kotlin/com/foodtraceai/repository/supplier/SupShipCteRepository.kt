@@ -5,7 +5,16 @@ package com.foodtraceai.repository.supplier
 
 import com.foodtraceai.model.supplier.SupShipCte
 import com.foodtraceai.repository.BaseRepository
+import com.foodtraceai.util.Sscc
+import com.foodtraceai.util.SupCteStatus
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SupShipCteRepository : BaseRepository<SupShipCte>
+interface SupShipCteRepository : BaseRepository<SupShipCte> {
+    fun findAllBySsccAndTlcIdAndShipToLocationIdAndSupCteStatus(
+        sscc: Sscc,
+        tlcId: Long,
+        shipToLocationId:Long,
+        supCteStatus: SupCteStatus,
+    ):List<SupShipCte>
+}

@@ -80,6 +80,9 @@ class BaseController {
     protected lateinit var spreadsheetService: SpreadsheetService
 
     @Autowired
+    protected lateinit var supplierService: SupplierService
+
+    @Autowired
     protected lateinit var supShipCteService: SupShipCteService
 
     @Autowired
