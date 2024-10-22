@@ -31,7 +31,7 @@ class SupShipCteController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<SupShipCteDto> {
         val supShipCte = supShipCteService.findById(id)
             ?: throw EntityNotFoundException("SupShipCte not found = $id")
@@ -43,7 +43,7 @@ class SupShipCteController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody supShipCteDto: SupShipCteDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<SupShipCteDto> {
         val cteReceive: CteReceive? = supShipCteDto.cteReceiveId?.let {
             cteReceiveService.findById(it) ?: throw EntityNotFoundException("CteReceiveId not found: ${it}")
@@ -69,12 +69,12 @@ class SupShipCteController : BaseController() {
             .body(cteCoolResponse)
     }
 
-    // -- Update an existing Location
+    // -- Update an existing SupShipCteDto
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody supShipCteDto: SupShipCteDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<SupShipCteDto> {
         val cteReceive: CteReceive? = supShipCteDto.cteReceiveId?.let {
             cteReceiveService.findById(it) ?: throw EntityNotFoundException("CteReceiveId not found: ${it}")
@@ -103,7 +103,7 @@ class SupShipCteController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteCoolService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

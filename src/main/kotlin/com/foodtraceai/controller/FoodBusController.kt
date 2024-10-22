@@ -29,10 +29,10 @@ class FoodBusController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FoodBusDto> {
         val foodBus = foodBusService.findById(id)
-            ?: throw EntityNotFoundException("FoodBusiness not found = $id")
+            ?: throw EntityNotFoundException("FoodBusiness not found: $id")
 //        assertResellerClientMatchesToken(fsaUser, business.resellerId)
         return ResponseEntity.ok(foodBus.toFoodBusDto())
     }
@@ -41,7 +41,7 @@ class FoodBusController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody foodBusDto: FoodBusDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FoodBusDto> {
         val reseller = resellerService.findById(foodBusDto.resellerId)
             ?: throw EntityNotFoundException("Reseller not found: ${foodBusDto.resellerId}")
@@ -64,7 +64,7 @@ class FoodBusController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody foodBusDto: FoodBusDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FoodBusDto> {
         if (foodBusDto.id <= 0L || foodBusDto.id != id)
             throw UnauthorizedRequestException("Conflicting BusinessIds specified: $id != ${foodBusDto.id}")
@@ -87,7 +87,7 @@ class FoodBusController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         foodBusService.findById(id)?.let { business ->
 //            assertResellerClientMatchesToken(fsaUser, business.resellerId)

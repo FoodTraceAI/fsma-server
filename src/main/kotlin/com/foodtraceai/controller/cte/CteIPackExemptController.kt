@@ -35,7 +35,7 @@ class CteIPackExemptController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteIPackExemptDto> {
         val cteExempt = cteIPackExemptService.findById(id)
             ?: throw EntityNotFoundException("CteExempt not found = $id")
@@ -47,7 +47,7 @@ class CteIPackExemptController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteIPackExemptDto: CteIPackExemptDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteIPackExemptDto> {
         val location = locationService.findById(cteIPackExemptDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${cteIPackExemptDto.locationId}")
@@ -69,12 +69,12 @@ class CteIPackExemptController : BaseController() {
             .body(iPackExemptResponse)
     }
 
-    // -- Update an existing Location
+    // -- Update an existing CteIPackExemptDto
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteIPackExemptDto: CteIPackExemptDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteIPackExemptDto> {
         if (cteIPackExemptDto.id <= 0L || cteIPackExemptDto.id != id)
             throw UnauthorizedRequestException("Conflicting cteIPackExemptDto Ids specified: $id != ${cteIPackExemptDto.id}")
@@ -102,7 +102,7 @@ class CteIPackExemptController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteIPackExemptService.findById(id)?.let { cteIPackExempt ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

@@ -43,19 +43,19 @@ class EntityExistsException : EntityException {
     constructor(m: String) : this(m, null)
 }
 
-open class EntityException : FsaException {
+open class EntityException : FsmaException {
     constructor(m: String, h: HttpStatus, th: Throwable?) : super(m, h, th)
     constructor(m: String, th: Throwable?) : this(m, HttpStatus.BAD_REQUEST, th)
     constructor(m: String) : this(m, null)
 }
 
-open class ExceedsTechnicianLicenseException : FsaException {
+open class ExceedsTechnicianLicenseException : FsmaException {
     constructor(m: String, h: HttpStatus, th: Throwable?) : super(m, h, th)
     constructor(m: String, th: Throwable?) : this(m, HttpStatus.BAD_REQUEST, th)
     constructor(m: String) : this(m, null)
 }
 
-open class DuplicateEquipmentIdentifierException : FsaException {
+open class DuplicateEquipmentIdentifierException : FsmaException {
     constructor(m: String, h: HttpStatus, th: Throwable?) : super(m, h, th)
     constructor(m: String, th: Throwable?) : this(m, HttpStatus.BAD_REQUEST, th)
     constructor(m: String) : this(m, null)
@@ -63,40 +63,40 @@ open class DuplicateEquipmentIdentifierException : FsaException {
 
 // ------------------------------------
 
-open class BadRequestException : FsaException {
+open class BadRequestException : FsmaException {
     constructor(m: String, th: Throwable?) : super(m, HttpStatus.BAD_REQUEST, th)
     constructor(m: String) : this(m, null)
 }
 
 // ------------------------------------
 
-class AuthorizationException : FsaException {
+class AuthorizationException : FsmaException {
     constructor(m: String, th: Throwable?) : super(m, HttpStatus.UNAUTHORIZED, th)
     constructor(m: String) : this(m, null)
 }
 
 // --
 
-class UnauthorizedRequestException : FsaException {
+class UnauthorizedRequestException : FsmaException {
     constructor(m: String, th: Throwable?) : super(m, HttpStatus.FORBIDDEN, th)
     constructor(m: String) : this(m, null)
 }
 
 // --
 
-class DataFileNotFoundException : FsaException {
+class DataFileNotFoundException : FsmaException {
     constructor(m: String, th: Throwable?) : super(m, HttpStatus.NOT_FOUND, th)
     constructor(m: String) : this(m, null)
 }
 
-class DataBytesInvalidException : FsaException {
+class DataBytesInvalidException : FsmaException {
     constructor(m: String, th: Throwable?) : super(m, HttpStatus.BAD_REQUEST, th)
     constructor(m: String) : this(m, null)
 }
 
 // --
 
-class InternalException : FsaException {
+class InternalException : FsmaException {
     constructor(m: String, th: Throwable?) : super(m, HttpStatus.INTERNAL_SERVER_ERROR, th)
     constructor(m: String) : this(m, null)
 }
@@ -110,7 +110,7 @@ class InternalException : FsaException {
 // -      WWW-Authenticate: Bearer realm="example",
 // -                        error="invalid_token",
 // -                        error_description="The access token expired"
-class ExpiredTokenException : FsaException {
+class ExpiredTokenException : FsmaException {
     constructor(m: String, th: Throwable?) : super(m, HttpStatus.UNAUTHORIZED, th) {
         // -- https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
         // addHttpHeader(HttpHeaders.VARY, HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS)
@@ -121,14 +121,14 @@ class ExpiredTokenException : FsaException {
     constructor(m: String) : this(m, null)
 }
 
-class InvalidTokenException : FsaException {
+class InvalidTokenException : FsmaException {
     constructor(m: String, th: Throwable?) : super(m, HttpStatus.BAD_REQUEST, th)
     constructor(m: String) : this(m, null)
 }
 
 // ------------------------------------
 
-open class FsaException(
+open class FsmaException(
     val msg_: String,
     val httpCode: HttpStatus,
     val th: Throwable?
@@ -137,15 +137,15 @@ open class FsaException(
         add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
     }
 
-    fun setHttpHeaders(hh: HttpHeaders): FsaException = apply { httpHdrs = hh }
-    fun addHttpHeader(h: String, v: String): FsaException = apply { httpHdrs.add(h, v) }
+    fun setHttpHeaders(hh: HttpHeaders): FsmaException = apply { httpHdrs = hh }
+    fun addHttpHeader(h: String, v: String): FsmaException = apply { httpHdrs.add(h, v) }
     fun getHttpHeaders(): HttpHeaders = httpHdrs
     fun getHttpStatus(): HttpStatus = httpCode
 }
 
 // ------------------------------------
 
-open class ResourceException : FsaException {
+open class ResourceException : FsmaException {
     constructor(m: String, th: Throwable?) : super(m, HttpStatus.INTERNAL_SERVER_ERROR, th)
     constructor(m: String) : this(m, null)
 }

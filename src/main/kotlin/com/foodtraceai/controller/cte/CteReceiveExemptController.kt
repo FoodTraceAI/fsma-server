@@ -34,7 +34,7 @@ class cteReceiveExemptController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveExemptDto> {
         val cteReceiveExempt = cteReceiveExemptService.findById(id)
             ?: throw EntityNotFoundException("cteReceiveExempt not found = $id")
@@ -46,7 +46,7 @@ class cteReceiveExemptController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteReceiveExemptDto: CteReceiveExemptDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveExemptDto> {
         val location = locationService.findById(cteReceiveExemptDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${cteReceiveExemptDto.locationId}")
@@ -65,12 +65,12 @@ class cteReceiveExemptController : BaseController() {
             .body(cteReceiveExemptResponse)
     }
 
-    // -- Update an existing Location
+    // -- Update an existing CteReceiveExemptDto
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteReceiveExemptDto: CteReceiveExemptDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveExemptDto> {
         if (cteReceiveExemptDto.id <= 0L || cteReceiveExemptDto.id != id)
             throw UnauthorizedRequestException("Conflicting cteReceiveExempt Ids specified: $id != ${cteReceiveExemptDto.id}")
@@ -93,7 +93,7 @@ class cteReceiveExemptController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteReceiveExemptService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

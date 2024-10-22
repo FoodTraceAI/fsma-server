@@ -30,7 +30,7 @@ class CteReceiveController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
         val cteReceive = cteReceiveService.findById(id)
             ?: throw EntityNotFoundException("CteReceive not found = $id")
@@ -42,7 +42,7 @@ class CteReceiveController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteReceiveDto: CteReceiveDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
         val location = locationService.findById(cteReceiveDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${cteReceiveDto.locationId}")
@@ -66,12 +66,12 @@ class CteReceiveController : BaseController() {
             .body(cteReceiveResponse)
     }
 
-    // -- Update an existing Location
+    // -- Update an existing CteReceiveDto
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteReceiveDto: CteReceiveDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
         if (cteReceiveDto.id <= 0L || cteReceiveDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteReceive Ids specified: $id != ${cteReceiveDto.id}")
@@ -99,7 +99,7 @@ class CteReceiveController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteReceiveService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

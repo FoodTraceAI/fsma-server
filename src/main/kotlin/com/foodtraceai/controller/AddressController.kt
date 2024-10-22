@@ -67,7 +67,7 @@ class AddressController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         addressService.findById(id)?.let { address ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

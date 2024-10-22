@@ -28,7 +28,7 @@ class ResellerController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<ResellerDto> {
         val reseller = resellerService.findById(id)
             ?: throw EntityNotFoundException("Reseller not found = $id")

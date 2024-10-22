@@ -6,6 +6,7 @@ import com.foodtraceai.model.supplier.SupShipCteDto
 import com.foodtraceai.model.supplier.toSupShipCteDto
 import com.foodtraceai.util.Sscc
 import com.foodtraceai.util.SupCteStatus
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -37,26 +38,6 @@ class SupplierController : BaseController() {
         return ResponseEntity.ok(supShipCte?.toSupShipCteDto())
     }
 
-//    // http://localhost:8080/api/v1/supplier/createReceiveCte?sscc=sscc1&tlcId=1&shipFromLocationId=1
-//    @GetMapping("/createReceiveCteFromSupShipCte")
-//    private fun createReceiveCteFromSupShipCte(
-//        @RequestParam(value = "sscc", required = true) sscc: Sscc,
-//        @RequestParam(value = "tlcId", required = true) tlcId: Long,
-//        @RequestParam(value = "shipToLocationId", required = true) shipToLocationId: Long,
-//        @RequestParam(value = "receiveDate", required = true) receiveDate: LocalDate,
-//        @RequestParam(value = "receiveTime", required = true) receiveTime: OffsetDateTime,
-//        @AuthenticationPrincipal fsmaUser: FsmaUser,
-//    ): ResponseEntity<CteReceive> {
-//        val cteReceive = supplierService.createReceiveCteFromSupShipCte(
-//            sscc,
-//            tlcId,
-//            shipToLocationId,
-//            receiveDate,
-//            receiveTime
-//        )
-//        return ResponseEntity.ok(cteReceive)
-//    }
-
     data class ShipArgs(
         val sscc: Sscc,
         val tlcId: Long,
@@ -67,7 +48,7 @@ class SupplierController : BaseController() {
 
     @PostMapping("/makeReceiveCte")
     private fun makeReceiveCte(
-        @RequestBody shipArgs: ShipArgs,
+        @Valid @RequestBody shipArgs: ShipArgs,
         @AuthenticationPrincipal fsmaUser: FsmaUser,
     ): ResponseEntity<CteReceive> {
         val cteReceive = supplierService.makeReceiveCteFromSupShipCte(
