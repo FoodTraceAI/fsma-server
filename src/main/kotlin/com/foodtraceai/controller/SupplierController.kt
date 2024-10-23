@@ -6,6 +6,7 @@ import com.foodtraceai.model.supplier.SupShipCteDto
 import com.foodtraceai.model.supplier.toSupShipCteDto
 import com.foodtraceai.util.Sscc
 import com.foodtraceai.util.SupCteStatus
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -17,9 +18,10 @@ private const val SUPPLIER_BASE_URL = "/api/v1/supplier"
 
 @RestController
 @RequestMapping(value = [SUPPLIER_BASE_URL])
-//@SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "bearerAuth")
 class SupplierController : BaseController() {
 
+    // TODO: Remove me. This API is for testing only
     // http://localhost:8080/api/v1/supplier/findShipCte?sscc=sscc1&tlcId=1&shipFromLocationId=1
     @GetMapping("/findShipCte")
     private fun findShipCte(

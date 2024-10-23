@@ -48,8 +48,9 @@ class SpreadsheetController : BaseController() {
         return ResponseEntity(byteArrayResource, header, HttpStatus.CREATED)
     }
 
+    // TODO: delete me. This is for debugging only
     // http://localhost:8080/api/v1/sheet - returns everything
-    // http://localhost:8080/api/v1/sheet?locationId=2&tlcVal=TraceLotCode3
+    // http://localhost:8080/api/v1/sheet?locationId=1&tlcVal=TraceLotCode3
     @GetMapping
     fun findAllByOptionalParams(
         @RequestParam("tlcVal", required = false) tlcVal: String?,

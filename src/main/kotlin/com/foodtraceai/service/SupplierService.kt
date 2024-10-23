@@ -61,7 +61,13 @@ class SupplierService(
             tlcId = tlcId,
             shipToLocationId = shipToLocationId,
             supCteStatus = SupCteStatus.Pending,
-        ) ?: throw EntityNotFoundException("supShipCte not found")
+        ) ?: throw EntityNotFoundException(
+            "supShipCte not found for " +
+                    "sscc: '" + sscc.sscc + "', " +
+                    "tlcId: $tlcId, " +
+                    "shipToLocationId: $shipToLocationId, " +
+                    "supCteStatus: '${SupCteStatus.Pending}'"
+        )
 
         val cteReceive = cteReceiveService.insert(
             CteReceive(
