@@ -71,6 +71,7 @@ class TestsLocation {
             contactName = "Steve",
             contactPhone = "1-800-555-1212",
             contactEmail = "steve@gmail.abc",
+            description = "Steve's House",
             addressId = 1,
             isBillable = true,
         )
@@ -81,6 +82,7 @@ class TestsLocation {
             contactName = "NewContact",
             contactPhone = "0-000-000-0000",
             contactEmail = "newcontact@gmail.abc",
+            description = "Steve's House",
             addressId = 1,
             isBillable = false,
         )

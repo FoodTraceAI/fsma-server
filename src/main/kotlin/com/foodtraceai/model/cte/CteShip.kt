@@ -14,7 +14,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 
 /**
-https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
+https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24-1.pdf
 look at p.26
 
 https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-1/subpart-S/subject-group-ECFRbfe98fb65ccc9f7/section-1.1340
@@ -49,7 +49,7 @@ data class CteShip(
     override val unitOfMeasure: UnitOfMeasure,   // from Initial Packer or Transformer
 
     // (a)(3) The product description for the food;
-    override val foodDesc: String,
+    override val prodDesc: String,
     override val variety: String,
 
     // (a)(4) The location description for the immediate subsequent recipient
@@ -125,7 +125,7 @@ fun CteShip.toCteShipDto() = CteShipDto(
     tlcId = tlc.id,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    foodDesc = foodDesc,
+    foodDesc = prodDesc,
     variety = variety,
     shipToLocationId = shipToLocation.id,
     locationId = location.id,   // ShipFromLocation
@@ -153,7 +153,7 @@ fun CteShipDto.toCteShip(
     tlc = tlc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    foodDesc = foodDesc,
+    prodDesc = foodDesc,
     variety = variety,
     shipToLocation = shipToLocation,
     location = location,    // ShipFromLocation

@@ -14,7 +14,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 
 /**
-https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
+https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24-1.pdf
 Does not cover this case
 
 https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-1/subpart-S/subject-group-ECFRbfe98fb65ccc9f7/section-1.1335
@@ -43,7 +43,7 @@ data class CteFirstLand(
 
     // (b) The species and/or acceptable market name for unpackaged food,
     // or the product description for packaged food;
-    override val foodDesc: String,  // Species for unpacked food or product description for packaged food
+    override val prodDesc: String,  // Species for unpacked food or product description for packaged food
     override val variety: String,
 
     //(c) The quantity and unit of measure of the food (e.g., 300 kg);
@@ -116,7 +116,7 @@ fun CteFirstLand.toCteFirstLandDto() = CteFirstLandDto(
     ftlItem = ftlItem,
     locationId = location.id,
     tlc = tlc,
-    foodDesc = foodDesc,
+    foodDesc = prodDesc,
     variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
@@ -144,7 +144,7 @@ fun CteFirstLandDto.toCteFirstLand(
     ftlItem = ftlItem,
     location = location,
     tlc = tlc,
-    foodDesc = foodDesc,
+    prodDesc = foodDesc,
     variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,

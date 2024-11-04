@@ -21,11 +21,11 @@ data class Address(
     val state: UsaCanadaState,
     val postalCode: String,
     @Enumerated(EnumType.STRING)
-    val country: Country, // Country = Country.USA,
+    val country: Country = Country.USA,
     val lat: Double? = null,
-    val lng: Double? = null,
-    val gln: String? = null, // AI(254) Global Location Numbere
-
+    val lon: Double? = null,
+    val gln: String? = null, // AI(254) Global Location Number
+    val ffrn: String? = null,
     @Column(updatable = false)
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
@@ -44,8 +44,9 @@ data class AddressDto(
     val postalCode: String,
     val country: Country,
     val lat: Double? = null,
-    val lng: Double? = null,
+    val lon: Double? = null,
     val gln: String? = null,
+    val ffrn: String? = null,
     val dateCreated: OffsetDateTime = OffsetDateTime.now(),
     val dateModified: OffsetDateTime = OffsetDateTime.now(),
     val isDeleted: Boolean = false,
@@ -62,8 +63,9 @@ fun Address.toAddressDto() = AddressDto(
     postalCode = postalCode,
     country = country,
     lat = lat,
-    lng = lng,
+    lon = lon,
     gln = gln,
+    ffrn = ffrn,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,
@@ -80,6 +82,29 @@ fun AddressDto.toAddress(resellerId: Long) = Address(
     postalCode = postalCode,
     country = country,
     lat = lat,
-    lng = lng,
+    lon = lon,
     gln = gln,
+    ffrn = ffrn,
 )
+
+fun Address.format(
+    showStreet: Boolean = true,
+    showLatLon: Boolean = false,
+): String {
+    var address = ""
+    if(showStreet) {
+        address += "$street"
+        if (street2 != null)
+            address += ", $street2"
+        address += ", $city, $state $postalCode"
+        if (country != Country.USA)
+            address += ", ${country.name}"
+    }
+
+    if(showLatLon) {
+        if (lat != null && lon != null)
+            address += ", lat: ${lat} & lng: ${lon}"
+    }
+
+    return address
+}

@@ -15,7 +15,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 
 /**
-https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
+https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24-1.pdf
 Look at p.24
 
 https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-1/subpart-S/subject-group-ECFRbfe98fb65ccc9f7/section-1.1330
@@ -40,7 +40,7 @@ data class CteIPackSprouts(
     override val location: Location,
 
     // Not required but likely useful to save associated Cte Harvest. See p.22 in
-    // https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
+    // https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24-1.pdf
     val cteHarvestId: Long = 0,
 
     // ************** KDEs *************
@@ -51,7 +51,7 @@ data class CteIPackSprouts(
     // traceability lot:
 
     // (a)(1) The commodity and, if applicable, variety of the food;
-    override val foodDesc: String,  // Commodity for this CTE
+    override val prodDesc: String,  // Commodity for this CTE
     override val variety: String? = null,
 
     // (a)(2) The date you received the food;
@@ -135,7 +135,7 @@ data class CteIPackSprouts(
     override val referenceDocumentNum: String,
 
     // Part (b) for Sprouts.
-    // https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
+    // https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24-1.pdf
     // look at p.23
 
     // (b) For each traceability lot of sprouts (except soil- or substrate-grown
@@ -262,7 +262,7 @@ fun CteIPackSprouts.toCteIPackSproutsDto() = CteIPackSproutsDto(
     ftlItem = ftlItem,
     locationId = location.id,
     cteHarvestId = cteHarvestId,
-    foodDesc = foodDesc,
+    foodDesc = prodDesc,
     variety = variety,
     receiveDate = receiveDate,
     receiveTime = receiveTime,
@@ -332,7 +332,7 @@ fun CteIPackSproutsDto.toCteIPackSprouts(
     ftlItem = ftlItem,
     location = location,
     cteHarvestId = cteHarvestId,
-    foodDesc = foodDesc,
+    prodDesc = foodDesc,
     variety = variety,
     receiveDate = receiveDate,
     receiveTime = receiveTime,

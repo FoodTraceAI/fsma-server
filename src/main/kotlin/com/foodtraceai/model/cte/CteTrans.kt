@@ -14,7 +14,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 
 /**
-https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
+https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24-1.pdf
 look at p.29
 
 https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-1/subpart-S/subject-group-ECFRbfe98fb65ccc9f7/section-1.1350
@@ -79,7 +79,7 @@ data class CteTrans(
     // (a)(2)(iv) The product description for the transformed food;
     @Enumerated(EnumType.STRING)
     override val ftlItem: FtlItem, // new food item
-    override val foodDesc: String,  // new food description
+    override val prodDesc: String,  // new food description
     override val variety: String,   // new variety
 
     // For the transformed food
@@ -154,7 +154,7 @@ fun CteTrans.toCteTransDto() = CteTransDto(
     newTlcLocationId = newTlcLocation.id,
     newTlcSourceReference = newTlcSourceReference,
     transDate = transDate,
-    foodDesc = foodDesc,
+    foodDesc = prodDesc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     referenceDocumentType = referenceDocumentType,
@@ -184,7 +184,7 @@ fun CteTransDto.toCteTrans(
     newTlcLocation = newTlcLocation,
     newTlcSourceReference = newTlcSourceReference,
     transDate = transDate,
-    foodDesc = foodDesc,
+    prodDesc = foodDesc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
     referenceDocumentType = referenceDocumentType,

@@ -13,7 +13,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 
 /**
-https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
+https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24-1.pdf
 Look at p.20
 
 https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-1/subpart-S/subject-group-ECFRbfe98fb65ccc9f7/section-1.1325#p-1.1325(a)
@@ -50,7 +50,7 @@ data class CteHarvest(
 
     // (a)(1)(ii) The commodity and, if applicable, variety of the food;
     // Called commodity for Harvest CTEs
-    override val foodDesc: String,  // Commodity for this CTE
+    override val prodDesc: String,  // Commodity for this CTE
     override val variety: String? = null,   // variety of commodity if applicable
 
     // The harvest quantity and unit of measure
@@ -131,7 +131,7 @@ fun CteHarvest.toCteHarvestDto() = CteHarvestDto(
     ftlItem = ftlItem,
     locationId = location.id,
     isrLocationId = isrLocation.id,
-    foodDesc = foodDesc,
+    foodDesc = prodDesc,
     variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
@@ -159,7 +159,7 @@ fun CteHarvestDto.toCteHarvest(
     ftlItem = ftlItem,
     location = location,
     isrLocation = isrLocation,
-    foodDesc = foodDesc,
+    prodDesc = foodDesc,
     variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,

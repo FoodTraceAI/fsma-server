@@ -70,7 +70,7 @@ class TestsAddress {
             postalCode = "60565",
             country = Country.USA,
             lat = 41.742220,
-            lng = -88.162270
+            lon = -88.162270
         )
         addressDtoUpdated = AddressDto(
             id = 0,
@@ -82,7 +82,7 @@ class TestsAddress {
             postalCode = "60565",
             country = Country.USA,
             lat = 41.742220,
-            lng = -88.162270
+            lon = -88.162270
         )
     }
 
@@ -111,7 +111,7 @@ class TestsAddress {
             jsonPath("$.postalCode") { value(addressDto.postalCode) }
             jsonPath("$.country") { value(addressDto.country.name) }
             jsonPath("$.lat") { value(addressDto.lat) }
-            jsonPath("$.lng") { value(addressDto.lng) }
+            jsonPath("$.lon") { value(addressDto.lon) }
         }.andReturn()
 
         // AddressId added if ne
@@ -135,7 +135,7 @@ class TestsAddress {
             jsonPath("$.postalCode") { value("60565") }
             jsonPath("$.country") { value("USA") }
             jsonPath("$.lat") { value(41.742220) }
-            jsonPath("$.lng") { value(-88.162270) }
+            jsonPath("$.lon") { value(-88.162270) }
         }
     }
 
@@ -159,7 +159,7 @@ class TestsAddress {
             jsonPath("$.postalCode") { value(addressDtoUpdated.postalCode) }
             jsonPath("$.country") { value(addressDtoUpdated.country.name) }
             jsonPath("$.lat") { value(addressDtoUpdated.lat) }
-            jsonPath("$.lng") { value(addressDtoUpdated.lng) }
+            jsonPath("$.lon") { value(addressDtoUpdated.lon) }
         }
     }
 

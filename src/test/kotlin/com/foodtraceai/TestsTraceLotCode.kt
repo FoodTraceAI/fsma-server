@@ -89,7 +89,7 @@ class TestsTraceLotCode {
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(traceLotCodeId) }
             jsonPath("$.tlcVal") { value("trace lot code 1") }
-            jsonPath("batchLot.value") { value("batchLot_1001") }
+            jsonPath("batchLot.batchLotVal") { value("batchLot_1001") }
         }
     }
 }

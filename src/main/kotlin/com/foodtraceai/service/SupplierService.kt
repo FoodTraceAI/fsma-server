@@ -63,7 +63,7 @@ class SupplierService(
             supCteStatus = SupCteStatus.Pending,
         ) ?: throw EntityNotFoundException(
             "supShipCte not found for " +
-                    "sscc: '" + sscc.sscc + "', " +
+                    "sscc: '" + sscc.ssccVal + "', " +
                     "tlcId: $tlcId, " +
                     "shipToLocationId: $shipToLocationId, " +
                     "supCteStatus: '${SupCteStatus.Pending}'"
@@ -77,7 +77,7 @@ class SupplierService(
                 tlc = supShipCte.tlc,
                 quantity = supShipCte.quantity,
                 unitOfMeasure = supShipCte.unitOfMeasure,
-                foodDesc = supShipCte.foodDesc,
+                prodDesc = supShipCte.foodDesc,
                 ipsLocation = supShipCte.shipFromLocation,
                 receiveDate = LocalDate.now(),
                 receiveTime = OffsetDateTime.now(),

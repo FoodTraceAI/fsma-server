@@ -3,10 +3,18 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.util
 
-enum class ColHeaderType {
-    Required,
-    PtiBestPractices,
+enum class ImplementationStyle {
+    FDA,
+    PTI,
 }
+
+data class Config(
+    val spreadsheetStyle:ImplementationStyle,
+)
+
+val myConfig = Config(
+    spreadsheetStyle = ImplementationStyle.PTI,
+)
 
 // -- ISO-3166 3-Letter Country codes
 enum class Country {

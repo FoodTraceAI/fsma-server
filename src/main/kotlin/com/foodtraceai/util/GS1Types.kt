@@ -8,13 +8,13 @@ import jakarta.persistence.Embeddable
 
 @Embeddable
 data class Sscc(        // serial shipping container code
-    val sscc: String    // A(00) - 18 numeric digits
+    val ssccVal: String    // A(00) - 18 numeric digits
 )
 
 @Converter(autoApply = true)
 class SsccConverter : AttributeConverter<Sscc?, String?> {
     override fun convertToDatabaseColumn(sscc: Sscc?): String? {
-        return sscc?.sscc
+        return sscc?.ssccVal
     }
 
     override fun convertToEntityAttribute(sscc: String?): Sscc? {
@@ -24,23 +24,23 @@ class SsccConverter : AttributeConverter<Sscc?, String?> {
 
 @Embeddable
 data class GTIN(
-    val gtin: String    // A(01) - 14 numeric digits
+    val gtinVal: String    // A(01) - 14 numeric digits
 )
 
 @Converter(autoApply = true)
 class GTINConverter : AttributeConverter<GTIN?, String?> {
-    override fun convertToDatabaseColumn(gtin: GTIN?): String? = gtin?.gtin
+    override fun convertToDatabaseColumn(gtin: GTIN?): String? = gtin?.gtinVal
 
     override fun convertToEntityAttribute(gtin: String?): GTIN? = gtin?.let { GTIN(it) }
 }
 
 data class BatchLot(
-    val value: String      // A(10) - 20 numeric digits
+    val batchLotVal: String      // A(10) - 20 numeric digits
 )
 
 @Converter(autoApply = true)
 class BatchLotConverter : AttributeConverter<BatchLot?, String?> {
-    override fun convertToDatabaseColumn(batchLot: BatchLot?): String? = batchLot?.value
+    override fun convertToDatabaseColumn(batchLot: BatchLot?): String? = batchLot?.batchLotVal
 
     override fun convertToEntityAttribute(batchLot: String?): BatchLot? = batchLot?.let { BatchLot(it) }
 }

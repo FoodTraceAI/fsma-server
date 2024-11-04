@@ -14,7 +14,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 
 /**
-https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
+https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24-1.pdf
 look at p.27
 
 https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-1/subpart-S/subject-group-ECFRbfe98fb65ccc9f7/section-1.1345
@@ -50,7 +50,7 @@ data class CteReceive(
     override val unitOfMeasure: UnitOfMeasure,
 
     // (a)(3) The product description for the food;
-    override val foodDesc: String,
+    override val prodDesc: String,
     override val variety: String,
 
     // (a)(4) The location description for the immediate previous source
@@ -72,7 +72,7 @@ data class CteReceive(
     // or the traceability lot code source reference; and
     @ManyToOne
     @JoinColumn
-    val tlcSource: Location? = null,
+    val tlcSource: Location,
     val tlcSourceReference: String? = null,
 
     // (a)(8) The reference document type and reference document number.
@@ -106,7 +106,7 @@ data class CteReceiveDto(
     val ipsLocationId: Long,
     val receiveDate: LocalDate,
     val receiveTime: OffsetDateTime?,
-    val tlcSourceId: Long?,
+    val tlcSourceId: Long,
     val tlcSourceReference: String?,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
@@ -125,11 +125,11 @@ fun CteReceive.toCteReceiveDto() = CteReceiveDto(
     tlcId = tlc.id,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    foodDesc = foodDesc,
+    foodDesc = prodDesc,
     ipsLocationId = ipsLocation.id,
     receiveDate = receiveDate,
     receiveTime = receiveTime,
-    tlcSourceId = tlcSource?.id,
+    tlcSourceId = tlcSource.id,
     tlcSourceReference = tlcSourceReference,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
@@ -143,7 +143,7 @@ fun CteReceiveDto.toCteReceive(
     location: Location,
     traceLotCode: TraceLotCode,
     ipsLocation: Location,
-    tlcSource: Location?,
+    tlcSource: Location,
 ) = CteReceive(
     id = id,
     cteType = cteType,
@@ -153,7 +153,7 @@ fun CteReceiveDto.toCteReceive(
     tlc = traceLotCode,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    foodDesc = foodDesc,
+    prodDesc = foodDesc,
     ipsLocation = ipsLocation,
     receiveDate = receiveDate,
     receiveTime = receiveTime,

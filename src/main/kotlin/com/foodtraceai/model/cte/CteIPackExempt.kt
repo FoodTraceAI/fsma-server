@@ -14,7 +14,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 
 /**
-https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
+https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24-1.pdf
 Look at p.24 Look for Exempt Entities
 
 https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-1/subpart-S/subject-group-ECFRbfe98fb65ccc9f7/section-1.1330
@@ -47,7 +47,7 @@ data class CteIPackExempt(
     // information to the traceability lot:
 
     // (c)(1) The commodity and, if applicable, variety of the food received;
-    override val foodDesc: String,  // Commodity for this CTE
+    override val prodDesc: String,  // Commodity for this CTE
     override val variety: String,
 
     // (c)(2) The date you received the food;
@@ -138,7 +138,7 @@ fun CteIPackExempt.toCteIPackExemptDto() = CteIPackExemptDto(
     locationId = location.id,
     ftlItem = ftlItem,
     variety = variety,
-    foodDesc = foodDesc,
+    foodDesc = prodDesc,
     receiveDate = receiveDate,
     receiveTime = receiveTime,
     receiveQuantity = receiveQuantity,
@@ -170,7 +170,7 @@ fun CteIPackExemptDto.toCteIPackExempt(
     location = location,
     ftlItem = ftlItem,
     variety = variety,
-    foodDesc = foodDesc,
+    prodDesc = foodDesc,
     receiveDate = receiveDate,
     receiveTime = receiveTime,
     receiveQuantity = receiveQuantity,

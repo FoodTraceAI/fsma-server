@@ -141,7 +141,7 @@ class DataLoader : ApplicationRunner {
             postalCode = "60565",
             country = Country.USA,
             lat = 35.1268133,
-            lng = -90.0087413
+            lon = -90.0087413
         )
 
         var address = addressDto.toAddress(resellerId)
@@ -155,7 +155,7 @@ class DataLoader : ApplicationRunner {
             postalCode = "38104-5064",
             country = Country.USA,
             lat = 35.1268133,
-            lng = -90.0087413
+            lon = -90.0087413
         )
 
         address = addressDto.toAddress(resellerId)
@@ -168,7 +168,7 @@ class DataLoader : ApplicationRunner {
             postalCode = "60563",
             country = Country.USA,
             lat = 35.1268133,
-            lng = -90.0087413
+            lon = -90.0087413
         )
 
         address = addressDto.toAddress(resellerId)
@@ -345,7 +345,7 @@ class DataLoader : ApplicationRunner {
             quantity = 15,
             unitOfMeasure = UnitOfMeasure.Case,
             ftlItem = FtlItem.LeafyGreens,
-            foodDesc = "Iceberg Lettuce Wrapped - 24 heads",
+            prodDesc = "Iceberg Lettuce Wrapped - 24 heads",
             variety = "variety",
             ipsLocation = prevLoc,
             receiveDate = LocalDate.of(2023, 7, 17),
@@ -362,7 +362,7 @@ class DataLoader : ApplicationRunner {
             quantity = 10,
             unitOfMeasure = UnitOfMeasure.Case,
             ftlItem = FtlItem.LeafyGreens,
-            foodDesc = "Iceberg Lettuce Wrapped - 24 heads",
+            prodDesc = "Iceberg Lettuce Wrapped - 24 heads",
             variety = "variety",
             ipsLocation = prevLoc,
             receiveDate = LocalDate.of(2023, 7, 18),
@@ -381,7 +381,7 @@ class DataLoader : ApplicationRunner {
             quantity = 5,
             unitOfMeasure = UnitOfMeasure.Case,
             ftlItem = FtlItem.LeafyGreens,
-            foodDesc = "Iceburg Lettuce Whole - Georgia Grown",
+            prodDesc = "Iceburg Lettuce Whole - Georgia Grown",
             variety = "variety",
             ipsLocation = prevLoc,
             receiveDate = LocalDate.of(2023, 7, 17),

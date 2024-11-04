@@ -17,7 +17,7 @@ abstract class CteBase<T> : BaseLocationModel<T>() {
 
     // Common to all CTEs.
     abstract val ftlItem: FtlItem
-    abstract val foodDesc: String   // or commodity for Harvest CTE
+    abstract val prodDesc: String   // or commodity for Harvest CTE
     abstract val variety: String?
     //TODO: Add product name, brand, commodity, and variety,
     // packaging size, packing style,

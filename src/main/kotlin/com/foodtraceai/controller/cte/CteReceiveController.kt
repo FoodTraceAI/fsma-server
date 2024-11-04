@@ -5,7 +5,6 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.Location
 import com.foodtraceai.model.cte.CteReceiveDto
 import com.foodtraceai.model.cte.toCteReceive
 import com.foodtraceai.model.cte.toCteReceiveDto
@@ -53,9 +52,7 @@ class CteReceiveController : BaseController() {
         val shipFromLocation = locationService.findById(cteReceiveDto.ipsLocationId)
             ?: throw EntityNotFoundException("ShipFromLocation not found: ${cteReceiveDto.ipsLocationId}")
 
-        var tlcSource: Location? = null
-        if (cteReceiveDto.tlcSourceId != null)
-            tlcSource = locationService.findById(cteReceiveDto.tlcSourceId)
+        var tlcSource = locationService.findById(cteReceiveDto.tlcSourceId)
                 ?: throw EntityNotFoundException("TlcSource not found: ${cteReceiveDto.tlcSourceId}")
 
         val cteReceive = cteReceiveDto.toCteReceive(
@@ -85,9 +82,7 @@ class CteReceiveController : BaseController() {
         val shipFromLocation = locationService.findById(cteReceiveDto.ipsLocationId)
             ?: throw EntityNotFoundException("ShipFromLocation not found: ${cteReceiveDto.ipsLocationId}")
 
-        var tlcSource: Location? = null
-        if (cteReceiveDto.tlcSourceId != null)
-            tlcSource = locationService.findById(cteReceiveDto.tlcSourceId)
+        val tlcSource= locationService.findById(cteReceiveDto.tlcSourceId)
                 ?: throw EntityNotFoundException("TlcSource not found: ${cteReceiveDto.tlcSourceId}")
 
         val cteReceive = cteReceiveDto.toCteReceive(location, traceLotCode, shipFromLocation, tlcSource)

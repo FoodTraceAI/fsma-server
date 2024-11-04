@@ -20,6 +20,10 @@ data class Location(
     val contactPhone: String? = null,
     val contactEmail: String? = null,
 
+    // Something Like: Company Distribution Center, Local Wholesale of Georgia
+    // Includes: field name
+    val description: String? = null,
+
     @ManyToOne @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     val address: Address,
@@ -40,6 +44,7 @@ data class LocationDto(
     val contactName: String?,
     val contactPhone: String?,
     val contactEmail: String?,
+    val description: String?,
     val addressId: Long,
     val isBillable: Boolean,
     val dateCreated: OffsetDateTime = OffsetDateTime.now(),
@@ -54,6 +59,7 @@ fun Location.toLocationDto() = LocationDto(
     contactName = contactName,
     contactPhone = contactPhone,
     contactEmail = contactEmail,
+    description = description,
     addressId = address.id,
     isBillable = isBillable,
     dateCreated = dateCreated,
@@ -71,6 +77,7 @@ fun LocationDto.toLocation(
     contactName = contactName,
     contactPhone = contactPhone,
     contactEmail = contactEmail,
+    description = description,
     address = address,
     isBillable = isBillable,
 )

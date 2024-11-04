@@ -18,7 +18,7 @@ import java.time.OffsetDateTime
 // This data structure is to receive a supplier shipping event
 
 /**
-https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24.pdf
+https://producetraceability.org/wp-content/uploads/2024/02/PTI-FSMA-204-Implementation-Guidance-FINAL-2.12.24-1.pdf
 look at p.26
 
 https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-1/subpart-S/subject-group-ECFRbfe98fb65ccc9f7/section-1.1340
@@ -88,7 +88,7 @@ data class SupShipCte(
     // or the traceability lot code source reference; and
     @ManyToOne
     @JoinColumn
-    val tlcSource: Location? = null,
+    val tlcSource: Location,
     val tlcSourceReference: String? = null,
 
     // Required to create CteReceive
@@ -129,7 +129,7 @@ data class SupShipCteDto(
     val shipToLocationId: Long,
     val shipFromLocationId: Long,
     val shipDate: LocalDate,
-    val tlcSourceId: Long?,
+    val tlcSourceId: Long,
     val tlcSourceReference: String?,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
@@ -154,7 +154,7 @@ fun SupShipCte.toSupShipCteDto() = SupShipCteDto(
     shipToLocationId = shipToLocation.id,
     shipFromLocationId = shipFromLocation.id,
     shipDate = shipDate,
-    tlcSourceId = tlcSource?.id,
+    tlcSourceId = tlcSource.id,
     tlcSourceReference = tlcSourceReference,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
@@ -169,7 +169,7 @@ fun SupShipCteDto.toSupCteShip(
     tlc: TraceLotCode,
     shipToLocation: Location,
     shipFromLocation: Location,
-    tlcSource: Location?
+    tlcSource: Location,
 ) = SupShipCte(
     id = id,
     sscc = sscc,
