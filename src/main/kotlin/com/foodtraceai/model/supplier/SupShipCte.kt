@@ -65,7 +65,7 @@ data class SupShipCte(
     @Enumerated(EnumType.STRING)
     val ftlItem: FtlItem,
     val variety: String,
-    val foodDesc: String,
+    val prodDesc: String,
 
     // (a)(4) The location description for the immediate subsequent recipient
     // (other than a transporter) of the food;
@@ -125,7 +125,7 @@ data class SupShipCteDto(
     val tlcId: Long,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
-    val foodDesc: String,
+    val prodDesc: String,
     val shipToLocationId: Long,
     val shipFromLocationId: Long,
     val shipDate: LocalDate,
@@ -150,7 +150,7 @@ fun SupShipCte.toSupShipCteDto() = SupShipCteDto(
     tlcId = tlc.id,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    foodDesc = foodDesc,
+    prodDesc = prodDesc,
     shipToLocationId = shipToLocation.id,
     shipFromLocationId = shipFromLocation.id,
     shipDate = shipDate,
@@ -181,7 +181,7 @@ fun SupShipCteDto.toSupCteShip(
     tlc = tlc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    foodDesc = foodDesc,
+    prodDesc = prodDesc,
     shipToLocation = shipToLocation,
     shipFromLocation = shipFromLocation,
     shipDate = shipDate,

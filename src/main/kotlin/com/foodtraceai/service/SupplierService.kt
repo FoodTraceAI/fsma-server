@@ -77,7 +77,7 @@ class SupplierService(
                 tlc = supShipCte.tlc,
                 quantity = supShipCte.quantity,
                 unitOfMeasure = supShipCte.unitOfMeasure,
-                prodDesc = supShipCte.foodDesc,
+                prodDesc = supShipCte.prodDesc,
                 ipsLocation = supShipCte.shipFromLocation,
                 receiveDate = LocalDate.now(),
                 receiveTime = OffsetDateTime.now(),

@@ -38,7 +38,7 @@ class SupShipCteController : BaseController() {
         return ResponseEntity.ok(supShipCte.toSupShipCteDto())
     }
 
-    // -- Create a new Address
+    // -- Create a new SupShipCteDto
     @PostMapping
     fun create(
         @Valid @RequestBody supShipCteDto: SupShipCteDto,

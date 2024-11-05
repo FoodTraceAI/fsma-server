@@ -107,7 +107,7 @@ data class CteHarvestDto(
     val ftlItem: FtlItem,
     val locationId: Long,
     val isrLocationId: Long,
-    val foodDesc: String,   // Commodity
+    val prodDesc: String,   // Commodity
     val variety: String?,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
@@ -131,7 +131,7 @@ fun CteHarvest.toCteHarvestDto() = CteHarvestDto(
     ftlItem = ftlItem,
     locationId = location.id,
     isrLocationId = isrLocation.id,
-    foodDesc = prodDesc,
+    prodDesc = prodDesc,
     variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
@@ -159,7 +159,7 @@ fun CteHarvestDto.toCteHarvest(
     ftlItem = ftlItem,
     location = location,
     isrLocation = isrLocation,
-    prodDesc = foodDesc,
+    prodDesc = prodDesc,
     variety = variety,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,

@@ -102,7 +102,7 @@ data class CteShipDto(
     val tlcId: Long,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
-    val foodDesc: String,
+    val prodDesc: String,
     val variety: String,
     val shipToLocationId: Long,
     val locationId: Long,   // ShipFromLocaion
@@ -125,7 +125,7 @@ fun CteShip.toCteShipDto() = CteShipDto(
     tlcId = tlc.id,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    foodDesc = prodDesc,
+    prodDesc = prodDesc,
     variety = variety,
     shipToLocationId = shipToLocation.id,
     locationId = location.id,   // ShipFromLocation
@@ -153,7 +153,7 @@ fun CteShipDto.toCteShip(
     tlc = tlc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    prodDesc = foodDesc,
+    prodDesc = prodDesc,
     variety = variety,
     shipToLocation = shipToLocation,
     location = location,    // ShipFromLocation
