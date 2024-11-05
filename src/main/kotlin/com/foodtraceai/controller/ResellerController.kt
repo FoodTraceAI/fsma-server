@@ -28,7 +28,7 @@ class ResellerController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<ResellerDto> {
         val reseller = resellerService.findById(id)
             ?: throw EntityNotFoundException("Reseller not found = $id")
@@ -40,9 +40,9 @@ class ResellerController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody resellerDto: ResellerDto,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<ResellerDto> {
-        val reseller = resellerDto.toReseller(fsmaUser.resellerId)
+        val reseller = resellerDto.toReseller(authPrincipal.resellerId)
         val resellerResponse = resellerService.insert(reseller).toResellerDto()
         return ResponseEntity.created(URI.create(RESELLER_BASE_URL.plus("/${resellerResponse.id}")))
             .body(resellerResponse)
@@ -53,11 +53,11 @@ class ResellerController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody resellerDto: ResellerDto,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<ResellerDto> {
         if (resellerDto.id <= 0L || resellerDto.id != id)
             throw UnauthorizedRequestException("Conflicting ResellerDtos specified: $id != ${resellerDto.id}")
-        val reseller = resellerDto.toReseller(fsmaUser.resellerId)
+        val reseller = resellerDto.toReseller(authPrincipal.resellerId)
         val resellerResponse = resellerService.update(reseller)
         return ResponseEntity.ok().body(resellerResponse.toResellerDto())
     }
@@ -66,7 +66,7 @@ class ResellerController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<Void> {
         resellerService.findById(id)?.let { business ->
 //            assertResellerClientMatchesToken(fsaUser, business.resellerId)

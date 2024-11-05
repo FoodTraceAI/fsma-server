@@ -28,7 +28,7 @@ class SupplierController : BaseController() {
         @RequestParam(value = "sscc", required = true) sscc: Sscc,
         @RequestParam(value = "tlcId", required = true) tlcId: Long,
         @RequestParam(value = "shipToLocationId", required = true) shipToLocationId: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<SupShipCteDto?> {
         val supShipCte = supplierService.findSupShipCte(
             sscc = sscc,
@@ -51,7 +51,7 @@ class SupplierController : BaseController() {
     @PostMapping("/makeReceiveCte")
     private fun makeReceiveCte(
         @Valid @RequestBody shipArgs: ShipArgs,
-        @AuthenticationPrincipal fsmaUser: FsmaUser,
+        @AuthenticationPrincipal authPrincipal: FsmaUser,
     ): ResponseEntity<CteReceive> {
         val cteReceive = supplierService.makeReceiveCteFromSupShipCte(
             shipArgs.sscc,

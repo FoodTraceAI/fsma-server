@@ -29,7 +29,7 @@ class CteHarvestController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteHarvestDto> {
         val cteHarvest = cteHarvestService.findById(id)
             ?: throw EntityNotFoundException("CteHarvest not found = $id")
@@ -41,7 +41,7 @@ class CteHarvestController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteHarvestDto: CteHarvestDto,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteHarvestDto> {
         val location = locationService.findById(cteHarvestDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${cteHarvestDto.locationId}")
@@ -63,7 +63,7 @@ class CteHarvestController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteHarvestDto: CteHarvestDto,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteHarvestDto> {
         if (cteHarvestDto.id <= 0L || cteHarvestDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteHarvest Ids specified: $id != ${cteHarvestDto.id}")
@@ -86,7 +86,7 @@ class CteHarvestController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<Void> {
         cteHarvestService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

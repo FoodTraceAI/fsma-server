@@ -28,7 +28,7 @@ class AddressController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<AddressDto> {
         val address = addressService.findById(id)
             ?: throw EntityNotFoundException("Address not found = $id")
@@ -40,9 +40,9 @@ class AddressController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody addressDto: AddressDto,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<AddressDto> {
-        val address = addressDto.toAddress(fsmaUser.resellerId)
+        val address = addressDto.toAddress(authPrincipal.resellerId)
         val addressResponse = addressService.insert(address).toAddressDto()
         return ResponseEntity
             .created(URI.create(ADDRESS_BASE_URL.plus("/${addressResponse.id}")))
@@ -54,11 +54,11 @@ class AddressController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody addressDto: AddressDto,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<AddressDto> {
         if (addressDto.id <= 0L || addressDto.id != id)
             throw UnauthorizedRequestException("Conflicting AddressIds specified: $id != ${addressDto.id}")
-        val address = addressDto.toAddress(fsmaUser.resellerId)
+        val address = addressDto.toAddress(authPrincipal.resellerId)
         val addressResponse = addressService.update(address).toAddressDto()
         return ResponseEntity.ok().body(addressResponse)
     }
@@ -67,7 +67,7 @@ class AddressController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<Void> {
         addressService.findById(id)?.let { address ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

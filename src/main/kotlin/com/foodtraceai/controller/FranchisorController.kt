@@ -26,7 +26,7 @@ class FranchisorController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<FranchisorDto> {
         val franchisor = franchisorService.findById(id)
             ?: throw EntityNotFoundException("Franchisor not found = $id")
@@ -38,7 +38,7 @@ class FranchisorController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody franchisorDto: FranchisorDto,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<FranchisorDto> {
         val address = addressService.findById(franchisorDto.addressId)
             ?: throw EntityNotFoundException("Franchisor Address not found: ${franchisorDto.addressId}")
@@ -59,7 +59,7 @@ class FranchisorController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody franchisorDto: FranchisorDto,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<FranchisorDto> {
         if (franchisorDto.id <= 0L || franchisorDto.id != id)
             throw UnauthorizedRequestException("Conflicting FranchisorIds specified: $id != ${franchisorDto.id}")
@@ -80,7 +80,7 @@ class FranchisorController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<Void> {
         franchisorService.findById(id)?.let { franchisor ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

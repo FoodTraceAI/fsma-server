@@ -30,7 +30,7 @@ class SpreadsheetController : BaseController() {
     @GetMapping("/cte")
     fun downloadSortableWorksheet(
         @RequestParam(value = "which", required = true) which: String,
-        //@AuthenticationPrincipal fsmaUser: FsmaUser
+        //@AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<ByteArrayResource> {
         val header = HttpHeaders()
         header.contentType = MediaType("application", "force-download")
@@ -57,7 +57,7 @@ class SpreadsheetController : BaseController() {
         @RequestParam("ipsLocationId", required = false) ipsLocationId: Long?,
         @RequestParam("dateFrom", required = false) dateFrom: LocalDate?,
         @RequestParam("dateTo", required = false) dateTo: LocalDate?,
-        //@AuthenticationPrincipal fsmaUser: FsmaUser
+        //@AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<List<CteReceive>> {
         val cteList = cteReceiveService.findAllByOptionalParams(
             tlcVal,

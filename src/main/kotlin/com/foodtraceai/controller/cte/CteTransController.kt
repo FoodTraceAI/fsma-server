@@ -29,7 +29,7 @@ class CteTransController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteTransDto> {
         val cteTransform = cteTransService.findById(id)
             ?: throw EntityNotFoundException("CteTransform not found = $id")
@@ -41,7 +41,7 @@ class CteTransController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteTransDto: CteTransDto,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteTransDto> {
         val location = locationService.findById(cteTransDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${cteTransDto.locationId}")
@@ -66,7 +66,7 @@ class CteTransController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteTransDto: CteTransDto,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteTransDto> {
         if (cteTransDto.id <= 0L || cteTransDto.id != id)
             throw UnauthorizedRequestException("Conflicting cteTransDto Ids specified: $id != ${cteTransDto.id}")
@@ -92,7 +92,7 @@ class CteTransController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal fsmaUser: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<Void> {
         cteTransService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)
