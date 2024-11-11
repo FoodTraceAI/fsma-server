@@ -28,7 +28,7 @@ private const val CTE_COOL_BASE_URL = "/api/v1/cte/cool"
 class CteCoolController : BaseController() {
 
     // -- Return a specific CteCool
-    // -    http://localhost:8080/api/v1/addresses/1
+    // -    http://localhost:8080/api/v1/cte/cool/1
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,

@@ -85,6 +85,10 @@ fun AddressDto.toAddress(resellerId: Long) = Address(
     lon = lon,
     gln = gln,
     ffrn = ffrn,
+    dateCreated = dateCreated,
+    dateModified = dateModified,
+    isDeleted = isDeleted,
+    dateDeleted = dateDeleted,
 )
 
 fun Address.format(

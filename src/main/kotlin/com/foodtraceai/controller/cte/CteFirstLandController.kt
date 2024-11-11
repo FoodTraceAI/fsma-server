@@ -27,7 +27,7 @@ private const val CTE_FIRST_LAND_ALT_BASE_URL = "/api/v1/cte/first-land"
 class CteFirstLandController : BaseController() {
 
     // -- Return a specific CteFirstLand
-    // -    http://localhost:8080/api/v1/addresses/1
+    // -- http://localhost:8080/api/v1/cte/firstland/1
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,

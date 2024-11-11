@@ -31,7 +31,7 @@ private const val CTE_IPACK_EXEMPT_ALT2_BASE_URL = "/api/v1/cte/ipack/exempt"
 class CteIPackExemptController : BaseController() {
 
     // -- Return a specific CteCool
-    // -    http://localhost:8080/api/v1/addresses/1
+    // -    http://localhost:8080/api/v1/cte/ipackexempt/1
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,

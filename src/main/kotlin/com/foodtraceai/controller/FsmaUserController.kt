@@ -25,7 +25,7 @@ private const val FSMA_USER_ALT_BASE_URL = "/api/v1/fsma_user"
 class FsmaUserController : BaseController() {
 
     // -- Return a specific FsmaUser
-    // -    http://localhost:8080/api/v1/fsmaUser/1
+    // -    http://localhost:8080/api/v1/fsmauser/1
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,

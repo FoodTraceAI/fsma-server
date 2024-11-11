@@ -60,6 +60,10 @@ class DataLoader : ApplicationRunner {
     private lateinit var tlcService: TraceLotCodeService
     private val tlcList: MutableList<TraceLotCode> = mutableListOf()
 
+    @Autowired
+    private lateinit var tracePlanService: TracePlanService
+    private val tracePlanList: MutableList<TracePlan> = mutableListOf()
+
     //    @Autowired
     //    private lateinit var tenantIdentifierResolver: TenantIdentifierResolver
 
@@ -73,6 +77,7 @@ class DataLoader : ApplicationRunner {
         addTlcs()
         addCteReceives()
         addSupShipCtes()
+        addTracePlans()
     }
 
     @Suppress("LongMethod")
@@ -100,6 +105,9 @@ class DataLoader : ApplicationRunner {
 
         jdbcTemplate.execute("DELETE FROM cte_receive CASCADE;")
         jdbcTemplate.execute("ALTER SEQUENCE IF EXISTS cte_receive_seq RESTART;")
+
+        jdbcTemplate.execute("DELETE FROM cte_receive_exempt CASCADE;")
+        jdbcTemplate.execute("ALTER SEQUENCE IF EXISTS cte_receive_exempt_seq RESTART;")
 
         jdbcTemplate.execute("DELETE FROM cte_ship CASCADE;")
         jdbcTemplate.execute("ALTER SEQUENCE IF EXISTS cte_ship_seq RESTART;")
@@ -130,6 +138,9 @@ class DataLoader : ApplicationRunner {
 
         jdbcTemplate.execute("DELETE FROM trace_lot_code CASCADE;")
         jdbcTemplate.execute("ALTER SEQUENCE IF EXISTS trace_lot_code_seq RESTART;")
+
+        jdbcTemplate.execute("DELETE FROM trace_plan CASCADE;")
+        jdbcTemplate.execute("ALTER SEQUENCE IF EXISTS trace_plan_seq RESTART;")
     }
 
     fun addAddresses() {
@@ -332,11 +343,6 @@ class DataLoader : ApplicationRunner {
     }
 
     fun addCteReceives() {
-//        var previousLoc = locationService.findById(locationList[0].id)
-//            ?: throw Exception("bad previousLoc find")
-//        var curLoc = locationService.findById(locationList[1].id)
-//        ?: throw Exception("bad curLoc find")
-
         var prevLoc = locationList[0]
         var curLoc = locationList[1]
         var cteReceive = CteReceive(
@@ -454,5 +460,19 @@ class DataLoader : ApplicationRunner {
             referenceDocumentNum = "BOL-sscc3",
         )
         supShipCteList.add(supShipCteService.insert(supShipCte))
+    }
+
+    fun addTracePlans() {
+        val tracePlan = TracePlan(
+            location = locationList[1],
+            descProcRecordMaintenance = "(a)(1) A description of the procedures you use to maintain the records you are required" +
+                    " to keep under this subpart, including the format and location of these records.",
+            descProcIdentifyFoods = "(a)(2) A description of the procedures you use to identify foods on the Food" +
+                    " TraceabilityList that you manufacture, process, pack, or hold",
+            descAssignTraceLotCodes = "(a)(3) A description of how you assign traceability lot codes to foods on the" +
+                    " Food Traceability List in accordance with § 1.1320, if applicable;",
+            pointOfContact = PointOfContact("POC Name", "Poc email", phone = "800-555-1212")
+        )
+        tracePlanList.add(tracePlanService.insert(tracePlan))
     }
 }

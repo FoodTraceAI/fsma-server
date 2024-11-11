@@ -88,6 +88,9 @@ class BaseController {
     @Autowired
     protected lateinit var traceLotCodeService: TraceLotCodeService
 
+    @Autowired
+    protected lateinit var tracePlanService: TracePlanService
+
     //    fun getFsaUser(id: Long, authPrincipal: FsmaUser): FsaUser {
 //        val fsaUser = fsaUserService.findById(id)
 //            ?: throw EntityNotFoundException("FsaUser not found: $id")
