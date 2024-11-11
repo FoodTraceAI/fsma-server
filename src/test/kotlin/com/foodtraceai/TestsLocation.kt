@@ -12,6 +12,7 @@ import com.foodtraceai.service.AddressService
 import com.foodtraceai.service.FoodBusService
 import com.foodtraceai.service.LocationService
 import com.foodtraceai.util.EntityNotFoundException
+import com.foodtraceai.util.PointOfContact
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -68,9 +69,11 @@ class TestsLocation {
         locationDto = LocationDto(
             id = 0,
             foodBusId = 1,
-            contactName = "Steve",
-            contactPhone = "1-800-555-1212",
-            contactEmail = "steve@gmail.abc",
+            pointOfContact = PointOfContact(
+                name = "Steve",
+                phone = "1-800-555-1212",
+                email = "steve@gmail.abc",
+            ),
             description = "Steve's House",
             addressId = 1,
             isBillable = true,
@@ -79,9 +82,11 @@ class TestsLocation {
         locationDtoUpdated = LocationDto(
             id = 0,
             foodBusId = 1,
-            contactName = "NewContact",
-            contactPhone = "0-000-000-0000",
-            contactEmail = "newcontact@gmail.abc",
+            pointOfContact = PointOfContact(
+                name = "NewContact",
+                phone = "0-000-000-0000",
+                email = "newcontact@gmail.abc",
+            ),
             description = "Steve's House",
             addressId = 1,
             isBillable = false,
@@ -112,9 +117,9 @@ class TestsLocation {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.foodBusId") { value(locationDto.foodBusId) }
-            jsonPath("$.contactName") { value(locationDto.contactName) }
-            jsonPath("$.contactPhone") { value(locationDto.contactPhone) }
-            jsonPath("$.contactEmail") { value(locationDto.contactEmail) }
+            jsonPath("$.pointOfContact.name") { value(locationDto.pointOfContact.name) }
+            jsonPath("$.pointOfContact.phone") { value(locationDto.pointOfContact.phone) }
+            jsonPath("$.pointOfContact.email") { value(locationDto.pointOfContact.email) }
             jsonPath("$.addressId") { value(locationDto.addressId) }
             jsonPath("$.isBillable") { value(true) }
         }.andReturn()
@@ -131,9 +136,9 @@ class TestsLocation {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.foodBusId") { value(locationDto.foodBusId) }
-            jsonPath("$.contactName") { value(locationDto.contactName) }
-            jsonPath("$.contactPhone") { value(locationDto.contactPhone) }
-            jsonPath("$.contactEmail") { value(locationDto.contactEmail) }
+            jsonPath("$.pointOfContact.name") { value(locationDto.pointOfContact.name) }
+            jsonPath("$.pointOfContact.phone") { value(locationDto.pointOfContact.phone) }
+            jsonPath("$.pointOfContact.email") { value(locationDto.pointOfContact.email) }
             jsonPath("$.addressId") { value(locationDto.addressId) }
             jsonPath("$.isBillable") { value(true) }
         }
@@ -153,9 +158,9 @@ class TestsLocation {
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(locationId) }
             jsonPath("$.foodBusId") { value(locationDtoUpdated.foodBusId) }
-            jsonPath("$.contactName") { value(locationDtoUpdated.contactName) }
-            jsonPath("$.contactPhone") { value(locationDtoUpdated.contactPhone) }
-            jsonPath("$.contactEmail") { value(locationDtoUpdated.contactEmail) }
+            jsonPath("$.pointOfContact.name") { value(locationDtoUpdated.pointOfContact.name) }
+            jsonPath("$.pointOfContact.phone") { value(locationDtoUpdated.pointOfContact.phone) }
+            jsonPath("$.pointOfContact.email") { value(locationDtoUpdated.pointOfContact.email) }
             jsonPath("$.addressId") { value(locationDtoUpdated.addressId) }
             jsonPath("$.isBillable") { value(false) }
         }

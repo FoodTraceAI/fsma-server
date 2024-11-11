@@ -4,6 +4,7 @@
 package com.foodtraceai.model
 
 import com.foodtraceai.util.FoodBusType
+import com.foodtraceai.util.PointOfContact
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -18,9 +19,7 @@ data class FoodBus(
     @OnDelete(action = OnDeleteAction.CASCADE)
     override val reseller: Reseller,
 
-    val contactName: String? = null,
-    val contactPhone: String? = null,
-    val contactEmail: String? = null,
+    @Embedded val pointOfContact: PointOfContact,
 
     @ManyToOne @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -28,7 +27,6 @@ data class FoodBus(
     val foodBusName: String,
 
     @Enumerated(EnumType.STRING)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     val foodBusType: FoodBusType,
 
     // Is this a franchisee?  If so, it has a franchisor
@@ -52,9 +50,7 @@ data class FoodBus(
 data class FoodBusDto(
     val id: Long = 0,
     val resellerId: Long,
-    val contactName: String? = null,
-    val contactPhone: String? = null,
-    val contactEmail: String? = null,
+    val pointOfContact: PointOfContact,
     val mainAddressId: Long,
     val foodBusName: String,
     val foodBusType: FoodBusType,
@@ -70,9 +66,7 @@ data class FoodBusDto(
 fun FoodBus.toFoodBusDto() = FoodBusDto(
     id = id,
     resellerId = reseller.id,
-    contactName = contactName,
-    contactPhone = contactPhone,
-    contactEmail = contactEmail,
+    pointOfContact = pointOfContact,
     mainAddressId = mainAddress.id,
     foodBusName = foodBusName,
     foodBusType = foodBusType,
@@ -91,9 +85,7 @@ fun FoodBusDto.toFoodBus(
 ) = FoodBus(
     id = id,
     reseller = reseller,
-    contactName = contactName,
-    contactPhone = contactPhone,
-    contactEmail = contactEmail,
+   pointOfContact=pointOfContact,
     mainAddress = mainAddress,
     foodBusName = foodBusName,
     foodBusType = foodBusType,

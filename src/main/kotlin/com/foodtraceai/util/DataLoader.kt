@@ -211,8 +211,11 @@ class DataLoader : ApplicationRunner {
             reseller = resellerList[0],
             mainAddress = addressList[0],
             foodBusName = "FoodTraceAI",
-            contactName = "Stephen Eick",
-            contactPhone = "630-561-7897",
+            pointOfContact = PointOfContact(
+                name = "Stephen Eick",
+                email = "steve.eick@gmail.com",
+                phone = "630-561-7897",
+            ),
             foodBusType = FoodBusType.Restaurant
         )
         foodBusList.add(foodBusService.insert(foodBus))
@@ -221,8 +224,11 @@ class DataLoader : ApplicationRunner {
             reseller = resellerList[0],
             mainAddress = addressList[0],
             foodBusName = "KaleidoscopeInc",
-            contactName = "Joe Smith",
-            contactPhone = "800-555-1212",
+            pointOfContact = PointOfContact(
+                name = "Joe Smith",
+                email = "joe.smith@gmail.com",
+                phone = "800-555-1212",
+            ),
             foodBusType = FoodBusType.Restaurant
         )
         foodBusList.add(foodBusService.insert(foodBus))
@@ -230,9 +236,12 @@ class DataLoader : ApplicationRunner {
         foodBus = FoodBus(
             reseller = resellerList[0],
             mainAddress = addressList[0],
-            foodBusName = "630 N. Main",
-            contactName = "Ted Podolak",
-            contactPhone = "800-555-1212",
+            foodBusName = "FB @ 630 N. Main",
+            pointOfContact = PointOfContact(
+                name = "Ted Podolak",
+                email = "ted.podolak@gmail.com",
+                phone = "800-555-1212",
+            ),
             foodBusType = FoodBusType.Restaurant
         )
         foodBusList.add(foodBusService.insert(foodBus))
@@ -241,9 +250,7 @@ class DataLoader : ApplicationRunner {
     fun addLocations() {
         var location = Location(
             foodBus = foodBusList[0],
-            contactName = foodBusList[0].contactName,
-            contactPhone = foodBusList[0].contactPhone,
-            contactEmail = foodBusList[0].contactEmail,
+            pointOfContact = foodBusList[0].pointOfContact,
             address = foodBusList[0].mainAddress
         )
         val response = locationService.insert(location)
@@ -252,18 +259,14 @@ class DataLoader : ApplicationRunner {
 
         location = Location(
             foodBus = foodBusList[1],
-            contactName = foodBusList[1].contactName,
-            contactPhone = foodBusList[1].contactPhone,
-            contactEmail = foodBusList[1].contactEmail,
+            pointOfContact = foodBusList[1].pointOfContact,
             address = foodBusList[1].mainAddress
         )
         locationList.add(locationService.insert(location))
 
         location = Location(
             foodBus = foodBusList[2],
-            contactName = foodBusList[2].contactName,
-            contactPhone = foodBusList[2].contactPhone,
-            contactEmail = foodBusList[2].contactEmail,
+            pointOfContact = foodBusList[1].pointOfContact,
             address = foodBusList[2].mainAddress
         )
         locationList.add(locationService.insert(location))

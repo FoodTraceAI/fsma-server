@@ -78,7 +78,7 @@ class SpreadsheetService(
 
     private val pitLocTabColHeaders = listOf(
         Duo("Business or Farm Name", fun(cte: CteReceive) = cte.foodBus.foodBusName),
-        Duo("Phone", fun(cte: CteReceive) = "${cte.ipsLocation.foodBus.contactPhone}"),
+        Duo("Phone", fun(cte: CteReceive) = cte.ipsLocation.foodBus.pointOfContact.phone),
         Duo("Address", fun(cte: CteReceive) = cte.ipsLocation.address.format()),
         Duo("Field Name*", fun(cte: CteReceive) = "${cte.ipsLocation.description}"),
         Duo("Geo-Coordinates*", fun(cte: CteReceive) =  "${cte.ipsLocation.address.lat}, ${cte.ipsLocation.address.lon}"),
