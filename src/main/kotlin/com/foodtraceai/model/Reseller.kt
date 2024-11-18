@@ -6,6 +6,7 @@ package com.foodtraceai.model
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.foodtraceai.email.SmtpCredentials
 import com.foodtraceai.email.SmtpCredentialsConverter
+import com.foodtraceai.util.Contact
 import com.kscopeinc.sms.SmsCredentials
 import com.kscopeinc.sms.SmsCredentialsConverter
 import jakarta.persistence.*
@@ -29,12 +30,7 @@ data class Reseller(
     val accountRep: String? = null,
     val businessName: String,
 
-    val firstName: String? = null,
-    val lastName: String? = null,
-
-    val mainContactName: String? = null,// "Operational Contact Name"
-    val mainContactPhone: String? = null, // "Phone Number"
-    val mainContactEmail: String? = null, // "Email Address"
+    val mainContact: Contact,
 
     val billingContactName: String? = null,
     val billingContactPhone: String? = null,
@@ -77,17 +73,13 @@ data class ResellerDto(
     val addressDto: AddressDto,
     val accountRep: String?,
     val businessName: String,
-    val firstName: String?,
-    val lastName: String?,
-    val mainContactName: String?,
-    val mainContactPhone: String?,
-    val mainContactEmail: String?,
-    val password: String? = null,
+    val mainContact: Contact,
     val billingContactName: String?,
     val billingContactPhone: String?,
     val billingContactEmail: String?,
     @JsonProperty("billingAddress")
     val billingAddressDto: AddressDto?,
+    val password: String? = null,
     val smtpCredentials: SmtpCredentials? = null,
     val smsCredentials: SmsCredentials? = null,
     val subdomain: String? = null,
@@ -105,11 +97,7 @@ fun Reseller.toResellerDto() = ResellerDto(
     addressDto = address.toAddressDto(),
     accountRep = accountRep,
     businessName = businessName,
-    firstName = firstName,
-    lastName = lastName,
-    mainContactName = mainContactName,
-    mainContactPhone = mainContactPhone,
-    mainContactEmail = mainContactEmail,
+    mainContact = mainContact,
     billingContactName = billingContactName,
     billingContactPhone = billingContactPhone,
     billingContactEmail = billingContactEmail,
@@ -132,11 +120,7 @@ fun ResellerDto.toReseller(resellerId: Long): Reseller {
         address = addressDto.toAddress(id),
         accountRep = accountRep,
         businessName = businessName,
-        firstName = firstName,
-        lastName = lastName,
-        mainContactName = mainContactName,
-        mainContactPhone = mainContactPhone,
-        mainContactEmail = mainContactEmail,
+        mainContact = mainContact,
         billingContactName = billingContactName,
         billingContactPhone = billingContactPhone,
         billingContactEmail = billingContactEmail,

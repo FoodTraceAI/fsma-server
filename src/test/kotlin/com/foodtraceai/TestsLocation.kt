@@ -11,8 +11,8 @@ import com.foodtraceai.model.toLocation
 import com.foodtraceai.service.AddressService
 import com.foodtraceai.service.FoodBusService
 import com.foodtraceai.service.LocationService
+import com.foodtraceai.util.Contact
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.PointOfContact
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -69,8 +69,9 @@ class TestsLocation {
         locationDto = LocationDto(
             id = 0,
             foodBusId = 1,
-            pointOfContact = PointOfContact(
-                name = "Steve",
+            contact = Contact(
+                firstName = "Steve",
+                lastName = "Eick",
                 phone = "1-800-555-1212",
                 email = "steve@gmail.abc",
             ),
@@ -82,8 +83,9 @@ class TestsLocation {
         locationDtoUpdated = LocationDto(
             id = 0,
             foodBusId = 1,
-            pointOfContact = PointOfContact(
-                name = "NewContact",
+            contact = Contact(
+                firstName = "NewContactFirst",
+                lastName = "NewContactLast",
                 phone = "0-000-000-0000",
                 email = "newcontact@gmail.abc",
             ),
@@ -117,9 +119,10 @@ class TestsLocation {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.foodBusId") { value(locationDto.foodBusId) }
-            jsonPath("$.pointOfContact.name") { value(locationDto.pointOfContact.name) }
-            jsonPath("$.pointOfContact.phone") { value(locationDto.pointOfContact.phone) }
-            jsonPath("$.pointOfContact.email") { value(locationDto.pointOfContact.email) }
+            jsonPath("$.contact.firstName") { value(locationDto.contact.firstName) }
+            jsonPath("$.contact.lastName") { value(locationDto.contact.lastName) }
+            jsonPath("$.contact.phone") { value(locationDto.contact.phone) }
+            jsonPath("$.contact.email") { value(locationDto.contact.email) }
             jsonPath("$.addressId") { value(locationDto.addressId) }
             jsonPath("$.isBillable") { value(true) }
         }.andReturn()
@@ -136,9 +139,10 @@ class TestsLocation {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.foodBusId") { value(locationDto.foodBusId) }
-            jsonPath("$.pointOfContact.name") { value(locationDto.pointOfContact.name) }
-            jsonPath("$.pointOfContact.phone") { value(locationDto.pointOfContact.phone) }
-            jsonPath("$.pointOfContact.email") { value(locationDto.pointOfContact.email) }
+            jsonPath("$.contact.firstName") { value(locationDto.contact.firstName) }
+            jsonPath("$.contact.lastName") { value(locationDto.contact.lastName) }
+            jsonPath("$.contact.phone") { value(locationDto.contact.phone) }
+            jsonPath("$.contact.email") { value(locationDto.contact.email) }
             jsonPath("$.addressId") { value(locationDto.addressId) }
             jsonPath("$.isBillable") { value(true) }
         }
@@ -158,9 +162,10 @@ class TestsLocation {
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(locationId) }
             jsonPath("$.foodBusId") { value(locationDtoUpdated.foodBusId) }
-            jsonPath("$.pointOfContact.name") { value(locationDtoUpdated.pointOfContact.name) }
-            jsonPath("$.pointOfContact.phone") { value(locationDtoUpdated.pointOfContact.phone) }
-            jsonPath("$.pointOfContact.email") { value(locationDtoUpdated.pointOfContact.email) }
+            jsonPath("$.contact.firstName") { value(locationDtoUpdated.contact.firstName) }
+            jsonPath("$.contact.lastName") { value(locationDtoUpdated.contact.lastName) }
+            jsonPath("$.contact.phone") { value(locationDtoUpdated.contact.phone) }
+            jsonPath("$.contact.email") { value(locationDtoUpdated.contact.email) }
             jsonPath("$.addressId") { value(locationDtoUpdated.addressId) }
             jsonPath("$.isBillable") { value(false) }
         }

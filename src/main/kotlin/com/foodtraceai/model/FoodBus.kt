@@ -3,8 +3,8 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model
 
+import com.foodtraceai.util.Contact
 import com.foodtraceai.util.FoodBusType
-import com.foodtraceai.util.PointOfContact
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -19,7 +19,7 @@ data class FoodBus(
     @OnDelete(action = OnDeleteAction.CASCADE)
     override val reseller: Reseller,
 
-    @Embedded val pointOfContact: PointOfContact,
+    @Embedded val contact: Contact,
 
     @ManyToOne @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -50,7 +50,7 @@ data class FoodBus(
 data class FoodBusDto(
     val id: Long = 0,
     val resellerId: Long,
-    val pointOfContact: PointOfContact,
+    val contact: Contact,
     val mainAddressId: Long,
     val foodBusName: String,
     val foodBusType: FoodBusType,
@@ -66,7 +66,7 @@ data class FoodBusDto(
 fun FoodBus.toFoodBusDto() = FoodBusDto(
     id = id,
     resellerId = reseller.id,
-    pointOfContact = pointOfContact,
+    contact = contact,
     mainAddressId = mainAddress.id,
     foodBusName = foodBusName,
     foodBusType = foodBusType,
@@ -85,7 +85,7 @@ fun FoodBusDto.toFoodBus(
 ) = FoodBus(
     id = id,
     reseller = reseller,
-   pointOfContact=pointOfContact,
+   contact=contact,
     mainAddress = mainAddress,
     foodBusName = foodBusName,
     foodBusType = foodBusType,

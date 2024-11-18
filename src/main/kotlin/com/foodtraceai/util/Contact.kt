@@ -7,20 +7,21 @@ import jakarta.persistence.Converter
 import jakarta.persistence.Embeddable
 
 @Embeddable
-data class PointOfContact(
-    val name: String,
+data class Contact(
+    val firstName: String,
+    val lastName: String,
     val email: String,
     val phone: String,
 )
 
 @Converter(autoApply = true)
-class PointOfContactToJsonConverter : AttributeConverter<PointOfContact, String> {
-    override fun convertToEntityAttribute(jsonPoc: String): PointOfContact? {
-        val typeRef = object : TypeReference<PointOfContact>() {}
+class ContactToJsonConverter : AttributeConverter<Contact, String> {
+    override fun convertToEntityAttribute(jsonPoc: String): Contact? {
+        val typeRef = object : TypeReference<Contact>() {}
         return jacksonObjectMapper().readValue(jsonPoc, typeRef)
     }
 
-    override fun convertToDatabaseColumn(poc: PointOfContact?): String {
+    override fun convertToDatabaseColumn(poc: Contact?): String {
         return jacksonObjectMapper().writeValueAsString(poc)
     }
 }

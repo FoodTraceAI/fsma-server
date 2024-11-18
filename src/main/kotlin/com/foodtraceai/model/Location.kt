@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model
 
-import com.foodtraceai.util.PointOfContact
+import com.foodtraceai.util.Contact
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -17,7 +17,7 @@ data class Location(
     @OnDelete(action = OnDeleteAction.CASCADE)
     val foodBus: FoodBus,
 
-    @Embedded val pointOfContact: PointOfContact,
+    @Embedded val contact: Contact,
 
     // Something Like: Company Distribution Center, Local Wholesale of Georgia
     // Includes: field name
@@ -40,7 +40,7 @@ data class Location(
 data class LocationDto(
     val id: Long = 0,
     val foodBusId: Long,
-    val pointOfContact: PointOfContact,
+    val contact: Contact,
     val description: String?,
     val addressId: Long,
     val isBillable: Boolean,
@@ -53,7 +53,7 @@ data class LocationDto(
 fun Location.toLocationDto() = LocationDto(
     id = id,
     foodBusId = foodBus.id,
-    pointOfContact = pointOfContact,
+    contact = contact,
     description = description,
     addressId = address.id,
     isBillable = isBillable,
@@ -69,7 +69,7 @@ fun LocationDto.toLocation(
 ) = Location(
     id = id,
     foodBus = foodBus,
-    pointOfContact = pointOfContact,
+    contact = contact,
     description = description,
     address = address,
     isBillable = isBillable,

@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model
 
-import com.foodtraceai.util.PointOfContact
+import com.foodtraceai.util.Contact
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -50,7 +50,7 @@ data class TracePlan(
 
     // (a)(4) A statement identifying a point of contact for questions regarding
     // your traceability plan and records; and
-    @Embedded val pointOfContact: PointOfContact,
+    @Embedded val contact: Contact,
 
     // (a)(5) If you grow or raise a food on the Food Traceability List (other than eggs),
     // a farm map showing the areas in which you grow or raise such foods.
@@ -83,7 +83,7 @@ data class TracePlanDto(
     val descProcRecordMaintenance: String,
     val descProcIdentifyFoods: String,
     val descAssignTraceLotCodes: String,
-    val pointOfContact: PointOfContact,
+    val contact: Contact,
     val farmMap: ByteArray? = null,
     val dateCreated: OffsetDateTime = OffsetDateTime.now(),
     val dateModified: OffsetDateTime = OffsetDateTime.now(),
@@ -98,7 +98,7 @@ fun TracePlan.toTracePlanDto() = TracePlanDto(
     descProcRecordMaintenance = descProcRecordMaintenance,
     descProcIdentifyFoods = descProcIdentifyFoods,
     descAssignTraceLotCodes = descAssignTraceLotCodes,
-    pointOfContact = pointOfContact,
+    contact = contact,
     farmMap = farmMap,
     dateCreated = dateCreated,
     dateModified = dateModified,
@@ -113,7 +113,7 @@ fun TracePlanDto.toTracePlan(location:Location) = TracePlan(
     descProcRecordMaintenance = descProcRecordMaintenance,
     descProcIdentifyFoods = descProcIdentifyFoods,
     descAssignTraceLotCodes = descAssignTraceLotCodes,
-    pointOfContact = pointOfContact,
+    contact = contact,
     farmMap = farmMap,
     dateCreated = dateCreated,
     dateModified = dateModified,

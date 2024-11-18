@@ -13,9 +13,9 @@ import com.foodtraceai.service.AddressService
 import com.foodtraceai.service.FoodBusService
 import com.foodtraceai.service.FranchisorService
 import com.foodtraceai.service.ResellerService
+import com.foodtraceai.util.Contact
 import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.FoodBusType
-import com.foodtraceai.util.PointOfContact
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -76,8 +76,9 @@ class TestsFoodBus {
             id = 0,
             resellerId = 1,
             mainAddressId = 1,
-            pointOfContact = PointOfContact(
-                name = "Steve",
+            contact = Contact(
+                firstName = "Steve",
+                lastName = "Eick",
                 phone = "1-800-555-1212",
                 email = "steve@gmail.com"
             ),
@@ -90,8 +91,9 @@ class TestsFoodBus {
             id = 0,
             resellerId = 1,
             mainAddressId = 1,
-            pointOfContact = PointOfContact(
-                name = "NewContact",
+            contact = Contact(
+                firstName = "NewContactFirst",
+                lastName = "NewContactLast",
                 phone = "1-800-555-1212",
                 email = "NewContact@gmail.com"
             ),
@@ -128,8 +130,9 @@ class TestsFoodBus {
         }.andExpect {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.pointOfContact.name") { value("Steve") }
-            jsonPath("$.pointOfContact.phone") { value("1-800-555-1212") }
+            jsonPath("$.contact.firstName") { value("Steve") }
+            jsonPath("$.contact.lastName") { value("Eick") }
+            jsonPath("$.contact.phone") { value("1-800-555-1212") }
             jsonPath("$.foodBusName") { value("Fred's Restaurant") }
             jsonPath("$.foodBusType") { value("Restaurant") }
         }
@@ -146,8 +149,9 @@ class TestsFoodBus {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(foodBusId) }
-            jsonPath("$.pointOfContact.name") { value("Steve") }
-            jsonPath("$.pointOfContact.phone") { value("1-800-555-1212") }
+            jsonPath("$.contact.firstName") { value("Steve") }
+            jsonPath("$.contact.lastName") { value("Eick") }
+            jsonPath("$.contact.phone") { value("1-800-555-1212") }
             jsonPath("$.foodBusName") { value("Fred's Restaurant") }
             jsonPath("$.foodBusType") { value("Restaurant") }
         }
@@ -166,8 +170,9 @@ class TestsFoodBus {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(foodBusId) }
-            jsonPath("$.pointOfContact.name") { value("NewContact") }
-            jsonPath("$.pointOfContact.phone") { value("1-800-555-1212") }
+            jsonPath("$.contact.firstName") { value("NewContactFirst") }
+            jsonPath("$.contact.lastName") { value("NewContactLast") }
+            jsonPath("$.contact.phone") { value("1-800-555-1212") }
             jsonPath("$.foodBusName") { value("Fred's Restaurant") }
             jsonPath("$.foodBusType") { value("RFE") }
         }

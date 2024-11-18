@@ -191,11 +191,12 @@ class DataLoader : ApplicationRunner {
             addressDto = addressList[0].toAddressDto(),
             accountRep = "Steve",
             businessName = "FoodTraceAI",
-            firstName = "Stephen",
-            lastName = "Eick",
-            mainContactName = "mainContactName",
-            mainContactPhone = "mainContactPhone",
-            mainContactEmail = "mainContactEmail",
+            mainContact = Contact(
+                firstName = "mainContactFirstName",
+                lastName = "mainContactLastName",
+                phone = "mainContactPhone",
+                email = "mainContactEmail"
+            ),
             billingContactName = "billingContactName",
             billingContactPhone = "billingContactPhone",
             billingContactEmail = "billingContactEmail",
@@ -211,8 +212,9 @@ class DataLoader : ApplicationRunner {
             reseller = resellerList[0],
             mainAddress = addressList[0],
             foodBusName = "FoodTraceAI",
-            pointOfContact = PointOfContact(
-                name = "Stephen Eick",
+            contact = Contact(
+                firstName = "Stephen",
+                lastName = "Eick",
                 email = "steve.eick@gmail.com",
                 phone = "630-561-7897",
             ),
@@ -224,8 +226,9 @@ class DataLoader : ApplicationRunner {
             reseller = resellerList[0],
             mainAddress = addressList[0],
             foodBusName = "KaleidoscopeInc",
-            pointOfContact = PointOfContact(
-                name = "Joe Smith",
+            contact = Contact(
+                firstName = "Joe",
+                lastName = "Smith",
                 email = "joe.smith@gmail.com",
                 phone = "800-555-1212",
             ),
@@ -237,8 +240,9 @@ class DataLoader : ApplicationRunner {
             reseller = resellerList[0],
             mainAddress = addressList[0],
             foodBusName = "FB @ 630 N. Main",
-            pointOfContact = PointOfContact(
-                name = "Ted Podolak",
+            contact = Contact(
+                firstName = "Ted",
+                lastName = "Podolak",
                 email = "ted.podolak@gmail.com",
                 phone = "800-555-1212",
             ),
@@ -250,7 +254,7 @@ class DataLoader : ApplicationRunner {
     fun addLocations() {
         var location = Location(
             foodBus = foodBusList[0],
-            pointOfContact = foodBusList[0].pointOfContact,
+            contact = foodBusList[0].contact,
             address = foodBusList[0].mainAddress
         )
         val response = locationService.insert(location)
@@ -259,14 +263,14 @@ class DataLoader : ApplicationRunner {
 
         location = Location(
             foodBus = foodBusList[1],
-            pointOfContact = foodBusList[1].pointOfContact,
+            contact = foodBusList[1].contact,
             address = foodBusList[1].mainAddress
         )
         locationList.add(locationService.insert(location))
 
         location = Location(
             foodBus = foodBusList[2],
-            pointOfContact = foodBusList[1].pointOfContact,
+            contact = foodBusList[1].contact,
             address = foodBusList[2].mainAddress
         )
         locationList.add(locationService.insert(location))
@@ -474,7 +478,12 @@ class DataLoader : ApplicationRunner {
                     " TraceabilityList that you manufacture, process, pack, or hold",
             descAssignTraceLotCodes = "(a)(3) A description of how you assign traceability lot codes to foods on the" +
                     " Food Traceability List in accordance with § 1.1320, if applicable;",
-            pointOfContact = PointOfContact("POC Name", "Poc email", phone = "800-555-1212")
+            contact = Contact(
+                firstName="POC firstName",
+                lastName="POC lastName",
+                "Poc email",
+                phone = "800-555-1212"
+            )
         )
         tracePlanList.add(tracePlanService.insert(tracePlan))
     }

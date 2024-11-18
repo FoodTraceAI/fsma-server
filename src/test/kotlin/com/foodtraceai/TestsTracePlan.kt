@@ -9,8 +9,8 @@ import com.foodtraceai.model.TracePlanDto
 import com.foodtraceai.model.toTracePlan
 import com.foodtraceai.service.LocationService
 import com.foodtraceai.service.TracePlanService
+import com.foodtraceai.util.Contact
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.PointOfContact
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -69,7 +69,12 @@ class TestsTracePlan {
             descProcRecordMaintenance = "descProcRecordMaintenance",
             descProcIdentifyFoods = "descProcIdentifyFoods",
             descAssignTraceLotCodes = "descAssignTraceLotCodes",
-            pointOfContact = PointOfContact("POC Name", "Poc email", phone = "800-555-1212")
+            contact = Contact(
+                firstName = "POC firstName",
+                lastName = "POC lastName",
+                "Poc email",
+                phone = "800-555-1212"
+            )
         )
 
         tracePlanDtoUpdated = TracePlanDto(
@@ -77,8 +82,9 @@ class TestsTracePlan {
             descProcRecordMaintenance = "Updated - descProcRecordMaintenance",
             descProcIdentifyFoods = "Updated - descProcIdentifyFoods",
             descAssignTraceLotCodes = "Updated - descAssignTraceLotCodes",
-            pointOfContact = PointOfContact(
-                name = "Updated - POC Name",
+            contact = Contact(
+                firstName = "Updated - POC firstName",
+                lastName = "Updated - POC lastName",
                 email = "Updated - Poc email",
                 phone = "Updated - 800-555-1212"
             )
@@ -101,9 +107,10 @@ class TestsTracePlan {
             jsonPath("$.descProcRecordMaintenance") { value(tracePlanDto.descProcRecordMaintenance) }
             jsonPath("$.descProcIdentifyFoods") { value(tracePlanDto.descProcIdentifyFoods) }
             jsonPath("$.descAssignTraceLotCodes") { value(tracePlanDto.descAssignTraceLotCodes) }
-            jsonPath("$.pointOfContact.name") { value(tracePlanDto.pointOfContact.name) }
-            jsonPath("$.pointOfContact.email") { value(tracePlanDto.pointOfContact.email) }
-            jsonPath("$.pointOfContact.phone") { value(tracePlanDto.pointOfContact.phone) }
+            jsonPath("$.contact.firstName") { value(tracePlanDto.contact.firstName) }
+            jsonPath("$.contact.lastName") { value(tracePlanDto.contact.lastName) }
+            jsonPath("$.contact.email") { value(tracePlanDto.contact.email) }
+            jsonPath("$.contact.phone") { value(tracePlanDto.contact.phone) }
         }.andReturn()
         val tracePlanId: Long = JsonPath.read(mvcResult.response.contentAsString, "$.id")
     }
@@ -124,9 +131,9 @@ class TestsTracePlan {
             jsonPath("$.descProcRecordMaintenance") { value(tracePlanDto.descProcRecordMaintenance) }
             jsonPath("$.descProcIdentifyFoods") { value(tracePlanDto.descProcIdentifyFoods) }
             jsonPath("$.descAssignTraceLotCodes") { value(tracePlanDto.descAssignTraceLotCodes) }
-            jsonPath("$.pointOfContact.name") { value(tracePlanDto.pointOfContact.name) }
-            jsonPath("$.pointOfContact.email") { value(tracePlanDto.pointOfContact.email) }
-            jsonPath("$.pointOfContact.phone") { value(tracePlanDto.pointOfContact.phone) }
+            jsonPath("$.contact.firstName") { value(tracePlanDto.contact.firstName) }
+            jsonPath("$.contact.email") { value(tracePlanDto.contact.email) }
+            jsonPath("$.contact.phone") { value(tracePlanDto.contact.phone) }
         }
     }
 
