@@ -29,7 +29,6 @@ private const val SPREADSHEET_ALT_BASE_URL = "/api/v1/spreadsheet"
 class SpreadsheetController : BaseController() {
 
     // http://localhost:8080/api/v1/sheet/cte?which=receive
-    @Suppress("unused")
     @GetMapping("/cte")
     fun downloadSortableWorksheet(
         @RequestParam(value = "which", required = true) which: String,
