@@ -16,7 +16,7 @@ datasource:
 # to create docker image
 
 # to start postgres in a docker container
-docker run --name fsma-pg -e POSTGRES_PASSWORD=pw -p 5432:5432 -d postgres:16.2
+docker run --name fsma-pg -e POSTGRES_PASSWORD=pw -p 5432:5432 -d postgres:16.4
 
 # to run inside docker container accessing postgres in a docker container
 # Remember to edit datasource in application.yml 
@@ -91,4 +91,7 @@ uncomment as follows
 7. To shutdown service
     # go to fsma-service>Update
     # Set desired tasks to 0
-8. 
+
+Running on AWS
+1. Setup RDS Postgres database on AWS
+2. Update localhost to be aws database endpoint
