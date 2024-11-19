@@ -4,6 +4,7 @@
 
 package com.foodtraceai.controller
 
+import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.util.BadRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -12,6 +13,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -27,10 +29,11 @@ private const val SPREADSHEET_ALT_BASE_URL = "/api/v1/spreadsheet"
 class SpreadsheetController : BaseController() {
 
     // http://localhost:8080/api/v1/sheet/cte?which=receive
+    @Suppress("unused")
     @GetMapping("/cte")
     fun downloadSortableWorksheet(
         @RequestParam(value = "which", required = true) which: String,
-        //@AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<ByteArrayResource> {
         val header = HttpHeaders()
         header.contentType = MediaType("application", "force-download")
@@ -57,7 +60,7 @@ class SpreadsheetController : BaseController() {
         @RequestParam("ipsLocationId", required = false) ipsLocationId: Long?,
         @RequestParam("dateFrom", required = false) dateFrom: LocalDate?,
         @RequestParam("dateTo", required = false) dateTo: LocalDate?,
-        //@AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<List<CteReceive>> {
         val cteList = cteReceiveService.findAllByOptionalParams(
             tlcVal,
