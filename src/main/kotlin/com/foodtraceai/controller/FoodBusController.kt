@@ -3,10 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller
 
-import com.foodtraceai.model.FoodBusDto
-import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.toFoodBus
-import com.foodtraceai.model.toFoodBusDto
+import com.foodtraceai.model.*
 import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -43,8 +40,11 @@ class FoodBusController : BaseController() {
         @Valid @RequestBody foodBusDto: FoodBusDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<FoodBusDto> {
-        val reseller = resellerService.findById(foodBusDto.resellerId)
-            ?: throw EntityNotFoundException("Reseller not found: ${foodBusDto.resellerId}")
+        var reseller: Reseller? = null
+        foodBusDto.resellerId?.let {
+            reseller = resellerService.findById(it)
+                ?: throw EntityNotFoundException("Reseller not found: ${foodBusDto.resellerId}")
+        }
 
         val mainAddress = addressService.findById(foodBusDto.mainAddressId)
             ?: throw EntityNotFoundException("Address not found: ${foodBusDto.mainAddressId}")
@@ -69,8 +69,11 @@ class FoodBusController : BaseController() {
         if (foodBusDto.id <= 0L || foodBusDto.id != id)
             throw UnauthorizedRequestException("Conflicting BusinessIds specified: $id != ${foodBusDto.id}")
 
-        val reseller = resellerService.findById(foodBusDto.resellerId)
-            ?: throw EntityNotFoundException("Reseller not found: ${foodBusDto.resellerId}")
+        var reseller: Reseller? = null
+        foodBusDto.resellerId?.let {
+            reseller = resellerService.findById(it)
+                ?: throw EntityNotFoundException("Reseller not found: ${foodBusDto.resellerId}")
+        }
 
         val mainAddress = addressService.findById(foodBusDto.mainAddressId)
             ?: throw EntityNotFoundException("Address not found: ${foodBusDto.mainAddressId}")

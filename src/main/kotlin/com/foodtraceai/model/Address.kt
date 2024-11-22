@@ -13,7 +13,6 @@ import java.time.OffsetDateTime
 data class Address(
     @Id @GeneratedValue
     override val id: Long = 0,
-    val resellerId: Long = 0,
     val street: String,
     val street2: String? = null,
     val city: String,
@@ -55,7 +54,6 @@ data class AddressDto(
 
 fun Address.toAddressDto() = AddressDto(
     id = id,
-    resellerId = resellerId,
     street = street,
     street2 = street2,
     city = city,
@@ -72,9 +70,8 @@ fun Address.toAddressDto() = AddressDto(
     dateDeleted = dateDeleted,
 )
 
-fun AddressDto.toAddress(resellerId: Long) = Address(
+fun AddressDto.toAddress() = Address(
     id = id,
-    resellerId = resellerId,
     street = street,
     street2 = street2,
     city = city,
@@ -97,7 +94,7 @@ fun Address.format(
 ): String {
     var address = ""
     if(showStreet) {
-        address += "$street"
+        address += street
         if (street2 != null)
             address += ", $street2"
         address += ", $city, $state $postalCode"

@@ -4,7 +4,6 @@
 package com.foodtraceai.model
 
 import com.foodtraceai.util.Contact
-import com.foodtraceai.util.FoodBusType
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -17,7 +16,7 @@ data class FoodBus(
 
     @ManyToOne @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
-    override val reseller: Reseller,
+    override val reseller: Reseller?,   // null reseller means that this entity is a client
 
     @Embedded val contact: Contact,
 
@@ -25,11 +24,12 @@ data class FoodBus(
     @OnDelete(action = OnDeleteAction.CASCADE)
     val mainAddress: Address,
     val foodBusName: String,
+    val foodBusDesc: String,
 
-    @Enumerated(EnumType.STRING)
-    val foodBusType: FoodBusType,
+    // Is this a franchisee or franchisor?
+    val isFranchisor: Boolean = false,
 
-    // Is this a franchisee?  If so, it has a franchisor
+    // If franchisor is nonnull this is a franchisee
     @ManyToOne @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     val franchisor: Franchisor? = null,
@@ -49,14 +49,14 @@ data class FoodBus(
 
 data class FoodBusDto(
     val id: Long = 0,
-    val resellerId: Long,
+    val resellerId: Long?,
     val contact: Contact,
     val mainAddressId: Long,
     val foodBusName: String,
-    val foodBusType: FoodBusType,
-    val franchisorId: Long? = null,
+    val foodBusDesc: String,
+    val isFranchisor: Boolean,
+    val franchisorId: Long?,    // nonnull & nonzero means this is a franchisee
     val isEnabled: Boolean = true,
-    val isClient: Boolean = true,
     val dateCreated: OffsetDateTime = OffsetDateTime.now(),
     val dateModified: OffsetDateTime = OffsetDateTime.now(),
     val isDeleted: Boolean = false,
@@ -65,11 +65,12 @@ data class FoodBusDto(
 
 fun FoodBus.toFoodBusDto() = FoodBusDto(
     id = id,
-    resellerId = reseller.id,
+    resellerId = reseller?.id,
     contact = contact,
     mainAddressId = mainAddress.id,
     foodBusName = foodBusName,
-    foodBusType = foodBusType,
+    foodBusDesc = foodBusDesc,
+    isFranchisor = isFranchisor,
     franchisorId = franchisor?.id,
     isEnabled = isEnabled,
     dateCreated = dateCreated,
@@ -79,16 +80,17 @@ fun FoodBus.toFoodBusDto() = FoodBusDto(
 )
 
 fun FoodBusDto.toFoodBus(
-    reseller: Reseller,
+    reseller: Reseller?,
     mainAddress: Address,
     franchisor: Franchisor? = null,
 ) = FoodBus(
     id = id,
     reseller = reseller,
-   contact=contact,
+    contact = contact,
     mainAddress = mainAddress,
     foodBusName = foodBusName,
-    foodBusType = foodBusType,
+    foodBusDesc = foodBusDesc,
+    isFranchisor = isFranchisor,
     franchisor = franchisor,
     isEnabled = isEnabled,
 )

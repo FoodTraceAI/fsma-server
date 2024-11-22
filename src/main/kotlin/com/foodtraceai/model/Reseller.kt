@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.foodtraceai.email.SmtpCredentials
 import com.foodtraceai.email.SmtpCredentialsConverter
 import com.foodtraceai.util.Contact
+import com.foodtraceai.util.ResellerType
 import com.kscopeinc.sms.SmsCredentials
 import com.kscopeinc.sms.SmsCredentialsConverter
 import jakarta.persistence.*
@@ -40,6 +41,8 @@ data class Reseller(
     @OneToOne  //(cascade = [CascadeType.ALL])
     @JoinColumn
     val billingAddress: Address? = null,
+
+    val resellerType: ResellerType,
 
     // -- [TODO: move these to a separate 'Properties' entity]
     @Convert(converter = SmtpCredentialsConverter::class)
@@ -79,6 +82,7 @@ data class ResellerDto(
     val billingContactEmail: String?,
     @JsonProperty("billingAddress")
     val billingAddressDto: AddressDto?,
+    val resellerType: ResellerType,
     val password: String? = null,
     val smtpCredentials: SmtpCredentials? = null,
     val smsCredentials: SmsCredentials? = null,
@@ -102,6 +106,7 @@ fun Reseller.toResellerDto() = ResellerDto(
     billingContactPhone = billingContactPhone,
     billingContactEmail = billingContactEmail,
     billingAddressDto = billingAddress?.toAddressDto(),
+    resellerType = resellerType,
     smtpCredentials = smtpCredentials,
     smsCredentials = smsCredentials,
     subdomain = subdomain,
@@ -114,17 +119,18 @@ fun Reseller.toResellerDto() = ResellerDto(
     dateDeleted = dateDeleted,
 )
 
-fun ResellerDto.toReseller(resellerId: Long): Reseller {
+fun ResellerDto.toReseller(): Reseller {
     val reseller = Reseller(
         id = id,
-        address = addressDto.toAddress(id),
+        address = addressDto.toAddress(),
         accountRep = accountRep,
         businessName = businessName,
         mainContact = mainContact,
         billingContactName = billingContactName,
         billingContactPhone = billingContactPhone,
         billingContactEmail = billingContactEmail,
-        billingAddress = billingAddressDto?.toAddress(id),
+        billingAddress = billingAddressDto?.toAddress(),
+        resellerType = resellerType,
         smtpCredentials = smtpCredentials,
         smsCredentials = smsCredentials,
         subdomain = subdomain,

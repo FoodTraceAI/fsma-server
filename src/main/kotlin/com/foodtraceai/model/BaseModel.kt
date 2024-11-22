@@ -65,27 +65,27 @@ open class BaseModel<T> {
  *** Base superclass of Reseller Entity objects
  **/
 abstract class BaseResellerModel<T> : BaseModel<T>() {
-    abstract val reseller: Reseller
+    abstract val reseller: Reseller?
+    val isClient: Boolean
+        get() = reseller != null
 }
 
 abstract class BaseFoodBusModel<T> : BaseModel<T>() {
     abstract val foodBus: FoodBus
-    val reseller: Reseller
+    val reseller: Reseller?
         get() = foodBus.reseller
-    val resellerId: Long
-        get() = reseller.id
+    val isClient: Boolean
+        get() = reseller != null
 }
 
 abstract class BaseLocationModel<T> : BaseModel<T>() {
     abstract val location: Location
     val foodBus: FoodBus
         get() = location.foodBus
-    val foodBusId: Long
-        get() = foodBus.id
-    val reseller: Reseller
+    val reseller: Reseller?
         get() = foodBus.reseller
-    val resellerId: Long
-        get() = reseller.id
+    val isClient: Boolean
+        get() = reseller != null
 }
 
 ///**

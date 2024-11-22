@@ -42,7 +42,7 @@ class ResellerController : BaseController() {
         @Valid @RequestBody resellerDto: ResellerDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<ResellerDto> {
-        val reseller = resellerDto.toReseller(authPrincipal.resellerId)
+        val reseller = resellerDto.toReseller()
         val resellerResponse = resellerService.insert(reseller).toResellerDto()
         return ResponseEntity.created(URI.create(RESELLER_BASE_URL.plus("/${resellerResponse.id}")))
             .body(resellerResponse)
@@ -57,7 +57,7 @@ class ResellerController : BaseController() {
     ): ResponseEntity<ResellerDto> {
         if (resellerDto.id <= 0L || resellerDto.id != id)
             throw UnauthorizedRequestException("Conflicting ResellerDtos specified: $id != ${resellerDto.id}")
-        val reseller = resellerDto.toReseller(authPrincipal.resellerId)
+        val reseller = resellerDto.toReseller()
         val resellerResponse = resellerService.update(reseller)
         return ResponseEntity.ok().body(resellerResponse.toResellerDto())
     }

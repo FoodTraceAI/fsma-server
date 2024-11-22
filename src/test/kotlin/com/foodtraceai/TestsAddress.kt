@@ -120,7 +120,7 @@ class TestsAddress {
 
     @Test
     fun `get address`() {
-        val addressId = addressService.insert(addressDto.toAddress(resellerId)).id
+        val addressId = addressService.insert(addressDto.toAddress()).id
         val (accessToken, _) = authenticate(rootAuthLogin)
         mockMvc.get("/api/v1/address/$addressId") {
             header("Authorization", "Bearer $accessToken")
@@ -141,7 +141,7 @@ class TestsAddress {
 
     @Test
     fun `update address`() {
-        val addressId = addressService.insert(addressDto.toAddress(resellerId)).id
+        val addressId = addressService.insert(addressDto.toAddress()).id
         val (accessToken, _) = authenticate(rootAuthLogin)
         addressDtoUpdated = addressDtoUpdated.copy(id = addressId)
         mockMvc.put("/api/v1/address/$addressId") {
@@ -165,7 +165,7 @@ class TestsAddress {
 
     @Test
     fun `delete address`() {
-        val addressId = addressService.insert(addressDto.toAddress(resellerId)).id
+        val addressId = addressService.insert(addressDto.toAddress()).id
         val (accessToken, _) = authenticate(rootAuthLogin)
         mockMvc.delete("/api/v1/address/$addressId") {
             header("Authorization", "Bearer $accessToken")

@@ -61,7 +61,7 @@ class SpreadsheetService(
         Duo("(a)(1) TLC - Date**", fun(cte: CteReceive) = cte.tlc.packDate.toString()),
         Duo("(a)(1) TLC - Date Type**", fun(cte: CteReceive) = "Pack Date"),
         Duo("(a)(1) TLC - SSCC**", fun(cte: CteReceive) = cte.tlc.sscc?.ssccVal ?: "null"),
-        Duo("(b)(1) TLC - Assigned By", fun(cte: CteReceive) = cte.tlcSource.foodBus.foodBusType.name),
+        Duo("(b)(1) TLC - Assigned By", fun(cte: CteReceive) = cte.tlcSource.foodBus.foodBusDesc),
         Duo("(a)(2) Qty & UOM", fun(cte: CteReceive) = "${cte.quantity} ${cte.unitOfMeasure}"),
         Duo("(a)(3) Product Description", fun(cte: CteReceive) = cte.prodDesc),
         //"(a)(4) Immediate Previous Source (IPS) Location - (Shipped from Location)"

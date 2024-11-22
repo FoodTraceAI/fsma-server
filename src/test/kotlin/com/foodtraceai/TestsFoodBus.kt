@@ -5,17 +5,13 @@ package com.foodtraceai
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.foodtraceai.auth.AuthLogin
-import com.foodtraceai.model.FoodBus
-import com.foodtraceai.model.FoodBusDto
-import com.foodtraceai.model.Franchisor
-import com.foodtraceai.model.toFoodBus
+import com.foodtraceai.model.*
 import com.foodtraceai.service.AddressService
 import com.foodtraceai.service.FoodBusService
 import com.foodtraceai.service.FranchisorService
 import com.foodtraceai.service.ResellerService
 import com.foodtraceai.util.Contact
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.FoodBusType
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -83,7 +79,8 @@ class TestsFoodBus {
                 email = "steve@gmail.com"
             ),
             foodBusName = "Fred's Restaurant",
-            foodBusType = FoodBusType.Restaurant,
+            foodBusDesc = "Restaurant",
+            isFranchisor = false,
             franchisorId = null,
         )
 
@@ -98,7 +95,8 @@ class TestsFoodBus {
                 email = "NewContact@gmail.com"
             ),
             foodBusName = "Fred's Restaurant",
-            foodBusType = FoodBusType.RFE,
+            foodBusDesc = "RFE",
+            isFranchisor = false,
             franchisorId = null,
         )
     }
@@ -107,8 +105,11 @@ class TestsFoodBus {
     // ------------------------------------------------------------------------
 
     private fun addFoodBus(dto: FoodBusDto): FoodBus {
-        val reseller = resellerService.findById(dto.resellerId)
-            ?: throw EntityNotFoundException("ResellerDto not found = ${dto.resellerId}")
+        var reseller: Reseller?=null
+        dto.resellerId?.let {
+            reseller = resellerService.findById(it)
+                ?: throw EntityNotFoundException("ResellerDto not found = ${dto.resellerId}")
+        }
 
         val mainAddress = addressService.findById(dto.mainAddressId)
             ?: throw EntityNotFoundException("FoodBus mainAddresssId not found = ${foodBusDto.mainAddressId}")
@@ -134,7 +135,7 @@ class TestsFoodBus {
             jsonPath("$.contact.lastName") { value("Eick") }
             jsonPath("$.contact.phone") { value("1-800-555-1212") }
             jsonPath("$.foodBusName") { value("Fred's Restaurant") }
-            jsonPath("$.foodBusType") { value("Restaurant") }
+            jsonPath("$.foodBusDesc") { value("Restaurant") }
         }
         //val foodBusId: Long = JsonPath.read(mvcResult.response.contentAsString, "$.id")
     }
@@ -153,7 +154,7 @@ class TestsFoodBus {
             jsonPath("$.contact.lastName") { value("Eick") }
             jsonPath("$.contact.phone") { value("1-800-555-1212") }
             jsonPath("$.foodBusName") { value("Fred's Restaurant") }
-            jsonPath("$.foodBusType") { value("Restaurant") }
+            jsonPath("$.foodBusDesc") { value("Restaurant") }
         }
     }
 
@@ -174,7 +175,7 @@ class TestsFoodBus {
             jsonPath("$.contact.lastName") { value("NewContactLast") }
             jsonPath("$.contact.phone") { value("1-800-555-1212") }
             jsonPath("$.foodBusName") { value("Fred's Restaurant") }
-            jsonPath("$.foodBusType") { value("RFE") }
+            jsonPath("$.foodBusDesc") { value("RFE") }
         }
     }
 

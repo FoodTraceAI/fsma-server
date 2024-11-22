@@ -15,7 +15,7 @@ data class Location(
 
     @ManyToOne @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
-    val foodBus: FoodBus,
+    override val foodBus: FoodBus,
 
     @Embedded val contact: Contact,
 
@@ -35,7 +35,7 @@ data class Location(
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
     override var dateDeleted: OffsetDateTime? = null
-) : BaseModel<Location>()
+) : BaseFoodBusModel<Location>()
 
 data class LocationDto(
     val id: Long = 0,

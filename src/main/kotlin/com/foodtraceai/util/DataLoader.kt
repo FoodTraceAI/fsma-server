@@ -155,7 +155,7 @@ class DataLoader : ApplicationRunner {
             lon = -90.0087413
         )
 
-        var address = addressDto.toAddress(resellerId)
+        var address = addressDto.toAddress()
         addressList.add(addressService.insert(address))
 
 
@@ -169,7 +169,7 @@ class DataLoader : ApplicationRunner {
             lon = -90.0087413
         )
 
-        address = addressDto.toAddress(resellerId)
+        address = addressDto.toAddress()
         addressList.add(addressService.insert(address))
 
         addressDto = AddressDto(
@@ -182,7 +182,7 @@ class DataLoader : ApplicationRunner {
             lon = -90.0087413
         )
 
-        address = addressDto.toAddress(resellerId)
+        address = addressDto.toAddress()
         addressList.add(addressService.insert(address))
     }
 
@@ -201,9 +201,9 @@ class DataLoader : ApplicationRunner {
             billingContactPhone = "billingContactPhone",
             billingContactEmail = "billingContactEmail",
             billingAddressDto = addressList[0].toAddressDto(),
+            resellerType = ResellerType.Distributor,
         )
-        val resellerId = 1L // for testing
-        val reseller = resellerDto.toReseller(resellerId)
+        val reseller = resellerDto.toReseller()
         resellerList.add(resellerService.insert(reseller))
     }
 
@@ -218,7 +218,7 @@ class DataLoader : ApplicationRunner {
                 email = "steve.eick@gmail.com",
                 phone = "630-561-7897",
             ),
-            foodBusType = FoodBusType.Restaurant
+            foodBusDesc = "Restaurant"
         )
         foodBusList.add(foodBusService.insert(foodBus))
 
@@ -232,7 +232,7 @@ class DataLoader : ApplicationRunner {
                 email = "joe.smith@gmail.com",
                 phone = "800-555-1212",
             ),
-            foodBusType = FoodBusType.Restaurant
+            foodBusDesc = "Restaurant"
         )
         foodBusList.add(foodBusService.insert(foodBus))
 
@@ -246,7 +246,7 @@ class DataLoader : ApplicationRunner {
                 email = "ted.podolak@gmail.com",
                 phone = "800-555-1212",
             ),
-            foodBusType = FoodBusType.Restaurant
+            foodBusDesc = "Restaurant"
         )
         foodBusList.add(foodBusService.insert(foodBus))
     }

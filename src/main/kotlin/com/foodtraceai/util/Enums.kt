@@ -9,7 +9,7 @@ enum class ImplementationStyle {
 }
 
 data class Config(
-    val spreadsheetStyle:ImplementationStyle,
+    val spreadsheetStyle: ImplementationStyle,
 )
 
 val myConfig = Config(
@@ -45,6 +45,12 @@ enum class FoodBusType(val cteTypes: List<CteType>) {
     Distributor(listOf(CteType.Receive, CteType.Ship)),
     RFE(listOf(CteType.Receive, CteType.Transform, CteType.Ship)),  // grocery, convenience, club stores, etc.
     Restaurant(listOf(CteType.Receive, CteType.Transform, CteType.Ship)),
+}
+
+enum class ResellerType {
+    Association,
+    Distributor,
+    Franchisee,
 }
 
 enum class FtlItem {
