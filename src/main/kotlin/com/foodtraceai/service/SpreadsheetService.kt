@@ -32,67 +32,69 @@ class SpreadsheetService(
     private val cteReceiveService: CteReceiveService,
 ) {
 
-    data class Duo(
-        val label: String,
-        val f: (cte: CteReceive) -> String,
+    private val fdaReceivingTabColHeaders: List<Pair<String, (cte: CteReceive) -> String>> = listOf(
+        Pair("(a)(1) TLC - tlcVal", fun(cte: CteReceive) = cte.tlc.tlcVal),
+        Pair("(a)(2) Qty & UOM", fun(cte: CteReceive) = "${cte.quantity} ${cte.unitOfMeasure}"),
+        Pair("(a)(3) Product Description", fun(cte: CteReceive) = cte.prodDesc),
+        Pair("(a)(3) Variety", fun(cte: CteReceive) = cte.variety),
+        Pair("(a)(4) IPS Food Bus", fun(cte: CteReceive) = cte.ipsLocation.foodBus.foodBusName),
+        Pair("(a)(4) IPS Address", fun(cte: CteReceive) = cte.ipsLocation.address.format()),
+        Pair("(a)(5) Receive Location", fun(cte: CteReceive) = cte.location.foodBus.foodBusName),
+        Pair("(a)(5) Receive Address", fun(cte: CteReceive) = cte.location.address.format()),
+        Pair("(a)(6) Receive Date", fun(cte: CteReceive) = "${cte.receiveDate}"),
+        Pair("(a)(7) TLC Source Food Bus", fun(cte: CteReceive) = cte.tlcSource.foodBus.foodBusName),
+        Pair("(a)(7) TLC Source Address", fun(cte: CteReceive) = cte.tlcSource.address.format()),
+        Pair("(a)(7) TLC Source Reference", fun(cte: CteReceive) = cte.tlcSourceReference ?: "null"),
+        Pair("(a)(8) Ref Doc Type", fun(cte: CteReceive) = cte.referenceDocumentType.toString()),
+        Pair("(a)(8) Ref Doc Num", fun(cte: CteReceive) = cte.referenceDocumentNum),
     )
 
-    private val fdaReceivingTabColHeaders = listOf(
-        Duo("(a)(1) TLC - tlcVal", fun(cte: CteReceive) = cte.tlc.tlcVal),
-        Duo("(a)(2) Qty & UOM", fun(cte: CteReceive) = "${cte.quantity} ${cte.unitOfMeasure}"),
-        Duo("(a)(3) Product Description", fun(cte: CteReceive) = cte.prodDesc),
-        Duo("(a)(3) Variety", fun(cte: CteReceive) = cte.variety),
-        Duo("(a)(4) IPS Food Bus", fun(cte: CteReceive) = cte.ipsLocation.foodBus.foodBusName),
-        Duo("(a)(4) IPS Address", fun(cte: CteReceive) = cte.ipsLocation.address.format()),
-        Duo("(a)(5) Receive Location", fun(cte: CteReceive) = cte.location.foodBus.foodBusName),
-        Duo("(a)(5) Receive Address", fun(cte: CteReceive) = cte.location.address.format()),
-        Duo("(a)(6) Receive Date", fun(cte: CteReceive) = "${cte.receiveDate}"),
-        Duo("(a)(7) TLC Source Food Bus", fun(cte: CteReceive) = cte.tlcSource.foodBus.foodBusName),
-        Duo("(a)(7) TLC Source Address", fun(cte: CteReceive) = cte.tlcSource.address.format()),
-        Duo("(a)(7) TLC Source Reference", fun(cte: CteReceive) = cte.tlcSourceReference ?: "null"),
-        Duo("(a)(8) Ref Doc Type", fun(cte: CteReceive) = cte.referenceDocumentType.toString()),
-        Duo("(a)(8) Ref Doc Num", fun(cte: CteReceive) = cte.referenceDocumentNum),
-    )
-
-    private val ptiReceivingTabColHeaders = listOf(
-        Duo("(a)(1) TLC - tlcVal", fun(cte: CteReceive) = cte.tlc.tlcVal),
-        Duo("(a)(1) TLC - GTIN", fun(cte: CteReceive) = cte.tlc.gtin?.gtinVal ?: "null"),
-        Duo("(a)(1) TLC - Batch", fun(cte: CteReceive) = cte.tlc.batchLot?.batchLotVal ?: "null"),
-        Duo("(a)(1) TLC - Date**", fun(cte: CteReceive) = cte.tlc.packDate.toString()),
-        Duo("(a)(1) TLC - Date Type**", fun(cte: CteReceive) = "Pack Date"),
-        Duo("(a)(1) TLC - SSCC**", fun(cte: CteReceive) = cte.tlc.sscc?.ssccVal ?: "null"),
-        Duo("(b)(1) TLC - Assigned By", fun(cte: CteReceive) = cte.tlcSource.foodBus.foodBusDesc),
-        Duo("(a)(2) Qty & UOM", fun(cte: CteReceive) = "${cte.quantity} ${cte.unitOfMeasure}"),
-        Duo("(a)(3) Product Description", fun(cte: CteReceive) = cte.prodDesc),
+    private val ptiReceivingTabColHeaders: List<Pair<String, (cte: CteReceive) -> String>> = listOf(
+        Pair("(a)(1) TLC - tlcVal", fun(cte: CteReceive) = cte.tlc.tlcVal),
+        Pair("(a)(1) TLC - GTIN", fun(cte: CteReceive) = cte.tlc.gtin?.gtinVal ?: "null"),
+        Pair("(a)(1) TLC - Batch", fun(cte: CteReceive) = cte.tlc.batchLot?.batchLotVal ?: "null"),
+        Pair("(a)(1) TLC - Date**", fun(cte: CteReceive) = cte.tlc.packDate.toString()),
+        Pair("(a)(1) TLC - Date Type**", fun(cte: CteReceive) = "Pack Date"),
+        Pair("(a)(1) TLC - SSCC**", fun(cte: CteReceive) = cte.tlc.sscc?.ssccVal ?: "null"),
+        Pair("(b)(1) TLC - Assigned By", fun(cte: CteReceive) = cte.tlcSource.foodBus.foodBusDesc),
+        Pair("(a)(2) Qty & UOM", fun(cte: CteReceive) = "${cte.quantity} ${cte.unitOfMeasure}"),
+        Pair("(a)(3) Product Description", fun(cte: CteReceive) = cte.prodDesc),
         //"(a)(4) Immediate Previous Source (IPS) Location - (Shipped from Location)"
-        Duo("(a)(4) IPS Location", fun(cte: CteReceive) = cte.ipsLocation.foodBus.foodBusName),
-        Duo("(a)(5) Receive Location", fun(cte: CteReceive) = cte.location.foodBus.foodBusName),
-        Duo("(a)(6) Receive Date", fun(cte: CteReceive) = cte.receiveDate.toString()),
-        Duo("(a)(7) TLC Source ReferenceGLN", fun(cte: CteReceive) = "null"),
-        Duo("(a)(7) TLC Source ReferenceFFRN", fun(cte: CteReceive) = "null"),
-        Duo("(a)(7) TLC Source ReferenceURL", fun(cte: CteReceive) = "null"),
-        Duo("(a)(7) TLC Source ReferenceGGN", fun(cte: CteReceive) = "null"),
-        Duo("(b)(5) TLC Source Reference - Assigned By", fun(cte: CteReceive) = "null"),
-        Duo("(a)(8) Ref Doc", fun(cte: CteReceive) = "null"),
+        Pair("(a)(4) IPS Location", fun(cte: CteReceive) = cte.ipsLocation.foodBus.foodBusName),
+        Pair("(a)(5) Receive Location", fun(cte: CteReceive) = cte.location.foodBus.foodBusName),
+        Pair("(a)(6) Receive Date", fun(cte: CteReceive) = cte.receiveDate.toString()),
+        Pair("(a)(7) TLC Source ReferenceGLN", fun(cte: CteReceive) = "null"),
+        Pair("(a)(7) TLC Source ReferenceFFRN", fun(cte: CteReceive) = "null"),
+        Pair("(a)(7) TLC Source ReferenceURL", fun(cte: CteReceive) = "null"),
+        Pair("(a)(7) TLC Source ReferenceGGN", fun(cte: CteReceive) = "null"),
+        Pair("(b)(5) TLC Source Reference - Assigned By", fun(cte: CteReceive) = "null"),
+        Pair("(a)(8) Ref Doc", fun(cte: CteReceive) = "null"),
     )
 
-    private val pitLocTabColHeaders = listOf(
-        Duo("Business or Farm Name", fun(cte: CteReceive) = cte.foodBus.foodBusName),
-        Duo("Phone", fun(cte: CteReceive) = cte.ipsLocation.foodBus.contact.phone),
-        Duo("Address", fun(cte: CteReceive) = cte.ipsLocation.address.format()),
-        Duo("Field Name*", fun(cte: CteReceive) = "${cte.ipsLocation.description}"),
-        Duo("Geo-Coordinates*", fun(cte: CteReceive) =  "${cte.ipsLocation.address.lat}, ${cte.ipsLocation.address.lon}"),
-        Duo("GLN*", fun(cte: CteReceive) = "${cte.ipsLocation.address.gln}"),
-        Duo("FFRN*", fun(cte: CteReceive) = "${cte.ipsLocation.address.ffrn}"),
+    private val pitLocTabColHeaders: List<Pair<String, (cte: CteReceive) -> String>> = listOf(
+        Pair("Business or Farm Name", fun(cte: CteReceive) = cte.foodBus.foodBusName),
+        Pair("Phone", fun(cte: CteReceive) = cte.ipsLocation.foodBus.contact.phone),
+        Pair("Address", fun(cte: CteReceive) = cte.ipsLocation.address.format()),
+        Pair("Field Name*", fun(cte: CteReceive) = "${cte.ipsLocation.description}"),
+        Pair(
+            "Geo-Coordinates*",
+            fun(cte: CteReceive) = "${cte.ipsLocation.address.lat}, ${cte.ipsLocation.address.lon}"),
+        Pair("GLN*", fun(cte: CteReceive) = "${cte.ipsLocation.address.gln}"),
+        Pair("FFRN*", fun(cte: CteReceive) = "${cte.ipsLocation.address.ffrn}"),
     )
 
-    private val ptiProductsTabColHeaders = listOf(
-        Duo("FTL List Category", fun(cte: CteReceive) = cte.ftlItem.name),
-        Duo("GTIN", fun(cte: CteReceive) = cte.tlc.gtin?.gtinVal ?: ""),
-        Duo("Product Desc", fun(cte: CteReceive) = cte.prodDesc),
+    private val ptiProductsTabColHeaders: List<Pair<String, (cte: CteReceive) -> String>> = listOf(
+        Pair("FTL List Category", fun(cte: CteReceive) = cte.ftlItem.name),
+        Pair("GTIN", fun(cte: CteReceive) = cte.tlc.gtin?.gtinVal ?: ""),
+        Pair("Product Desc", fun(cte: CteReceive) = cte.prodDesc),
     )
 
-    private fun makeTab(tabName: String, workbook: Workbook, colHeaders: List<Duo>, cteList: List<CteReceive>) {
+    private fun makeTab(
+        tabName: String,
+        workbook: Workbook,
+        colHeaders: List<Pair<String,(cte:CteReceive)->String>>,
+        cteList: List<CteReceive>
+    ) {
         val receiving: Sheet = workbook.createSheet(tabName)
         colHeaders.forEachIndexed { idx, _ ->
             receiving.setColumnWidth(idx, 5000)
@@ -111,9 +113,9 @@ class SpreadsheetService(
         headerStyle.setFont(font)
         headerStyle.alignment = HorizontalAlignment.CENTER
 
-        colHeaders.forEachIndexed { idx, duo ->
+        colHeaders.forEachIndexed { idx, pair ->
             val headerCell = header.createCell(idx)
-            headerCell.setCellValue(duo.label)
+            headerCell.setCellValue(pair.first)
             headerCell.cellStyle = headerStyle
         }
 
@@ -125,10 +127,10 @@ class SpreadsheetService(
 
         cteList.forEachIndexed { rowNum, cte ->
             val row = receiving.createRow(rowNum + 1 /* 1 leave space for headers */)
-            colHeaders.forEachIndexed { idx, duo ->
+            colHeaders.forEachIndexed { idx, pair ->
                 val cell = row.createCell(idx)
                 cell.cellStyle = style
-                cell.setCellValue(duo.f(cte))
+                cell.setCellValue(pair.second(cte))
             }
         }
     }
@@ -161,7 +163,7 @@ class SpreadsheetService(
                 // Locations Tab
                 set.clear()
                 val uniqIpsLocationList = mutableListOf<CteReceive>()
-                cteList.forEach{ cte ->
+                cteList.forEach { cte ->
                     val key = cte.ipsLocation.address.format()
                     if (set.contains(key))
                         return@forEach
