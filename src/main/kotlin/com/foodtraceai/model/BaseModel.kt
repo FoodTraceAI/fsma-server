@@ -66,16 +66,12 @@ open class BaseModel<T> {
  **/
 abstract class BaseResellerModel<T> : BaseModel<T>() {
     abstract val reseller: Reseller?
-    val isClient: Boolean
-        get() = reseller != null
 }
 
 abstract class BaseFoodBusModel<T> : BaseModel<T>() {
     abstract val foodBus: FoodBus
     val reseller: Reseller?
         get() = foodBus.reseller
-    val isClient: Boolean
-        get() = reseller != null
 }
 
 abstract class BaseLocationModel<T> : BaseModel<T>() {
@@ -85,7 +81,7 @@ abstract class BaseLocationModel<T> : BaseModel<T>() {
     val reseller: Reseller?
         get() = foodBus.reseller
     val isClient: Boolean
-        get() = reseller != null
+        get() = location.isClient
 }
 
 ///**

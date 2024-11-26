@@ -77,7 +77,7 @@ class TestsLocation {
             ),
             description = "Steve's House",
             addressId = 1,
-            isBillable = true,
+            isClient = true,
         )
 
         locationDtoUpdated = LocationDto(
@@ -91,7 +91,7 @@ class TestsLocation {
             ),
             description = "Steve's House",
             addressId = 1,
-            isBillable = false,
+            isClient = false,
         )
     }
 
@@ -124,7 +124,7 @@ class TestsLocation {
             jsonPath("$.contact.phone") { value(locationDto.contact.phone) }
             jsonPath("$.contact.email") { value(locationDto.contact.email) }
             jsonPath("$.addressId") { value(locationDto.addressId) }
-            jsonPath("$.isBillable") { value(true) }
+            jsonPath("$.isClient") { value(true) }
         }.andReturn()
         val locationId: Long = JsonPath.read(mvcResult.response.contentAsString, "$.id")
     }
@@ -144,7 +144,7 @@ class TestsLocation {
             jsonPath("$.contact.phone") { value(locationDto.contact.phone) }
             jsonPath("$.contact.email") { value(locationDto.contact.email) }
             jsonPath("$.addressId") { value(locationDto.addressId) }
-            jsonPath("$.isBillable") { value(true) }
+            jsonPath("$.isClient") { value(true) }
         }
     }
 
@@ -167,7 +167,7 @@ class TestsLocation {
             jsonPath("$.contact.phone") { value(locationDtoUpdated.contact.phone) }
             jsonPath("$.contact.email") { value(locationDtoUpdated.contact.email) }
             jsonPath("$.addressId") { value(locationDtoUpdated.addressId) }
-            jsonPath("$.isBillable") { value(false) }
+            jsonPath("$.isClient") { value(false) }
         }
     }
 

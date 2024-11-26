@@ -28,7 +28,7 @@ data class Location(
     val address: Address,
 
     // Is this food business one of our clients that we need to bill?
-    val isBillable: Boolean = true,
+    val isClient: Boolean = true,
 
     @Column(updatable = false)
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
@@ -43,7 +43,7 @@ data class LocationDto(
     val contact: Contact,
     val description: String?,
     val addressId: Long,
-    val isBillable: Boolean,
+    val isClient: Boolean,
     val dateCreated: OffsetDateTime = OffsetDateTime.now(),
     val dateModified: OffsetDateTime = OffsetDateTime.now(),
     val isDeleted: Boolean = false,
@@ -56,7 +56,7 @@ fun Location.toLocationDto() = LocationDto(
     contact = contact,
     description = description,
     addressId = address.id,
-    isBillable = isBillable,
+    isClient = isClient,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,
@@ -72,5 +72,5 @@ fun LocationDto.toLocation(
     contact = contact,
     description = description,
     address = address,
-    isBillable = isBillable,
+    isClient = isClient,
 )
