@@ -49,11 +49,14 @@ class FoodBusController : BaseController() {
         val mainAddress = addressService.findById(foodBusDto.mainAddressId)
             ?: throw EntityNotFoundException("Address not found: ${foodBusDto.mainAddressId}")
 
+        val contact = contactService.findById(foodBusDto.foodBusContactId)
+            ?: throw EntityNotFoundException("Contact not found: ${foodBusDto.foodBusContactId}")
+
         val franchisor = if (foodBusDto.franchisorId == null) null
         else franchisorService.findById(foodBusDto.franchisorId)
             ?: throw EntityNotFoundException("Franchisor not found: ${foodBusDto.franchisorId}")
 
-        val foodBus = foodBusDto.toFoodBus(reseller, mainAddress, franchisor)
+        val foodBus = foodBusDto.toFoodBus(reseller, mainAddress, contact, franchisor)
         val foodBusResponse = foodBusService.insert(foodBus).toFoodBusDto()
         return ResponseEntity.created(URI.create(FOOD_BUS_BASE_URL.plus("/${foodBusResponse.id}")))
             .body(foodBusResponse)
@@ -77,11 +80,16 @@ class FoodBusController : BaseController() {
 
         val mainAddress = addressService.findById(foodBusDto.mainAddressId)
             ?: throw EntityNotFoundException("Address not found: ${foodBusDto.mainAddressId}")
-        val franchisor = if (foodBusDto.franchisorId == null) null
-        else franchisorService.findById(foodBusDto.franchisorId)
-            ?: throw EntityNotFoundException("Franchisor not found: ${foodBusDto.franchisorId}")
 
-        val foodBus = foodBusDto.toFoodBus(reseller, mainAddress, franchisor)
+        val foodBusContact = contactService.findById(foodBusDto.foodBusContactId)
+            ?: throw EntityNotFoundException("Contact not found: ${foodBusDto.foodBusContactId}")
+
+        val franchisor = foodBusDto.franchisorId?.let {
+            franchisorService.findById(it)
+                ?: throw EntityNotFoundException("Franchisor not found: $it")
+        }
+
+        val foodBus = foodBusDto.toFoodBus(reseller, mainAddress, foodBusContact, franchisor)
         val foodBusResponse = foodBusService.update(foodBus)
         return ResponseEntity.ok().body(foodBusResponse.toFoodBusDto())
     }

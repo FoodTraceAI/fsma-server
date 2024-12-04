@@ -5,11 +5,12 @@ package com.foodtraceai
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.foodtraceai.auth.AuthLogin
+import com.foodtraceai.model.Contact
 import com.foodtraceai.model.TracePlanDto
 import com.foodtraceai.model.toTracePlan
+import com.foodtraceai.service.ContactService
 import com.foodtraceai.service.LocationService
 import com.foodtraceai.service.TracePlanService
-import com.foodtraceai.util.Contact
 import com.foodtraceai.util.EntityNotFoundException
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
@@ -35,6 +36,11 @@ class TestsTracePlan {
 
     // ------------------------------------------------------------------------
     // Test setup
+
+    @Autowired
+    private lateinit var contactService: ContactService
+    private lateinit var tracePlanContact: Contact
+    private lateinit var updatedTracePlanContact: Contact
 
     @Autowired
     private lateinit var locationService: LocationService
@@ -64,17 +70,29 @@ class TestsTracePlan {
 
     @BeforeEach
     fun localSetup() {
+        tracePlanContact = contactService.insert(
+            Contact(
+                firstName = "tracePlanContact firstName",
+                lastName = "tracePlanContact lastName",
+                email = "tracePlanContact email",
+                phone = "tracePlanContact 800-555-1212"
+            )
+        )
+        updatedTracePlanContact = contactService.insert(
+            Contact(
+                firstName = "Updated - tracePlanContact firstName",
+                lastName = "Updated - tracePlanContact lastName",
+                email = "Updated - tracePlanContact email",
+                phone = "Updated - tracePlanContact 800-555-1212"
+            )
+        )
+
         tracePlanDto = TracePlanDto(
             locationId = 1,
             descProcRecordMaintenance = "descProcRecordMaintenance",
             descProcIdentifyFoods = "descProcIdentifyFoods",
             descAssignTraceLotCodes = "descAssignTraceLotCodes",
-            contact = Contact(
-                firstName = "POC firstName",
-                lastName = "POC lastName",
-                "Poc email",
-                phone = "800-555-1212"
-            )
+            tracePlanContactId = tracePlanContact.id
         )
 
         tracePlanDtoUpdated = TracePlanDto(
@@ -82,12 +100,7 @@ class TestsTracePlan {
             descProcRecordMaintenance = "Updated - descProcRecordMaintenance",
             descProcIdentifyFoods = "Updated - descProcIdentifyFoods",
             descAssignTraceLotCodes = "Updated - descAssignTraceLotCodes",
-            contact = Contact(
-                firstName = "Updated - POC firstName",
-                lastName = "Updated - POC lastName",
-                email = "Updated - Poc email",
-                phone = "Updated - 800-555-1212"
-            )
+            tracePlanContactId = updatedTracePlanContact.id,
         )
     }
 
@@ -107,10 +120,7 @@ class TestsTracePlan {
             jsonPath("$.descProcRecordMaintenance") { value(tracePlanDto.descProcRecordMaintenance) }
             jsonPath("$.descProcIdentifyFoods") { value(tracePlanDto.descProcIdentifyFoods) }
             jsonPath("$.descAssignTraceLotCodes") { value(tracePlanDto.descAssignTraceLotCodes) }
-            jsonPath("$.contact.firstName") { value(tracePlanDto.contact.firstName) }
-            jsonPath("$.contact.lastName") { value(tracePlanDto.contact.lastName) }
-            jsonPath("$.contact.email") { value(tracePlanDto.contact.email) }
-            jsonPath("$.contact.phone") { value(tracePlanDto.contact.phone) }
+            jsonPath("$.tracePlanContactId") { value(tracePlanContact.id) }
         }.andReturn()
         val tracePlanId: Long = JsonPath.read(mvcResult.response.contentAsString, "$.id")
     }
@@ -121,7 +131,7 @@ class TestsTracePlan {
         val location = locationService.findById(tracePlanDto.locationId)
             ?: throw EntityNotFoundException("LocationId not found = ${tracePlanDto.locationId}")
 
-        val tracePlanId = tracePlanService.insert(tracePlanDto.toTracePlan(location)).id
+        val tracePlanId = tracePlanService.insert(tracePlanDto.toTracePlan(location,tracePlanContact)).id
         mockMvc.get("/api/v1/trace-plan/$tracePlanId") {
             header("Authorization", "Bearer $accessToken")
         }.andExpect {
@@ -131,18 +141,16 @@ class TestsTracePlan {
             jsonPath("$.descProcRecordMaintenance") { value(tracePlanDto.descProcRecordMaintenance) }
             jsonPath("$.descProcIdentifyFoods") { value(tracePlanDto.descProcIdentifyFoods) }
             jsonPath("$.descAssignTraceLotCodes") { value(tracePlanDto.descAssignTraceLotCodes) }
-            jsonPath("$.contact.firstName") { value(tracePlanDto.contact.firstName) }
-            jsonPath("$.contact.email") { value(tracePlanDto.contact.email) }
-            jsonPath("$.contact.phone") { value(tracePlanDto.contact.phone) }
+            jsonPath("$.tracePlanContactId") { value(tracePlanContact.id) }
         }
     }
 
     @Test
-    fun `delete business`() {
+    fun `delete tracePlan`() {
         val (accessToken, _) = authenticate(rootAuthLogin)
         val location = locationService.findById(tracePlanDto.locationId)
             ?: throw EntityNotFoundException("LocationId not found = ${tracePlanDto.locationId}")
-        val tracePlanId = tracePlanService.insert(tracePlanDto.toTracePlan(location)).id
+        val tracePlanId = tracePlanService.insert(tracePlanDto.toTracePlan(location,tracePlanContact)).id
         mockMvc.delete("/api/v1/traceplan/$tracePlanId") {
             header("Authorization", "Bearer $accessToken")
         }.andExpect {

@@ -9,9 +9,9 @@ import com.foodtraceai.model.Location
 import com.foodtraceai.model.LocationDto
 import com.foodtraceai.model.toLocation
 import com.foodtraceai.service.AddressService
+import com.foodtraceai.service.ContactService
 import com.foodtraceai.service.FoodBusService
 import com.foodtraceai.service.LocationService
-import com.foodtraceai.util.Contact
 import com.foodtraceai.util.EntityNotFoundException
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
@@ -37,6 +37,9 @@ class TestsLocation {
 
     @Autowired
     private lateinit var addressService: AddressService
+
+    @Autowired
+    private lateinit var contactService: ContactService
 
     @Autowired
     private lateinit var foodBusService: FoodBusService
@@ -69,12 +72,7 @@ class TestsLocation {
         locationDto = LocationDto(
             id = 0,
             foodBusId = 1,
-            contact = Contact(
-                firstName = "Steve",
-                lastName = "Eick",
-                phone = "1-800-555-1212",
-                email = "steve@gmail.abc",
-            ),
+            locationContactId = 5, // Steve Eick Contact
             description = "Steve's House",
             addressId = 1,
             isClient = true,
@@ -83,13 +81,8 @@ class TestsLocation {
         locationDtoUpdated = LocationDto(
             id = 0,
             foodBusId = 1,
-            contact = Contact(
-                firstName = "NewContactFirst",
-                lastName = "NewContactLast",
-                phone = "0-000-000-0000",
-                email = "newcontact@gmail.abc",
-            ),
-            description = "Steve's House",
+            locationContactId = 3,  // "NewContactFirst
+            description = "NewContact",
             addressId = 1,
             isClient = false,
         )
@@ -100,12 +93,15 @@ class TestsLocation {
 
     private fun addLocation(locationDto: LocationDto): Location {
         val foodBus = foodBusService.findById(locationDto.foodBusId)
-            ?: throw EntityNotFoundException("Location not found = ${locationDto.foodBusId}")
+            ?: throw EntityNotFoundException("FoodBusId not found = ${locationDto.foodBusId}")
 
         val address = addressService.findById(locationDto.addressId)
             ?: throw EntityNotFoundException("Address not found = ${locationDto.addressId}")
 
-        return locationService.insert(locationDto.toLocation(foodBus, address))
+        val locationContact = contactService.findById(locationDto.locationContactId)
+            ?: throw EntityNotFoundException("Contact not found = ${locationDto.locationContactId}")
+
+        return locationService.insert(locationDto.toLocation(foodBus, locationContact = locationContact, address = address))
     }
 
     @Test
@@ -119,10 +115,7 @@ class TestsLocation {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.foodBusId") { value(locationDto.foodBusId) }
-            jsonPath("$.contact.firstName") { value(locationDto.contact.firstName) }
-            jsonPath("$.contact.lastName") { value(locationDto.contact.lastName) }
-            jsonPath("$.contact.phone") { value(locationDto.contact.phone) }
-            jsonPath("$.contact.email") { value(locationDto.contact.email) }
+            jsonPath("$.locationContactId") { value(locationDto.locationContactId) }
             jsonPath("$.addressId") { value(locationDto.addressId) }
             jsonPath("$.isClient") { value(true) }
         }.andReturn()
@@ -139,10 +132,7 @@ class TestsLocation {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.foodBusId") { value(locationDto.foodBusId) }
-            jsonPath("$.contact.firstName") { value(locationDto.contact.firstName) }
-            jsonPath("$.contact.lastName") { value(locationDto.contact.lastName) }
-            jsonPath("$.contact.phone") { value(locationDto.contact.phone) }
-            jsonPath("$.contact.email") { value(locationDto.contact.email) }
+            jsonPath("$.locationContactId") { value(locationDto.locationContactId) }
             jsonPath("$.addressId") { value(locationDto.addressId) }
             jsonPath("$.isClient") { value(true) }
         }
@@ -162,10 +152,7 @@ class TestsLocation {
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(locationId) }
             jsonPath("$.foodBusId") { value(locationDtoUpdated.foodBusId) }
-            jsonPath("$.contact.firstName") { value(locationDtoUpdated.contact.firstName) }
-            jsonPath("$.contact.lastName") { value(locationDtoUpdated.contact.lastName) }
-            jsonPath("$.contact.phone") { value(locationDtoUpdated.contact.phone) }
-            jsonPath("$.contact.email") { value(locationDtoUpdated.contact.email) }
+            jsonPath("$.locationContactId") { value(locationDtoUpdated.locationContactId) }
             jsonPath("$.addressId") { value(locationDtoUpdated.addressId) }
             jsonPath("$.isClient") { value(false) }
         }

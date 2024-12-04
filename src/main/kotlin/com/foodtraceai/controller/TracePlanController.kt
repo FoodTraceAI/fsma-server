@@ -42,7 +42,9 @@ class TracePlanController : BaseController() {
     ): ResponseEntity<TracePlanDto> {
         val location = locationService.findById(tracePlanDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${tracePlanDto.locationId}")
-        val tracePlan = tracePlanDto.toTracePlan(location)
+        val contact = contactService.findById(tracePlanDto.tracePlanContactId)
+            ?: throw EntityNotFoundException("Contacts not found: ${tracePlanDto.tracePlanContactId}")
+        val tracePlan = tracePlanDto.toTracePlan(location,contact)
         val tracePlanResponse = tracePlanService.insert(tracePlan).toTracePlanDto()
         return ResponseEntity.created(URI.create(TRACE_PLAN_URL.plus("/${tracePlanResponse.id}")))
             .body(tracePlanResponse)
@@ -59,7 +61,9 @@ class TracePlanController : BaseController() {
             throw UnauthorizedRequestException("Conflicting TracePlanIds specified: $id != ${tracePlanDto.id}")
         val location = locationService.findById(tracePlanDto.locationId)
             ?: throw EntityNotFoundException("Location not found: ${tracePlanDto.locationId}")
-        val tracePlan = tracePlanDto.toTracePlan(location)
+        val contact = contactService.findById(tracePlanDto.tracePlanContactId)
+            ?: throw EntityNotFoundException("Contacts not found: ${tracePlanDto.tracePlanContactId}")
+        val tracePlan = tracePlanDto.toTracePlan(location,contact)
         val tracePlanResponse = tracePlanService.update(tracePlan).toTracePlanDto()
         return ResponseEntity.ok().body(tracePlanResponse)
     }

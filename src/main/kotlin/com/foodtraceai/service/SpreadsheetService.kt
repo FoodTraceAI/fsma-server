@@ -73,7 +73,7 @@ class SpreadsheetService(
 
     private val pitLocTabColHeaders: List<Pair<String, (cte: CteReceive) -> String>> = listOf(
         Pair("Business or Farm Name", fun(cte: CteReceive) = cte.foodBus.foodBusName),
-        Pair("Phone", fun(cte: CteReceive) = cte.ipsLocation.foodBus.contact.phone),
+        Pair("Phone", fun(cte: CteReceive) = cte.ipsLocation.foodBus.foodBusContact.phone),
         Pair("Address", fun(cte: CteReceive) = cte.ipsLocation.address.format()),
         Pair("Field Name*", fun(cte: CteReceive) = "${cte.ipsLocation.description}"),
         Pair(

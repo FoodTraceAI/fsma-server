@@ -33,6 +33,17 @@ class DataLoader : ApplicationRunner {
     private val addressList: MutableList<Address> = mutableListOf()
 
     @Autowired
+    private lateinit var contactService: ContactService
+    private val contactList: MutableList<Contact> = mutableListOf()
+    private lateinit var billingContact: Contact
+    private lateinit var joeContact: Contact
+    private lateinit var mainContact: Contact
+    private lateinit var newContact: Contact
+    private lateinit var steveContact: Contact
+    private lateinit var tedContact: Contact
+    private lateinit var tracePlanContact: Contact
+
+    @Autowired
     private lateinit var cteReceiveService: CteReceiveService
     private val cteReceiveList: MutableList<CteReceive> = mutableListOf()
 
@@ -70,6 +81,7 @@ class DataLoader : ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
         deleteAllData()
         addAddresses()
+        addContacts()
         addResellers()
         addFoodBusinesses()
         addLocations()
@@ -84,6 +96,9 @@ class DataLoader : ApplicationRunner {
     fun deleteAllData() {
         jdbcTemplate.execute("DELETE FROM address CASCADE;")
         jdbcTemplate.execute("ALTER SEQUENCE IF EXISTS address_seq RESTART;")
+
+        jdbcTemplate.execute("DELETE FROM contact CASCADE;")
+        jdbcTemplate.execute("ALTER SEQUENCE IF EXISTS contact_seq RESTART;")
 
         jdbcTemplate.execute("DELETE FROM cte_cool CASCADE;")
         jdbcTemplate.execute("ALTER SEQUENCE IF EXISTS cte_cool_seq RESTART;")
@@ -186,24 +201,84 @@ class DataLoader : ApplicationRunner {
         addressList.add(addressService.insert(address))
     }
 
+    fun addContacts() {
+        var contact = Contact(
+            firstName = "billingContactFirstName",
+            lastName = "billingContactLastName",
+            phone = "billingContactPhone",
+            email = "billingContactEmail"
+        )
+        billingContact = contactService.insert(contact)
+        contactList.add(billingContact)
+
+        contact = Contact(
+            firstName = "Joe",
+            lastName = "Smith",
+            email = "joe.smith@gmail.com",
+            phone = "800-555-1212",
+        )
+        joeContact = contactService.insert(contact)
+        contactList.add(joeContact)
+
+        contact = Contact(
+            firstName = "mainContactFirstName",
+            lastName = "mainContactLastName",
+            phone = "mainContactPhone",
+            email = "mainContactEmail"
+        )
+        mainContact = contactService.insert(contact)
+        contactList.add(mainContact)
+
+        contact = Contact(
+            firstName = "NewContactFirst",
+            lastName = "NewContactLast",
+            phone = "1-800-555-1212",
+            email = "NewContact@gmail.com"
+        )
+        newContact = contactService.insert(contact)
+        contactList.add(newContact)
+
+        contact = Contact(
+            firstName = "Steve",
+            lastName = "Eick",
+            phone = "1-800-555-1212",
+            email = "steve@gmail.com"
+        )
+        steveContact = contactService.insert(contact)
+        contactList.add(steveContact)
+
+        contact = Contact(
+            firstName = "Steve",
+            lastName = "Eick",
+            phone = "1-800-555-1212",
+            email = "steve@gmail.com"
+        )
+        tedContact = contactService.insert(contact)
+        contactList.add(tedContact)
+
+        contact = Contact(
+            firstName = "tracePlanContact firstName",
+            lastName = "tracePlanContact lastName",
+            email = "tracePlanContact email",
+            phone = "tracePlanContact 800-555-1212"
+        )
+        tracePlanContact = contactService.insert(contact)
+        contactList.add(tracePlanContact)
+    }
+
     fun addResellers() {
         val resellerDto = ResellerDto(
             addressDto = addressList[0].toAddressDto(),
             accountRep = "Steve",
             businessName = "FoodTraceAI",
-            mainContact = Contact(
-                firstName = "mainContactFirstName",
-                lastName = "mainContactLastName",
-                phone = "mainContactPhone",
-                email = "mainContactEmail"
-            ),
+            mainContactId = mainContact.id,
             billingContactName = "billingContactName",
             billingContactPhone = "billingContactPhone",
             billingContactEmail = "billingContactEmail",
             billingAddressDto = addressList[0].toAddressDto(),
             resellerType = ResellerType.Distributor,
         )
-        val reseller = resellerDto.toReseller()
+        val reseller = resellerDto.toReseller(mainContact)
         resellerList.add(resellerService.insert(reseller))
     }
 
@@ -212,12 +287,7 @@ class DataLoader : ApplicationRunner {
             reseller = resellerList[0],
             mainAddress = addressList[0],
             foodBusName = "FoodTraceAI",
-            contact = Contact(
-                firstName = "Stephen",
-                lastName = "Eick",
-                email = "steve.eick@gmail.com",
-                phone = "630-561-7897",
-            ),
+            foodBusContact = steveContact,
             foodBusDesc = "Restaurant"
         )
         foodBusList.add(foodBusService.insert(foodBus))
@@ -226,12 +296,7 @@ class DataLoader : ApplicationRunner {
             reseller = resellerList[0],
             mainAddress = addressList[0],
             foodBusName = "KaleidoscopeInc",
-            contact = Contact(
-                firstName = "Joe",
-                lastName = "Smith",
-                email = "joe.smith@gmail.com",
-                phone = "800-555-1212",
-            ),
+            foodBusContact = joeContact,
             foodBusDesc = "Restaurant"
         )
         foodBusList.add(foodBusService.insert(foodBus))
@@ -240,12 +305,7 @@ class DataLoader : ApplicationRunner {
             reseller = resellerList[0],
             mainAddress = addressList[0],
             foodBusName = "FB @ 630 N. Main",
-            contact = Contact(
-                firstName = "Ted",
-                lastName = "Podolak",
-                email = "ted.podolak@gmail.com",
-                phone = "800-555-1212",
-            ),
+            foodBusContact = tedContact,
             foodBusDesc = "Restaurant"
         )
         foodBusList.add(foodBusService.insert(foodBus))
@@ -254,7 +314,7 @@ class DataLoader : ApplicationRunner {
     fun addLocations() {
         var location = Location(
             foodBus = foodBusList[0],
-            contact = foodBusList[0].contact,
+            locationContact = foodBusList[0].foodBusContact,
             address = foodBusList[0].mainAddress
         )
         val response = locationService.insert(location)
@@ -263,14 +323,14 @@ class DataLoader : ApplicationRunner {
 
         location = Location(
             foodBus = foodBusList[1],
-            contact = foodBusList[1].contact,
+            locationContact = foodBusList[1].foodBusContact,
             address = foodBusList[1].mainAddress
         )
         locationList.add(locationService.insert(location))
 
         location = Location(
             foodBus = foodBusList[2],
-            contact = foodBusList[1].contact,
+            locationContact = foodBusList[2].foodBusContact,
             address = foodBusList[2].mainAddress
         )
         locationList.add(locationService.insert(location))
@@ -478,12 +538,7 @@ class DataLoader : ApplicationRunner {
                     " TraceabilityList that you manufacture, process, pack, or hold",
             descAssignTraceLotCodes = "(a)(3) A description of how you assign traceability lot codes to foods on the" +
                     " Food Traceability List in accordance with § 1.1320, if applicable;",
-            contact = Contact(
-                firstName="POC firstName",
-                lastName="POC lastName",
-                "Poc email",
-                phone = "800-555-1212"
-            )
+            tracePlanContact = tracePlanContact,
         )
         tracePlanList.add(tracePlanService.insert(tracePlan))
     }

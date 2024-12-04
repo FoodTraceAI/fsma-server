@@ -29,6 +29,9 @@ class BaseController {
     protected lateinit var addressService: AddressService
 
     @Autowired
+    protected lateinit var contactService: ContactService
+
+    @Autowired
     protected lateinit var cteFirstLandService: CteFirstLandService
 
     @Autowired

@@ -6,11 +6,7 @@ package com.foodtraceai
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.foodtraceai.auth.AuthLogin
 import com.foodtraceai.model.*
-import com.foodtraceai.service.AddressService
-import com.foodtraceai.service.FoodBusService
-import com.foodtraceai.service.FranchisorService
-import com.foodtraceai.service.ResellerService
-import com.foodtraceai.util.Contact
+import com.foodtraceai.service.*
 import com.foodtraceai.util.EntityNotFoundException
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
@@ -36,6 +32,9 @@ class TestsFoodBus {
 
     @Autowired
     private lateinit var addressService: AddressService
+
+    @Autowired
+    private lateinit var contactService: ContactService
 
     @Autowired
     private lateinit var franchisorService: FranchisorService
@@ -72,15 +71,9 @@ class TestsFoodBus {
             id = 0,
             resellerId = 1,
             mainAddressId = 1,
-            contact = Contact(
-                firstName = "Steve",
-                lastName = "Eick",
-                phone = "1-800-555-1212",
-                email = "steve@gmail.com"
-            ),
+            foodBusContactId = 1,
             foodBusName = "Fred's Restaurant",
             foodBusDesc = "Restaurant",
-            isFranchisor = false,
             franchisorId = null,
         )
 
@@ -88,15 +81,9 @@ class TestsFoodBus {
             id = 0,
             resellerId = 1,
             mainAddressId = 1,
-            contact = Contact(
-                firstName = "NewContactFirst",
-                lastName = "NewContactLast",
-                phone = "1-800-555-1212",
-                email = "NewContact@gmail.com"
-            ),
-            foodBusName = "Fred's Restaurant",
+            foodBusContactId = 1,
+            foodBusName = "Steve's Restaurant",
             foodBusDesc = "RFE",
-            isFranchisor = false,
             franchisorId = null,
         )
     }
@@ -105,20 +92,23 @@ class TestsFoodBus {
     // ------------------------------------------------------------------------
 
     private fun addFoodBus(dto: FoodBusDto): FoodBus {
-        var reseller: Reseller?=null
-        dto.resellerId?.let {
-            reseller = resellerService.findById(it)
-                ?: throw EntityNotFoundException("ResellerDto not found = ${dto.resellerId}")
+        val reseller: Reseller? = dto.resellerId?.let {
+            resellerService.findById(it)
+                ?: throw EntityNotFoundException("Reseller not found = ${dto.resellerId}")
         }
 
         val mainAddress = addressService.findById(dto.mainAddressId)
-            ?: throw EntityNotFoundException("FoodBus mainAddresssId not found = ${foodBusDto.mainAddressId}")
+            ?: throw EntityNotFoundException("FoodBus addresssId not found = ${foodBusDto.mainAddressId}")
 
-        var franchisor: Franchisor? = null
-        if (foodBusDto.franchisorId != null)
-            franchisor = franchisorService.findById(foodBusDto.franchisorId!!)
+        val franchisor: Franchisor? = foodBusDto.franchisorId?.let {
+            franchisorService.findById(it)
+                ?: throw EntityNotFoundException("Franchisor not found = $it")
+        }
 
-        return foodBusService.insert(foodBusDto.toFoodBus(reseller, mainAddress, franchisor))
+        val foodBusContact = contactService.findById(foodBusDto.foodBusContactId)
+            ?: throw EntityNotFoundException("Contact not found = ${foodBusDto.foodBusContactId}")
+
+        return foodBusService.insert(foodBusDto.toFoodBus(reseller, mainAddress, foodBusContact, franchisor))
     }
 
     @Test
@@ -131,9 +121,7 @@ class TestsFoodBus {
         }.andExpect {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.contact.firstName") { value("Steve") }
-            jsonPath("$.contact.lastName") { value("Eick") }
-            jsonPath("$.contact.phone") { value("1-800-555-1212") }
+            jsonPath("$.foodBusContactId") { value(foodBusDto.foodBusContactId) }
             jsonPath("$.foodBusName") { value("Fred's Restaurant") }
             jsonPath("$.foodBusDesc") { value("Restaurant") }
         }
@@ -150,9 +138,7 @@ class TestsFoodBus {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(foodBusId) }
-            jsonPath("$.contact.firstName") { value("Steve") }
-            jsonPath("$.contact.lastName") { value("Eick") }
-            jsonPath("$.contact.phone") { value("1-800-555-1212") }
+            jsonPath("$.foodBusContactId") { value(foodBusDto.foodBusContactId) }
             jsonPath("$.foodBusName") { value("Fred's Restaurant") }
             jsonPath("$.foodBusDesc") { value("Restaurant") }
         }
@@ -171,11 +157,9 @@ class TestsFoodBus {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(foodBusId) }
-            jsonPath("$.contact.firstName") { value("NewContactFirst") }
-            jsonPath("$.contact.lastName") { value("NewContactLast") }
-            jsonPath("$.contact.phone") { value("1-800-555-1212") }
-            jsonPath("$.foodBusName") { value("Fred's Restaurant") }
-            jsonPath("$.foodBusDesc") { value("RFE") }
+            jsonPath("$.foodBusContactId") { value(foodBusDtoUpdated.foodBusContactId) }
+            jsonPath("$.foodBusName") { value(foodBusDtoUpdated.foodBusName) }
+            jsonPath("$.foodBusDesc") { value(foodBusDtoUpdated.foodBusDesc) }
         }
     }
 

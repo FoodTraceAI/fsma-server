@@ -3,7 +3,6 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model
 
-import com.foodtraceai.util.Contact
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -11,13 +10,16 @@ import java.time.OffsetDateTime
 
 @Entity
 data class Location(
-    @Id @GeneratedValue override val id: Long = 0,
+    @Id @GeneratedValue
+    override val id: Long = 0,
 
     @ManyToOne @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     override val foodBus: FoodBus,
 
-    @Embedded val contact: Contact,
+    @ManyToOne @JoinColumn
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    val locationContact: Contact,
 
     // Something Like: Company Distribution Center, Local Wholesale of Georgia
     // Includes: field name
@@ -40,7 +42,7 @@ data class Location(
 data class LocationDto(
     val id: Long = 0,
     val foodBusId: Long,
-    val contact: Contact,
+    val locationContactId: Long,
     val description: String?,
     val addressId: Long,
     val isClient: Boolean,
@@ -53,7 +55,7 @@ data class LocationDto(
 fun Location.toLocationDto() = LocationDto(
     id = id,
     foodBusId = foodBus.id,
-    contact = contact,
+    locationContactId = locationContact.id,
     description = description,
     addressId = address.id,
     isClient = isClient,
@@ -65,11 +67,12 @@ fun Location.toLocationDto() = LocationDto(
 
 fun LocationDto.toLocation(
     foodBus: FoodBus,
+    locationContact: Contact,
     address: Address,
 ) = Location(
     id = id,
     foodBus = foodBus,
-    contact = contact,
+    locationContact = locationContact,
     description = description,
     address = address,
     isClient = isClient,

@@ -3,7 +3,6 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model
 
-import com.foodtraceai.util.Contact
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -16,7 +15,7 @@ https://www.ecfr.gov/current/title-21/section-1.1315
 § 1.1315 What traceability plan must I have for foods on the Food Traceability List that
 I manufacture, process, pack, or hold?
 
- Examples of traceability plans
+Examples of traceability plans
 https://www.fda.gov/media/174057/download?attachment - for farms
 
 https://www.fda.gov/media/174058/download?attachment - for restaurants
@@ -30,10 +29,9 @@ data class TracePlan(
     @Id @GeneratedValue
     override val id: Long = 0,
 
-    val issueDate: LocalDate?=null,
+    val issueDate: LocalDate? = null,
 
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne @JoinColumn
     override val location: Location,
 
     // (a)(1) A description of the procedures you use to maintain the records you are required
@@ -50,7 +48,8 @@ data class TracePlan(
 
     // (a)(4) A statement identifying a point of contact for questions regarding
     // your traceability plan and records; and
-    @Embedded val contact: Contact,
+    @ManyToOne @JoinColumn
+    val tracePlanContact: Contact,
 
     // (a)(5) If you grow or raise a food on the Food Traceability List (other than eggs),
     // a farm map showing the areas in which you grow or raise such foods.
@@ -78,12 +77,12 @@ data class TracePlan(
 
 data class TracePlanDto(
     val id: Long = 0,
-    val issueDate: LocalDate?=null,
+    val issueDate: LocalDate? = null,
     val locationId: Long,
     val descProcRecordMaintenance: String,
     val descProcIdentifyFoods: String,
     val descAssignTraceLotCodes: String,
-    val contact: Contact,
+    val tracePlanContactId: Long,
     val farmMap: ByteArray? = null,
     val dateCreated: OffsetDateTime = OffsetDateTime.now(),
     val dateModified: OffsetDateTime = OffsetDateTime.now(),
@@ -98,7 +97,7 @@ fun TracePlan.toTracePlanDto() = TracePlanDto(
     descProcRecordMaintenance = descProcRecordMaintenance,
     descProcIdentifyFoods = descProcIdentifyFoods,
     descAssignTraceLotCodes = descAssignTraceLotCodes,
-    contact = contact,
+    tracePlanContactId = tracePlanContact.id,
     farmMap = farmMap,
     dateCreated = dateCreated,
     dateModified = dateModified,
@@ -106,14 +105,17 @@ fun TracePlan.toTracePlanDto() = TracePlanDto(
     dateDeleted = dateDeleted,
 )
 
-fun TracePlanDto.toTracePlan(location:Location) = TracePlan(
+fun TracePlanDto.toTracePlan(
+    location: Location,
+    contact: Contact,
+) = TracePlan(
     id = id,
     issueDate = issueDate,
-    location=location,
+    location = location,
     descProcRecordMaintenance = descProcRecordMaintenance,
     descProcIdentifyFoods = descProcIdentifyFoods,
     descAssignTraceLotCodes = descAssignTraceLotCodes,
-    contact = contact,
+    tracePlanContact = contact,
     farmMap = farmMap,
     dateCreated = dateCreated,
     dateModified = dateModified,

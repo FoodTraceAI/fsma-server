@@ -6,7 +6,6 @@ package com.foodtraceai.model
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.foodtraceai.email.SmtpCredentials
 import com.foodtraceai.email.SmtpCredentialsConverter
-import com.foodtraceai.util.Contact
 import com.foodtraceai.util.ResellerType
 import com.kscopeinc.sms.SmsCredentials
 import com.kscopeinc.sms.SmsCredentialsConverter
@@ -31,6 +30,7 @@ data class Reseller(
     val accountRep: String? = null,
     val businessName: String,
 
+    @ManyToOne @JoinColumn
     val mainContact: Contact,
 
     val billingContactName: String? = null,
@@ -76,7 +76,7 @@ data class ResellerDto(
     val addressDto: AddressDto,
     val accountRep: String?,
     val businessName: String,
-    val mainContact: Contact,
+    val mainContactId: Long,
     val billingContactName: String?,
     val billingContactPhone: String?,
     val billingContactEmail: String?,
@@ -101,7 +101,7 @@ fun Reseller.toResellerDto() = ResellerDto(
     addressDto = address.toAddressDto(),
     accountRep = accountRep,
     businessName = businessName,
-    mainContact = mainContact,
+    mainContactId = mainContact.id,
     billingContactName = billingContactName,
     billingContactPhone = billingContactPhone,
     billingContactEmail = billingContactEmail,
@@ -119,28 +119,26 @@ fun Reseller.toResellerDto() = ResellerDto(
     dateDeleted = dateDeleted,
 )
 
-fun ResellerDto.toReseller(): Reseller {
-    val reseller = Reseller(
-        id = id,
-        address = addressDto.toAddress(),
-        accountRep = accountRep,
-        businessName = businessName,
-        mainContact = mainContact,
-        billingContactName = billingContactName,
-        billingContactPhone = billingContactPhone,
-        billingContactEmail = billingContactEmail,
-        billingAddress = billingAddressDto?.toAddress(),
-        resellerType = resellerType,
-        smtpCredentials = smtpCredentials,
-        smsCredentials = smsCredentials,
-        subdomain = subdomain,
-        domain = domain,
-        isEnabled = isEnabled,
-        dateCreated = dateCreated,
-        dateModified = dateModified,
-        isDeleted = isDeleted,
-        dateDeleted = dateDeleted,
-    )
-
-    return reseller
-}
+fun ResellerDto.toReseller(
+    mainContact: Contact,
+): Reseller = Reseller(
+    id = id,
+    address = addressDto.toAddress(),
+    accountRep = accountRep,
+    businessName = businessName,
+    mainContact = mainContact,
+    billingContactName = billingContactName,
+    billingContactPhone = billingContactPhone,
+    billingContactEmail = billingContactEmail,
+    billingAddress = billingAddressDto?.toAddress(),
+    resellerType = resellerType,
+    smtpCredentials = smtpCredentials,
+    smsCredentials = smsCredentials,
+    subdomain = subdomain,
+    domain = domain,
+    isEnabled = isEnabled,
+    dateCreated = dateCreated,
+    dateModified = dateModified,
+    isDeleted = isDeleted,
+    dateDeleted = dateDeleted,
+)

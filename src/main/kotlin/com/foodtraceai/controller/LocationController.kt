@@ -44,11 +44,15 @@ class LocationController : BaseController() {
         @Valid @RequestBody locationDto: LocationDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<LocationDto> {
+        val business = foodBusService.findById(locationDto.foodBusId)
+            ?: throw EntityNotFoundException("FoodBuss not found: ${locationDto.foodBusId}")
+
+        val contact = contactService.findById(locationDto.locationContactId)
+            ?: throw EntityNotFoundException("Contacts not found: ${locationDto.locationContactId}")
+
         val serviceAddress = addressService.findById(locationDto.addressId)
             ?: throw EntityNotFoundException("Service Address not found: ${locationDto.addressId}")
-        val business = foodBusService.findById(locationDto.foodBusId)
-            ?: throw EntityNotFoundException("ServiceAddress not found: ${locationDto.addressId}")
-        val location = locationDto.toLocation(business, serviceAddress)
+        val location = locationDto.toLocation(business, contact, serviceAddress)
         val locationResponse = locationService.insert(location).toLocationDto()
         return ResponseEntity.created(URI.create(LOCATION_BASE_URL.plus("/${locationResponse.id}")))
             .body(locationResponse)
@@ -67,10 +71,13 @@ class LocationController : BaseController() {
         val business = foodBusService.findById(locationDto.foodBusId)
             ?: throw EntityNotFoundException("Business not found: ${locationDto.foodBusId}")
 
+        val contact = contactService.findById(locationDto.locationContactId)
+            ?: throw EntityNotFoundException("Contacts not found: ${locationDto.locationContactId}")
+
         val serviceAddress = addressService.findById(locationDto.addressId)
             ?: throw EntityNotFoundException("ServiceAddress not found: ${locationDto.addressId}")
 
-        val location = locationDto.toLocation(business, serviceAddress)
+        val location = locationDto.toLocation(business, contact, serviceAddress)
         val locationResponse = locationService.update(location).toLocationDto()
         return ResponseEntity.ok().body(locationResponse)
     }
