@@ -21,13 +21,11 @@ data class Franchisor(
     val address: Address,
     val franchisorName: String,
 
-    val mainContactName: String, // "Operational Contact Name"
-    val mainContactPhone: String, // "Phone Number"
-    val mainContactEmail: String, // "Email Address"
+    @ManyToOne @JoinColumn
+    val mainContact: Contact,
 
-    val billingContactName: String? = null,
-    val billingContactPhone: String? = null,
-    val billingContactEmail: String? = null,
+    @ManyToOne @JoinColumn
+    val billingContact: Contact? = null,
 
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn
@@ -48,12 +46,8 @@ data class FranchisorDto(
     val id: Long = 0,
     val addressId: Long,
     val franchisorName: String,
-    val mainContactName: String,
-    val mainContactPhone: String,
-    val mainContactEmail: String,
-    val billingContactName: String?,
-    val billingContactPhone: String?,
-    val billingContactEmail: String?,
+    val mainContactId: Long,
+    val billingContactId: Long? = null,
     val billingAddressId: Long?,
     val subdomain: String?,
     val accessKey: Long? = null,
@@ -68,12 +62,8 @@ fun Franchisor.toFranchisorDto() = FranchisorDto(
     id = id,
     addressId = address.id,
     franchisorName = franchisorName,
-    mainContactName = mainContactName,
-    mainContactPhone = mainContactPhone,
-    mainContactEmail = mainContactEmail,
-    billingContactName = billingContactName,
-    billingContactPhone = billingContactPhone,
-    billingContactEmail = billingContactEmail,
+    mainContactId = mainContact.id,
+    billingContactId = billingContact?.id,
     billingAddressId = billingAddress?.id,
     subdomain = subdomain,
     accessKey = accessKey,
@@ -86,17 +76,15 @@ fun Franchisor.toFranchisorDto() = FranchisorDto(
 
 fun FranchisorDto.toFranchisor(
     address: Address,
+    mainContact: Contact,
     billingAddress: Address?,
+    billingContact: Contact?,
 ) = Franchisor(
     id = id,
     address = address,
     franchisorName = franchisorName,
-    mainContactName = mainContactName,
-    mainContactPhone = mainContactPhone,
-    mainContactEmail = mainContactEmail,
-    billingContactName = billingContactName,
-    billingContactPhone = billingContactPhone,
-    billingContactEmail = billingContactEmail,
+    mainContact = mainContact,
+    billingContact = billingContact,
     billingAddress = billingAddress,
     subdomain = subdomain,
     accessKey = accessKey,

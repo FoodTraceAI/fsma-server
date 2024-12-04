@@ -3,7 +3,10 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller
 
-import com.foodtraceai.model.*
+import com.foodtraceai.model.FranchisorDto
+import com.foodtraceai.model.FsmaUser
+import com.foodtraceai.model.toFranchisor
+import com.foodtraceai.model.toFranchisorDto
 import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -42,13 +45,18 @@ class FranchisorController : BaseController() {
     ): ResponseEntity<FranchisorDto> {
         val address = addressService.findById(franchisorDto.addressId)
             ?: throw EntityNotFoundException("Franchisor Address not found: ${franchisorDto.addressId}")
+        val billingAddress = franchisorDto.billingAddressId?.let {
+            addressService.findById(franchisorDto.billingAddressId)
+                ?: throw EntityNotFoundException("BillingAddress not found: $it")
+        }
 
-        var billingAddress: Address? = null
-        if (franchisorDto.billingAddressId != null)
-            billingAddress = foodBusService.findById(franchisorDto.billingAddressId)?.let {
-                throw EntityNotFoundException("BillingAddress not found: $it")
-            }
-        val franchisor = franchisorDto.toFranchisor(address, billingAddress)
+        val mainContact = contactService.findById(franchisorDto.mainContactId)
+            ?: throw EntityNotFoundException("MainContact not found = $franchisorDto.mainContactId")
+        val billingContact = franchisorDto.billingContactId?.let {
+            contactService.findById(it) ?: throw EntityNotFoundException("BillingContact not found = $it")
+        }
+
+        val franchisor = franchisorDto.toFranchisor(address, mainContact, billingAddress, billingContact)
         val franchisorResponse = franchisorService.insert(franchisor).toFranchisorDto()
         return ResponseEntity.created(URI.create(FRANCHISOR_BASE_URL.plus("/${franchisorResponse.id}")))
             .body(franchisorResponse)
@@ -66,12 +74,18 @@ class FranchisorController : BaseController() {
 
         val address = addressService.findById(franchisorDto.addressId)
             ?: throw EntityNotFoundException("Franchisor Address not found: ${franchisorDto.addressId}")
-        var billingAddress: Address? = null
-        if (franchisorDto.billingAddressId != null)
-            billingAddress = foodBusService.findById(franchisorDto.billingAddressId)?.let {
-                throw EntityNotFoundException("ServiceAddress not found: $it")
-            }
-        val franchisor = franchisorDto.toFranchisor(address, billingAddress)
+        val billingAddress = franchisorDto.billingAddressId?.let {
+            addressService.findById(franchisorDto.billingAddressId)
+                ?: throw EntityNotFoundException("BillingAddress not found: $it")
+        }
+
+        val mainContact = contactService.findById(franchisorDto.mainContactId)
+            ?: throw EntityNotFoundException("MainContact not found = $franchisorDto.mainContactId")
+        val billingContact = franchisorDto.billingContactId?.let {
+            contactService.findById(it) ?: throw EntityNotFoundException("BillingContact not found = $it")
+        }
+
+        val franchisor = franchisorDto.toFranchisor(address, mainContact, billingAddress, billingContact)
         val franchisorResponse = franchisorService.update(franchisor).toFranchisorDto()
         return ResponseEntity.ok().body(franchisorResponse)
     }

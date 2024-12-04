@@ -159,7 +159,6 @@ class DataLoader : ApplicationRunner {
     }
 
     fun addAddresses() {
-        val resellerId = 1L
         var addressDto = AddressDto(
             street = "1413 Durness Ct.",
             city = "Naperville",
@@ -172,7 +171,6 @@ class DataLoader : ApplicationRunner {
 
         var address = addressDto.toAddress()
         addressList.add(addressService.insert(address))
-
 
         addressDto = AddressDto(
             street = "1622 Central Ave",
@@ -272,13 +270,11 @@ class DataLoader : ApplicationRunner {
             accountRep = "Steve",
             businessName = "FoodTraceAI",
             mainContactId = mainContact.id,
-            billingContactName = "billingContactName",
-            billingContactPhone = "billingContactPhone",
-            billingContactEmail = "billingContactEmail",
+            billingContactId = billingContact.id,
             billingAddressDto = addressList[0].toAddressDto(),
             resellerType = ResellerType.Distributor,
         )
-        val reseller = resellerDto.toReseller(mainContact)
+        val reseller = resellerDto.toReseller(mainContact, billingContact)
         resellerList.add(resellerService.insert(reseller))
     }
 

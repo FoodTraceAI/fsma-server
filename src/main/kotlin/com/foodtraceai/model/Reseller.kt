@@ -33,9 +33,8 @@ data class Reseller(
     @ManyToOne @JoinColumn
     val mainContact: Contact,
 
-    val billingContactName: String? = null,
-    val billingContactPhone: String? = null,
-    val billingContactEmail: String? = null,
+    @ManyToOne @JoinColumn
+    val billingContact: Contact? = null,
 
 //    @OneToOne(cascade = [CascadeType.ALL])
     @OneToOne  //(cascade = [CascadeType.ALL])
@@ -77,9 +76,7 @@ data class ResellerDto(
     val accountRep: String?,
     val businessName: String,
     val mainContactId: Long,
-    val billingContactName: String?,
-    val billingContactPhone: String?,
-    val billingContactEmail: String?,
+    val billingContactId: Long? = null,
     @JsonProperty("billingAddress")
     val billingAddressDto: AddressDto?,
     val resellerType: ResellerType,
@@ -102,9 +99,7 @@ fun Reseller.toResellerDto() = ResellerDto(
     accountRep = accountRep,
     businessName = businessName,
     mainContactId = mainContact.id,
-    billingContactName = billingContactName,
-    billingContactPhone = billingContactPhone,
-    billingContactEmail = billingContactEmail,
+    billingContactId = billingContact?.id,
     billingAddressDto = billingAddress?.toAddressDto(),
     resellerType = resellerType,
     smtpCredentials = smtpCredentials,
@@ -121,15 +116,14 @@ fun Reseller.toResellerDto() = ResellerDto(
 
 fun ResellerDto.toReseller(
     mainContact: Contact,
+    billingContact: Contact?,
 ): Reseller = Reseller(
     id = id,
     address = addressDto.toAddress(),
     accountRep = accountRep,
     businessName = businessName,
     mainContact = mainContact,
-    billingContactName = billingContactName,
-    billingContactPhone = billingContactPhone,
-    billingContactEmail = billingContactEmail,
+    billingContact = billingContact,
     billingAddress = billingAddressDto?.toAddress(),
     resellerType = resellerType,
     smtpCredentials = smtpCredentials,
