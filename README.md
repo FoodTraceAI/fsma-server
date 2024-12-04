@@ -72,6 +72,8 @@ uncomment as follows
 - ./gradlew clean build
 - Run FsmaApplicationKt in IntelliJ to verify that the build works
 3. If you want to create a docker image for dockerhub.com
+   # Build the docker image and tag it
+   docker build -t fsma-spring .
    docker tag fsma-spring stepheneick/fsma-spring 
    # Push image to dockerhub.com
    docker push stepheneick/fsma-spring
