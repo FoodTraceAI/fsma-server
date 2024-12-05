@@ -4,7 +4,6 @@ import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.model.supplier.SupShipCteDto
 import com.foodtraceai.model.supplier.toSupShipCteDto
-import com.foodtraceai.util.Sscc
 import com.foodtraceai.util.SupCteStatus
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -25,7 +24,7 @@ class SupplierController : BaseController() {
     // http://localhost:8080/api/v1/supplier/findShipCte?sscc=sscc1&tlcId=1&shipFromLocationId=1
     @GetMapping("/findShipCte")
     private fun findShipCte(
-        @RequestParam(value = "sscc", required = true) sscc: Sscc,
+        @RequestParam(value = "sscc", required = true) sscc: String,
         @RequestParam(value = "tlcId", required = true) tlcId: Long,
         @RequestParam(value = "shipToLocationId", required = true) shipToLocationId: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
@@ -41,7 +40,7 @@ class SupplierController : BaseController() {
     }
 
     data class ShipArgs(
-        val sscc: Sscc,
+        val sscc: String,
         val tlcId: Long,
         val shipToLocationId: Long,
         val receiveDate: LocalDate,

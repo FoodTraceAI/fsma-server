@@ -9,7 +9,6 @@ import com.foodtraceai.repository.supplier.SupShipCteRepository
 import com.foodtraceai.service.cte.CteReceiveService
 import com.foodtraceai.service.supplier.SupShipCteService
 import com.foodtraceai.util.EntityException
-import com.foodtraceai.util.Sscc
 import com.foodtraceai.util.SupCteStatus
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
@@ -29,7 +28,7 @@ class SupplierService(
 ) {
     // RFE or Restaurant has received a shipment
     fun findSupShipCte(
-        sscc: Sscc,
+        sscc: String,
         tlcId: Long,
         shipToLocationId: Long,
         supCteStatus: SupCteStatus,
@@ -50,7 +49,7 @@ class SupplierService(
     }
 
     fun makeReceiveCteFromSupShipCte(
-        sscc: Sscc,
+        sscc: String,
         tlcId: Long,
         shipToLocationId: Long,
         receiveDate: LocalDate,
@@ -63,7 +62,7 @@ class SupplierService(
             supCteStatus = SupCteStatus.Pending,
         ) ?: throw EntityNotFoundException(
             "supShipCte not found for " +
-                    "sscc: '" + sscc.ssccVal + "', " +
+                    "sscc: '" + sscc + "', " +
                     "tlcId: $tlcId, " +
                     "shipToLocationId: $shipToLocationId, " +
                     "supCteStatus: '${SupCteStatus.Pending}'"

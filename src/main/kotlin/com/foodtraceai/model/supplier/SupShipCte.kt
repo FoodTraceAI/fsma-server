@@ -8,7 +8,10 @@ import com.foodtraceai.model.FoodBus
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.model.cte.CteReceive
-import com.foodtraceai.util.*
+import com.foodtraceai.util.FtlItem
+import com.foodtraceai.util.ReferenceDocumentType
+import com.foodtraceai.util.SupCteStatus
+import com.foodtraceai.util.UnitOfMeasure
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -35,8 +38,8 @@ data class SupShipCte(
     val supCteStatus: SupCteStatus = SupCteStatus.Pending,
 
     // Optional GS1 parameters
-    val sscc: Sscc?,   // AI(00) - Pallet Serial Shipping Container Code
-    val serial: LogSerialNum? = null, // AI(21) - Logistics Serial Number
+    val sscc: String?,   // AI(00) - Pallet Serial Shipping Container Code
+    val serial: String? = null, // AI(21) - Logistics Serial Number
 
     // Gets populated when the shipment is received
     @ManyToOne(cascade = [CascadeType.ALL])
@@ -116,8 +119,8 @@ data class SupShipCte(
 
 data class SupShipCteDto(
     val id: Long,
-    val sscc: Sscc?,
-    val serial: LogSerialNum?,
+    val sscc: String?,
+    val serial: String?,
     val supCteStatus: SupCteStatus,
     val cteReceiveId: Long?,
     val ftlItem: FtlItem,

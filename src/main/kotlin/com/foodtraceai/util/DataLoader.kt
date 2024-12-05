@@ -379,8 +379,8 @@ class DataLoader : ApplicationRunner {
     fun addTlcs() {
         var tlc = TraceLotCode(
             tlcVal = "TraceLotCode1",
-            gtin = GTIN("10333830000016"),
-            batchLot = BatchLot("187"),
+            gtin = "10333830000016",
+            batchLot = "187",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
         )
@@ -388,8 +388,8 @@ class DataLoader : ApplicationRunner {
 
         tlc = TraceLotCode(
             tlcVal = "TraceLotCode2",
-            gtin = GTIN("10333830000016"),
-            batchLot = BatchLot("188"),
+            gtin = "10333830000016",
+            batchLot = "188",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
         )
@@ -397,8 +397,8 @@ class DataLoader : ApplicationRunner {
 
         tlc = TraceLotCode(
             tlcVal = "TraceLotCode3",
-            gtin = GTIN("10333830000016"),
-            batchLot = BatchLot("123456"),
+            gtin = "10333830000016",
+            batchLot = "123456",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
         )
@@ -466,8 +466,8 @@ class DataLoader : ApplicationRunner {
 
         var supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
-            sscc = Sscc("sscc1"),
-            serial = LogSerialNum("serial1"),
+            sscc = "sscc1",
+            serial = "serial1",
             cteReceive = null,
             tlc = tlcList[0],
             quantity = 5,
@@ -486,8 +486,8 @@ class DataLoader : ApplicationRunner {
 
         supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
-            sscc = Sscc("sscc2"),
-            serial = LogSerialNum("serial2"),
+            sscc = "sscc2",
+            serial = "serial2",
             cteReceive = null,
             tlc = tlcList[1],
             quantity = 10,
@@ -506,8 +506,8 @@ class DataLoader : ApplicationRunner {
 
         supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
-            sscc = Sscc("sscc3"),
-            serial = LogSerialNum("serial3"),
+            sscc = "sscc3",
+            serial = "serial3",
             cteReceive = null,
             tlc = tlcList[1],
             quantity = 15,

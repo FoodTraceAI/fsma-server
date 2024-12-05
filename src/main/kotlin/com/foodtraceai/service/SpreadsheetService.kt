@@ -51,11 +51,11 @@ class SpreadsheetService(
 
     private val ptiReceivingTabColHeaders: List<Pair<String, (cte: CteReceive) -> String>> = listOf(
         Pair("(a)(1) TLC - tlcVal", fun(cte: CteReceive) = cte.tlc.tlcVal),
-        Pair("(a)(1) TLC - GTIN", fun(cte: CteReceive) = cte.tlc.gtin?.gtinVal ?: "null"),
-        Pair("(a)(1) TLC - Batch", fun(cte: CteReceive) = cte.tlc.batchLot?.batchLotVal ?: "null"),
+        Pair("(a)(1) TLC - GTIN", fun(cte: CteReceive) = cte.tlc.gtin ?: "null"),
+        Pair("(a)(1) TLC - Batch", fun(cte: CteReceive) = cte.tlc.batchLot ?: "null"),
         Pair("(a)(1) TLC - Date**", fun(cte: CteReceive) = cte.tlc.packDate.toString()),
         Pair("(a)(1) TLC - Date Type**", fun(cte: CteReceive) = "Pack Date"),
-        Pair("(a)(1) TLC - SSCC**", fun(cte: CteReceive) = cte.tlc.sscc?.ssccVal ?: "null"),
+        Pair("(a)(1) TLC - SSCC**", fun(cte: CteReceive) = cte.tlc.sscc ?: "null"),
         Pair("(b)(1) TLC - Assigned By", fun(cte: CteReceive) = cte.tlcSource.foodBus.foodBusDesc),
         Pair("(a)(2) Qty & UOM", fun(cte: CteReceive) = "${cte.quantity} ${cte.unitOfMeasure}"),
         Pair("(a)(3) Product Description", fun(cte: CteReceive) = cte.prodDesc),
@@ -85,7 +85,7 @@ class SpreadsheetService(
 
     private val ptiProductsTabColHeaders: List<Pair<String, (cte: CteReceive) -> String>> = listOf(
         Pair("FTL List Category", fun(cte: CteReceive) = cte.ftlItem.name),
-        Pair("GTIN", fun(cte: CteReceive) = cte.tlc.gtin?.gtinVal ?: ""),
+        Pair("GTIN", fun(cte: CteReceive) = cte.tlc.gtin ?: ""),
         Pair("Product Desc", fun(cte: CteReceive) = cte.prodDesc),
     )
 
@@ -152,10 +152,10 @@ class SpreadsheetService(
                 val set = mutableSetOf<String>()
                 val uniqGtinCteList = mutableListOf<CteReceive>()
                 cteList.forEach { cte ->
-                    val gtinVal = cte.tlc.gtin?.gtinVal ?: throw RuntimeException("GTIN is null")
-                    if (set.contains(gtinVal))
+                    val gtin = cte.tlc.gtin ?: throw RuntimeException("GTIN is null")
+                    if (set.contains(gtin))
                         return@forEach
-                    set.add(gtinVal)
+                    set.add(gtin)
                     uniqGtinCteList.add(cte)
                 }
                 makeTab(tabName = "Products", workbook, ptiProductsTabColHeaders, uniqGtinCteList)
