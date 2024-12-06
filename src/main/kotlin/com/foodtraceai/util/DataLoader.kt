@@ -467,7 +467,7 @@ class DataLoader : ApplicationRunner {
         var supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
             sscc = "sscc1",
-            serial = "serial1",
+            logSerialNo = "serial1",
             cteReceive = null,
             tlc = tlcList[0],
             quantity = 5,
@@ -487,7 +487,7 @@ class DataLoader : ApplicationRunner {
         supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
             sscc = "sscc2",
-            serial = "serial2",
+            logSerialNo = "serial2",
             cteReceive = null,
             tlc = tlcList[1],
             quantity = 10,
@@ -507,7 +507,7 @@ class DataLoader : ApplicationRunner {
         supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
             sscc = "sscc3",
-            serial = "serial3",
+            logSerialNo = "serial3",
             cteReceive = null,
             tlc = tlcList[1],
             quantity = 15,

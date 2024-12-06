@@ -23,7 +23,7 @@ data class TraceLotCode(
     val packDate: LocalDate? = null,    // AI(13)
     val harvestDate: LocalDate? = null, // AI(13)
     val bestByDate: LocalDate? = null,  // AI(15)
-    val serial: String? = null, // AI(21) - Logistics Serial Number
+    val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
 
     @Column(updatable = false)
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
@@ -43,7 +43,7 @@ data class TraceLotCodeDto(
     val packDate: LocalDate? = null,    // AI(13)
     val harvestDate: LocalDate? = null, // AI(13)
     val bestByDate: LocalDate? = null,  // AI(15)
-    val serial: String? = null, // AI(21) - Logistics Serial Number
+    val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
 
     val dateCreated: OffsetDateTime = OffsetDateTime.now(),
     val dateModified: OffsetDateTime = OffsetDateTime.now(),
@@ -62,7 +62,7 @@ fun TraceLotCode.toTraceLotCodeDto() = TraceLotCodeDto(
     packDate = packDate,
     harvestDate = harvestDate,
     bestByDate = bestByDate,
-    serial = serial,
+    logSerialNo = logSerialNo,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,
@@ -78,7 +78,7 @@ fun TraceLotCodeDto.toTraceLotCode() = TraceLotCode(
     packDate = packDate,
     harvestDate = harvestDate,
     bestByDate = bestByDate,
-    serial = serial,
+    logSerialNo = logSerialNo,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,

@@ -39,7 +39,7 @@ data class SupShipCte(
 
     // Optional GS1 parameters
     val sscc: String?,   // AI(00) - Pallet Serial Shipping Container Code
-    val serial: String? = null, // AI(21) - Logistics Serial Number
+    val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
 
     // Gets populated when the shipment is received
     @ManyToOne(cascade = [CascadeType.ALL])
@@ -120,7 +120,7 @@ data class SupShipCte(
 data class SupShipCteDto(
     val id: Long,
     val sscc: String?,
-    val serial: String?,
+    val logSerialNo: String?,
     val supCteStatus: SupCteStatus,
     val cteReceiveId: Long?,
     val ftlItem: FtlItem,
@@ -145,7 +145,7 @@ data class SupShipCteDto(
 fun SupShipCte.toSupShipCteDto() = SupShipCteDto(
     id = id,
     sscc = sscc,
-    serial = serial,
+    logSerialNo = logSerialNo,
     supCteStatus = supCteStatus,
     cteReceiveId = cteReceive?.id,
     ftlItem = ftlItem,
@@ -176,7 +176,7 @@ fun SupShipCteDto.toSupCteShip(
 ) = SupShipCte(
     id = id,
     sscc = sscc,
-    serial = serial,
+    logSerialNo = logSerialNo,
     supCteStatus = supCteStatus,
     cteReceive = cteReceive,
     ftlItem = ftlItem,
