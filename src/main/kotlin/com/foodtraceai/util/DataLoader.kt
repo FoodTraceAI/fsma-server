@@ -380,6 +380,7 @@ class DataLoader : ApplicationRunner {
         var tlc = TraceLotCode(
             tlcVal = "TraceLotCode1",
             gtin = "10333830000016",
+            sscc = "sscc1",
             batchLot = "187",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
@@ -389,6 +390,7 @@ class DataLoader : ApplicationRunner {
         tlc = TraceLotCode(
             tlcVal = "TraceLotCode2",
             gtin = "10333830000016",
+            sscc = "sscc2",
             batchLot = "188",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
@@ -398,6 +400,7 @@ class DataLoader : ApplicationRunner {
         tlc = TraceLotCode(
             tlcVal = "TraceLotCode3",
             gtin = "10333830000016",
+            sscc = "sscc3",
             batchLot = "123456",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
@@ -463,13 +466,13 @@ class DataLoader : ApplicationRunner {
     }
 
     fun addSupShipCtes() {
-
+        var tlc = tlcList[0]
         var supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
-            sscc = "sscc1",
+            sscc = tlc.sscc,
             logSerialNo = "serial1",
             cteReceive = null,
-            tlc = tlcList[0],
+            tlc = tlc,
             quantity = 5,
             unitOfMeasure = UnitOfMeasure.Carton,
             ftlItem = FtlItem.Fruits,
@@ -484,12 +487,13 @@ class DataLoader : ApplicationRunner {
         )
         supShipCteList.add(supShipCteService.insert(supShipCte))
 
+        tlc = tlcList[1]
         supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
-            sscc = "sscc2",
+            sscc = tlc.sscc,
             logSerialNo = "serial2",
             cteReceive = null,
-            tlc = tlcList[1],
+            tlc = tlc,
             quantity = 10,
             unitOfMeasure = UnitOfMeasure.Carton,
             ftlItem = FtlItem.Cucumbers,
@@ -504,12 +508,13 @@ class DataLoader : ApplicationRunner {
         )
         supShipCteList.add(supShipCteService.insert(supShipCte))
 
+        tlc = tlcList[2]
         supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
-            sscc = "sscc3",
+            sscc = tlc.sscc,
             logSerialNo = "serial3",
             cteReceive = null,
-            tlc = tlcList[1],
+            tlc = tlc,
             quantity = 15,
             unitOfMeasure = UnitOfMeasure.Carton,
             ftlItem = FtlItem.DeliSalads,

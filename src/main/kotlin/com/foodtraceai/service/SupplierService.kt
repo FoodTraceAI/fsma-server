@@ -51,20 +51,20 @@ class SupplierService(
     fun makeReceiveCteFromSupShipCte(
         sscc: String,
         tlcId: Long,
-        shipToLocationId: Long,
+        receiveLocationId: Long,
         receiveDate: LocalDate,
         receiveTime: OffsetDateTime,
     ): CteReceive {
         val supShipCte = findSupShipCte(
             sscc = sscc,
             tlcId = tlcId,
-            shipToLocationId = shipToLocationId,
+            shipToLocationId = receiveLocationId,
             supCteStatus = SupCteStatus.Pending,
         ) ?: throw EntityNotFoundException(
             "supShipCte not found for " +
-                    "sscc: '" + sscc + "', " +
+                    "sscc: $sscc, " +
                     "tlcId: $tlcId, " +
-                    "shipToLocationId: $shipToLocationId, " +
+                    "shipToLocationId: $receiveLocationId, " +
                     "supCteStatus: '${SupCteStatus.Pending}'"
         )
 
@@ -78,8 +78,8 @@ class SupplierService(
                 unitOfMeasure = supShipCte.unitOfMeasure,
                 prodDesc = supShipCte.prodDesc,
                 ipsLocation = supShipCte.shipFromLocation,
-                receiveDate = LocalDate.now(),
-                receiveTime = OffsetDateTime.now(),
+                receiveDate = receiveDate,
+                receiveTime = receiveTime,
                 tlcSource = supShipCte.tlcSource,
                 tlcSourceReference = supShipCte.tlcSourceReference,
                 referenceDocumentType = supShipCte.referenceDocumentType,

@@ -42,7 +42,7 @@ class SupplierController : BaseController() {
     data class ShipArgs(
         val sscc: String,
         val tlcId: Long,
-        val shipToLocationId: Long,
+        val receiveLocationId: Long,
         val receiveDate: LocalDate,
         val receiveTime: OffsetDateTime,
     )
@@ -55,7 +55,7 @@ class SupplierController : BaseController() {
         val cteReceive = supplierService.makeReceiveCteFromSupShipCte(
             shipArgs.sscc,
             shipArgs.tlcId,
-            shipArgs.shipToLocationId,
+            shipArgs.receiveLocationId,
             shipArgs.receiveDate,
             shipArgs.receiveTime,
         )
