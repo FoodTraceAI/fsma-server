@@ -45,25 +45,16 @@ class CteIPackProdController : BaseController() {
         @Valid @RequestBody cteIPackProdDto: CteIPackProdDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteIPackProdDto> {
-        val location = locationService.findById(cteIPackProdDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteIPackProdDto.locationId}")
+        val location = getLocation(cteIPackProdDto.locationId, authPrincipal)
+        val harvestLocation = getLocation(cteIPackProdDto.harvestLocationId, authPrincipal)
 
-        val harvestLocation = locationService.findById(cteIPackProdDto.harvestLocationId)
-            ?: throw EntityNotFoundException("HarvestLocation not found: ${cteIPackProdDto.harvestLocationId}")
+        val harvestBusiness = getFoodBus(cteIPackProdDto.harvestBusinessId, authPrincipal)
 
-        val harvestBusiness = foodBusService.findById(cteIPackProdDto.harvestBusinessId)
-            ?: throw EntityNotFoundException("HarvestBusiness not found: ${cteIPackProdDto.harvestBusinessId}")
+        val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it,authPrincipal)}
 
-        val coolLocation = cteIPackProdDto.coolLocationId?.let {
-            locationService.findById(it) ?: throw EntityNotFoundException("CoolLocation not found: $it")
-        }
+        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId,authPrincipal)
 
-        val packTlc = traceLotCodeService.findById(cteIPackProdDto.packTlcId)
-            ?: throw EntityNotFoundException("PackTlc not found: ${cteIPackProdDto.packTlcId}")
-
-        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let {
-            locationService.findById(it) ?: throw EntityNotFoundException("PackTlcSource not found: $it")
-        }
+        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let {            getLocation(it,authPrincipal)         }
 
         val cteIPackProd = cteIPackProdDto.toCteIPackProd(
             location, harvestLocation, harvestBusiness,
@@ -84,25 +75,14 @@ class CteIPackProdController : BaseController() {
         if (cteIPackProdDto.id <= 0L || cteIPackProdDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteIPackProd Ids specified: $id != ${cteIPackProdDto.id}")
 
-        val location = locationService.findById(cteIPackProdDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteIPackProdDto.locationId}")
+        val location = getLocation(cteIPackProdDto.locationId, authPrincipal)
+        val harvestLocation = getLocation(cteIPackProdDto.harvestLocationId,authPrincipal)
 
-        val harvestLocation = locationService.findById(cteIPackProdDto.harvestLocationId)
-            ?: throw EntityNotFoundException("HarvestLocation not found: ${cteIPackProdDto.harvestLocationId}")
+        val harvestBusiness = getFoodBus(cteIPackProdDto.harvestBusinessId, authPrincipal)
+        val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it, authPrincipal) }
 
-        val harvestBusiness = foodBusService.findById(cteIPackProdDto.harvestBusinessId)
-            ?: throw EntityNotFoundException("HarvestBusiness not found: ${cteIPackProdDto.harvestBusinessId}")
-
-        val coolLocation = cteIPackProdDto.coolLocationId?.let {
-            locationService.findById(it) ?: throw EntityNotFoundException("CoolLocation not found: $it")
-        }
-
-        val packTlc = traceLotCodeService.findById(cteIPackProdDto.packTlcId)
-            ?: throw EntityNotFoundException("PackTlc not found: ${cteIPackProdDto.packTlcId}")
-
-        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let {
-            locationService.findById(it) ?: throw EntityNotFoundException("PackTlcSource not found: $it")
-        }
+        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId,authPrincipal)
+        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let { getLocation(it, authPrincipal) }
 
         val cteIPackProd = cteIPackProdDto.toCteIPackProd(
             location, harvestLocation, harvestBusiness,

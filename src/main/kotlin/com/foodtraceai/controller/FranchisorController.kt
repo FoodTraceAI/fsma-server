@@ -43,18 +43,11 @@ class FranchisorController : BaseController() {
         @Valid @RequestBody franchisorDto: FranchisorDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<FranchisorDto> {
-        val address = addressService.findById(franchisorDto.addressId)
+        val address = getAddress(franchisorDto.addressId, authPrincipal)
             ?: throw EntityNotFoundException("Franchisor Address not found: ${franchisorDto.addressId}")
-        val billingAddress = franchisorDto.billingAddressId?.let {
-            addressService.findById(franchisorDto.billingAddressId)
-                ?: throw EntityNotFoundException("BillingAddress not found: $it")
-        }
-
-        val mainContact = contactService.findById(franchisorDto.mainContactId)
-            ?: throw EntityNotFoundException("MainContact not found = $franchisorDto.mainContactId")
-        val billingContact = franchisorDto.billingContactId?.let {
-            contactService.findById(it) ?: throw EntityNotFoundException("BillingContact not found = $it")
-        }
+        val billingAddress = franchisorDto.billingAddressId?.let { getAddress(it, authPrincipal) }
+        val mainContact = getContact(franchisorDto.mainContactId, authPrincipal)
+        val billingContact = franchisorDto.billingContactId?.let { getContact(it, authPrincipal)        }
 
         val franchisor = franchisorDto.toFranchisor(address, mainContact, billingAddress, billingContact)
         val franchisorResponse = franchisorService.insert(franchisor).toFranchisorDto()
@@ -72,18 +65,10 @@ class FranchisorController : BaseController() {
         if (franchisorDto.id <= 0L || franchisorDto.id != id)
             throw UnauthorizedRequestException("Conflicting FranchisorIds specified: $id != ${franchisorDto.id}")
 
-        val address = addressService.findById(franchisorDto.addressId)
-            ?: throw EntityNotFoundException("Franchisor Address not found: ${franchisorDto.addressId}")
-        val billingAddress = franchisorDto.billingAddressId?.let {
-            addressService.findById(franchisorDto.billingAddressId)
-                ?: throw EntityNotFoundException("BillingAddress not found: $it")
-        }
-
-        val mainContact = contactService.findById(franchisorDto.mainContactId)
-            ?: throw EntityNotFoundException("MainContact not found = $franchisorDto.mainContactId")
-        val billingContact = franchisorDto.billingContactId?.let {
-            contactService.findById(it) ?: throw EntityNotFoundException("BillingContact not found = $it")
-        }
+        val address = getAddress(franchisorDto.addressId, authPrincipal)
+        val billingAddress = franchisorDto.billingAddressId?.let {getAddress(it,authPrincipal)}
+        val mainContact = getContact(franchisorDto.mainContactId, authPrincipal)
+        val billingContact = franchisorDto.billingContactId?.let { getContact(it, authPrincipal)        }
 
         val franchisor = franchisorDto.toFranchisor(address, mainContact, billingAddress, billingContact)
         val franchisorResponse = franchisorService.update(franchisor).toFranchisorDto()

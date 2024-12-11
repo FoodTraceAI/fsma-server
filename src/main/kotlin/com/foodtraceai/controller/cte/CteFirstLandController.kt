@@ -45,13 +45,11 @@ class CteFirstLandController : BaseController() {
         @Valid @RequestBody cteFirstLandDto: CteFirstLandDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteFirstLandDto> {
-        val location = locationService.findById(cteFirstLandDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteFirstLandDto.locationId}")
+        val location = getLocation(cteFirstLandDto.locationId,authPrincipal)
 
         var tlcSource: Location? = null
         if (cteFirstLandDto.tlcSourceId != null)
-            tlcSource = locationService.findById(cteFirstLandDto.tlcSourceId)
-                ?: throw EntityNotFoundException("TlcSource Location not found: ${cteFirstLandDto.tlcSourceId}")
+            tlcSource = getLocation(cteFirstLandDto.tlcSourceId,authPrincipal)
 
         val cteFirstLand = cteFirstLandDto.toCteFirstLand(location, tlcSource)
         val cteFirstLandResponse = cteFirstLandService.insert(cteFirstLand).toCteFirstLandDto()
@@ -69,13 +67,11 @@ class CteFirstLandController : BaseController() {
         if (cteFirstLandDto.id <= 0L || cteFirstLandDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteFirstLandDto Ids specified: $id != ${cteFirstLandDto.id}")
 
-        val location = locationService.findById(cteFirstLandDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteFirstLandDto.locationId}")
+        val location = getLocation(cteFirstLandDto.locationId,authPrincipal)
 
         var tlcSource: Location? = null
         if (cteFirstLandDto.tlcSourceId != null)
-            tlcSource = locationService.findById(cteFirstLandDto.tlcSourceId)
-                ?: throw EntityNotFoundException("TlcSource Location not found: ${cteFirstLandDto.tlcSourceId}")
+            tlcSource = getLocation(cteFirstLandDto.tlcSourceId,authPrincipal)
 
         val cteFirstLand = cteFirstLandDto.toCteFirstLand(location, tlcSource)
         val cteFirstLandCto = cteFirstLandService.update(cteFirstLand).toCteFirstLandDto()

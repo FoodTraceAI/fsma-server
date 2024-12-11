@@ -7,7 +7,6 @@ import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.ResellerDto
 import com.foodtraceai.model.toReseller
 import com.foodtraceai.model.toResellerDto
-import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -30,8 +29,7 @@ class ResellerController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<ResellerDto> {
-        val reseller = resellerService.findById(id)
-            ?: throw EntityNotFoundException("Reseller not found = $id")
+        val reseller = getReseller(id,authPrincipal)
 //        assertResellerClientMatchesToken(fsaUser, business.resellerId)
         return ResponseEntity.ok(reseller.toResellerDto())
     }
@@ -42,11 +40,8 @@ class ResellerController : BaseController() {
         @Valid @RequestBody resellerDto: ResellerDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<ResellerDto> {
-        val mainContact = contactService.findById(resellerDto.mainContactId)
-            ?: throw EntityNotFoundException("MainContact not found = $resellerDto.mainContactId")
-        val billingContact = resellerDto.billingContactId?.let {
-            contactService.findById(it) ?: throw EntityNotFoundException("BillingContact not found = $it")
-        }
+        val mainContact = getContact(resellerDto.mainContactId, authPrincipal)
+        val billingContact = resellerDto.billingContactId?.let { getContact(it, authPrincipal) }
         val reseller = resellerDto.toReseller(mainContact = mainContact, billingContact = billingContact)
         val resellerResponse = resellerService.insert(reseller).toResellerDto()
         return ResponseEntity.created(URI.create(RESELLER_BASE_URL.plus("/${resellerResponse.id}")))
@@ -62,11 +57,8 @@ class ResellerController : BaseController() {
     ): ResponseEntity<ResellerDto> {
         if (resellerDto.id <= 0L || resellerDto.id != id)
             throw UnauthorizedRequestException("Conflicting ResellerDtos specified: $id != ${resellerDto.id}")
-        val mainContact = contactService.findById(resellerDto.mainContactId)
-            ?: throw EntityNotFoundException("Contact not found = $resellerDto.mainContactId")
-        val billingContact = resellerDto.billingContactId?.let {
-            contactService.findById(it) ?: throw EntityNotFoundException("BillingContact not found = $it")
-        }
+        val mainContact = getContact(resellerDto.mainContactId, authPrincipal)
+        val billingContact = resellerDto.billingContactId?.let { getContact(it, authPrincipal) }
         val reseller = resellerDto.toReseller(mainContact = mainContact, billingContact = billingContact)
         val resellerResponse = resellerService.update(reseller)
         return ResponseEntity.ok().body(resellerResponse.toResellerDto())

@@ -43,14 +43,9 @@ class CteHarvestController : BaseController() {
         @Valid @RequestBody cteHarvestDto: CteHarvestDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteHarvestDto> {
-        val location = locationService.findById(cteHarvestDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteHarvestDto.locationId}")
-
-        val subsequentRecipient = locationService.findById(cteHarvestDto.isrLocationId)
-            ?: throw EntityNotFoundException("SubsequentRecipient not found: ${cteHarvestDto.isrLocationId}")
-
-        val harvestLocation = locationService.findById(cteHarvestDto.harvestLocationId)
-            ?: throw EntityNotFoundException("HarvestLocation not found: ${cteHarvestDto.harvestLocationId}")
+        val location = getLocation(cteHarvestDto.locationId,authPrincipal)
+        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId,authPrincipal)
+        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId,authPrincipal)
 
         val cteHarvest = cteHarvestDto.toCteHarvest(location, subsequentRecipient, harvestLocation)
         val cteHarvestResponse = cteHarvestService.insert(cteHarvest).toCteHarvestDto()
@@ -68,14 +63,9 @@ class CteHarvestController : BaseController() {
         if (cteHarvestDto.id <= 0L || cteHarvestDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteHarvest Ids specified: $id != ${cteHarvestDto.id}")
 
-        val location = locationService.findById(cteHarvestDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteHarvestDto.locationId}")
-
-        val subsequentRecipient = locationService.findById(cteHarvestDto.isrLocationId)
-            ?: throw EntityNotFoundException("SubsequentRecipient Location not found: ${cteHarvestDto.isrLocationId}")
-
-        val harvestLocation = locationService.findById(cteHarvestDto.harvestLocationId)
-            ?: throw EntityNotFoundException("HarvestLocation not found: ${cteHarvestDto.harvestLocationId}")
+        val location = getLocation(cteHarvestDto.locationId,authPrincipal)
+        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId,authPrincipal)
+        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId,authPrincipal)
 
         val cteHarvest = cteHarvestDto.toCteHarvest(location, subsequentRecipient, harvestLocation)
         val cteHarvestCto = cteHarvestService.update(cteHarvest).toCteHarvestDto()

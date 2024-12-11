@@ -4,11 +4,13 @@
 package com.foodtraceai.controller
 
 import com.foodtraceai.auth.JwtService
-import com.foodtraceai.model.FsmaUser
+import com.foodtraceai.model.*
+import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.service.*
 import com.foodtraceai.service.cte.*
 import com.foodtraceai.service.supplier.SupShipCteService
 import com.foodtraceai.util.BadRequestException
+import com.foodtraceai.util.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -93,6 +95,62 @@ class BaseController {
 
     @Autowired
     protected lateinit var tracePlanService: TracePlanService
+
+    fun getAddress(id: Long, authPrincipal: FsmaUser): Address {
+        val address = addressService.findById(id)
+            ?: throw EntityNotFoundException("Address not found: $id")
+//        assertResellerClientMatchesToken(authPrincipal, address.resellerId)
+        return address
+    }
+
+    fun getContact(id: Long, authPrincipal: FsmaUser): Contact {
+        val contact = contactService.findById(id)
+            ?: throw EntityNotFoundException("Contact not found: $id")
+//        assertContactClientMatchesToken(fsaUser, business.contactId)
+        return contact
+    }
+
+    fun getCteReceive(id: Long, authPrincipal: FsmaUser): CteReceive {
+        val cteReceive =cteReceiveService.findById(id)
+            ?: throw EntityNotFoundException("CteReceive not found: $id")
+//        assertContactClientMatchesToken(fsaUser, business.contactId)
+        return cteReceive
+    }
+
+    fun getFoodBus(id: Long, authPrincipal: FsmaUser): FoodBus {
+        val foodBus = foodBusService.findById(id)
+            ?: throw EntityNotFoundException("FoodBus not found: $id")
+//        assertContactClientMatchesToken(fsaUser, business.contactId)
+        return foodBus
+    }
+
+    fun getFranchisor(id: Long, authPrincipal: FsmaUser): Franchisor {
+        val franchisor = franchisorService.findById(id)
+            ?: throw EntityNotFoundException("Franchisor not found: $id")
+//        assertContactClientMatchesToken(fsaUser, business.contactId)
+        return franchisor
+    }
+
+    fun getLocation(id: Long, authPrincipal: FsmaUser): Location {
+        val location = locationService.findById(id)
+            ?: throw EntityNotFoundException("Location not found: $id")
+//        assertContactClientMatchesToken(fsaUser, business.contactId)
+        return location
+    }
+
+    fun getReseller(id: Long, authPrincipal: FsmaUser): Reseller {
+        val reseller = resellerService.findById(id)
+            ?: throw EntityNotFoundException("Reseller not found: $id")
+//        assertContactClientMatchesToken(fsaUser, business.contactId)
+        return reseller
+    }
+
+    fun getTraceLotCode(id: Long, authPrincipal: FsmaUser): TraceLotCode {
+        val traceLotCode = traceLotCodeService.findById(id)
+            ?: throw EntityNotFoundException("TraceLotCode not found: $id")
+//        assertContactClientMatchesToken(fsaUser, business.contactId)
+        return traceLotCode
+    }
 
     //    fun getFsaUser(id: Long, authPrincipal: FsmaUser): FsaUser {
 //        val fsaUser = fsaUserService.findById(id)

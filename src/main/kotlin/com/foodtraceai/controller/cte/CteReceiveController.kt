@@ -8,7 +8,6 @@ import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.cte.CteReceiveDto
 import com.foodtraceai.model.cte.toCteReceive
 import com.foodtraceai.model.cte.toCteReceiveDto
-import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -31,8 +30,7 @@ class CteReceiveController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
-        val cteReceive = cteReceiveService.findById(id)
-            ?: throw EntityNotFoundException("CteReceive not found = $id")
+        val cteReceive = getCteReceive(id,authPrincipal)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
         return ResponseEntity.ok(cteReceive.toCteReceiveDto())
     }
@@ -43,17 +41,13 @@ class CteReceiveController : BaseController() {
         @Valid @RequestBody cteReceiveDto: CteReceiveDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
-        val location = locationService.findById(cteReceiveDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteReceiveDto.locationId}")
+        val location = getLocation(cteReceiveDto.locationId,authPrincipal)
 
-        val traceLotCode = traceLotCodeService.findById(cteReceiveDto.tlcId)
-            ?: throw EntityNotFoundException("TraceLotCode not found: ${cteReceiveDto.tlcId}")
+        val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId,authPrincipal)
 
-        val shipFromLocation = locationService.findById(cteReceiveDto.ipsLocationId)
-            ?: throw EntityNotFoundException("ShipFromLocation not found: ${cteReceiveDto.ipsLocationId}")
+        val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId,authPrincipal)
 
-        var tlcSource = locationService.findById(cteReceiveDto.tlcSourceId)
-                ?: throw EntityNotFoundException("TlcSource not found: ${cteReceiveDto.tlcSourceId}")
+        val tlcSource = getLocation(cteReceiveDto.tlcSourceId,authPrincipal)
 
         val cteReceive = cteReceiveDto.toCteReceive(
             location, traceLotCode, shipFromLocation, tlcSource
@@ -73,17 +67,13 @@ class CteReceiveController : BaseController() {
         if (cteReceiveDto.id <= 0L || cteReceiveDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteReceive Ids specified: $id != ${cteReceiveDto.id}")
 
-        val location = locationService.findById(cteReceiveDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteReceiveDto.locationId}")
+        val location = getLocation(cteReceiveDto.locationId,authPrincipal)
 
-        val traceLotCode = traceLotCodeService.findById(cteReceiveDto.tlcId)
-            ?: throw EntityNotFoundException("TraceLotCode not found: ${cteReceiveDto.tlcId}")
+        val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId,authPrincipal)
 
-        val shipFromLocation = locationService.findById(cteReceiveDto.ipsLocationId)
-            ?: throw EntityNotFoundException("ShipFromLocation not found: ${cteReceiveDto.ipsLocationId}")
+        val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId,authPrincipal)
 
-        val tlcSource= locationService.findById(cteReceiveDto.tlcSourceId)
-                ?: throw EntityNotFoundException("TlcSource not found: ${cteReceiveDto.tlcSourceId}")
+        val tlcSource= getLocation(cteReceiveDto.tlcSourceId,authPrincipal)
 
         val cteReceive = cteReceiveDto.toCteReceive(location, traceLotCode, shipFromLocation, tlcSource)
         val cteReceiveCto = cteReceiveService.update(cteReceive).toCteReceiveDto()

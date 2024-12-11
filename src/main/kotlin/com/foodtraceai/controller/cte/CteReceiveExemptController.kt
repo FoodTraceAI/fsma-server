@@ -48,14 +48,11 @@ class cteReceiveExemptController : BaseController() {
         @Valid @RequestBody cteReceiveExemptDto: CteReceiveExemptDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteReceiveExemptDto> {
-        val location = locationService.findById(cteReceiveExemptDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteReceiveExemptDto.locationId}")
+        val location = getLocation(cteReceiveExemptDto.locationId,authPrincipal)
 
-        val traceLotCode = traceLotCodeService.findById(cteReceiveExemptDto.traceLotCodeId)
-            ?: throw EntityNotFoundException("TraceLotCode not found: ${cteReceiveExemptDto.traceLotCodeId}")
+        val traceLotCode = getTraceLotCode(cteReceiveExemptDto.traceLotCodeId,authPrincipal)
 
-        val shipFromLocation = locationService.findById(cteReceiveExemptDto.ipsLocationId)
-            ?: throw EntityNotFoundException("ShipFromLocation not found: ${cteReceiveExemptDto.ipsLocationId}")
+        val shipFromLocation = getLocation(cteReceiveExemptDto.ipsLocationId,authPrincipal)
 
         val cteReceiveExempt = cteReceiveExemptDto.toCteReceiveExempt(
             traceLotCode, shipFromLocation, location
@@ -75,14 +72,11 @@ class cteReceiveExemptController : BaseController() {
         if (cteReceiveExemptDto.id <= 0L || cteReceiveExemptDto.id != id)
             throw UnauthorizedRequestException("Conflicting cteReceiveExempt Ids specified: $id != ${cteReceiveExemptDto.id}")
 
-        val location = locationService.findById(cteReceiveExemptDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteReceiveExemptDto.locationId}")
+        val location = getLocation(cteReceiveExemptDto.locationId,authPrincipal)
 
-        val traceLotCode = traceLotCodeService.findById(cteReceiveExemptDto.traceLotCodeId)
-            ?: throw EntityNotFoundException("TraceLotCode not found: ${cteReceiveExemptDto.traceLotCodeId}")
+        val traceLotCode = getTraceLotCode(cteReceiveExemptDto.traceLotCodeId,authPrincipal)
 
-        val shipFromLocation = locationService.findById(cteReceiveExemptDto.ipsLocationId)
-            ?: throw EntityNotFoundException("ShipFromLocation not found: ${cteReceiveExemptDto.ipsLocationId}")
+        val shipFromLocation = getLocation(cteReceiveExemptDto.ipsLocationId,authPrincipal)
 
         val cteReceiveExempt = cteReceiveExemptDto.toCteReceiveExempt(traceLotCode, shipFromLocation, location)
         val cteReceiveExemptCto = cteReceiveExemptService.update(cteReceiveExempt).toCteReceiveExemptDto()

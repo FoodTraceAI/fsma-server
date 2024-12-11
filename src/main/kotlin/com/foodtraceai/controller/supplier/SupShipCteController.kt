@@ -5,7 +5,6 @@ package com.foodtraceai.controller.supplier
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.model.supplier.SupShipCteDto
 import com.foodtraceai.model.supplier.toSupCteShip
 import com.foodtraceai.model.supplier.toSupShipCteDto
@@ -44,22 +43,13 @@ class SupShipCteController : BaseController() {
         @Valid @RequestBody supShipCteDto: SupShipCteDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<SupShipCteDto> {
-        val cteReceive: CteReceive? = supShipCteDto.cteReceiveId?.let {
+        val cteReceive = supShipCteDto.cteReceiveId?.let {
             cteReceiveService.findById(it) ?: throw EntityNotFoundException("CteReceiveId not found: ${it}")
         }
-
-        val tlc = traceLotCodeService.findById(supShipCteDto.tlcId)
-            ?: throw EntityNotFoundException("Tlc not found: ${supShipCteDto.tlcId}")
-
-        val shipToLocation = locationService.findById(supShipCteDto.shipToLocationId)
-            ?: throw EntityNotFoundException("ShipToLocation not found: ${supShipCteDto.shipToLocationId}")
-
-        val shipFromLocation = locationService.findById(supShipCteDto.shipFromLocationId)
-            ?: throw EntityNotFoundException("ShipFromLocation not found: ${supShipCteDto.shipFromLocationId}")
-
-        val tlcSource = locationService.findById(supShipCteDto.tlcSourceId)
-                ?: throw EntityNotFoundException("TlcSourceLocation not found: ${supShipCteDto.tlcSourceId}")
-
+        val tlc = getTraceLotCode(supShipCteDto.tlcId, authPrincipal)
+        val shipToLocation = getLocation(supShipCteDto.shipToLocationId, authPrincipal)
+        val shipFromLocation = getLocation(supShipCteDto.shipFromLocationId, authPrincipal)
+        val tlcSource = getLocation(supShipCteDto.tlcSourceId, authPrincipal)
         val supShipCte = supShipCteDto.toSupCteShip(cteReceive, tlc, shipToLocation, shipFromLocation, tlcSource)
         val cteCoolResponse = supShipCteService.insert(supShipCte).toSupShipCteDto()
         return ResponseEntity.created(URI.create(SUP_SHIP_CTE_BASE_URL.plus("/${cteCoolResponse.id}")))
@@ -73,22 +63,11 @@ class SupShipCteController : BaseController() {
         @Valid @RequestBody supShipCteDto: SupShipCteDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<SupShipCteDto> {
-        val cteReceive: CteReceive? = supShipCteDto.cteReceiveId?.let {
-            cteReceiveService.findById(it) ?: throw EntityNotFoundException("CteReceiveId not found: $it")
-        }
-
-        val tlc = traceLotCodeService.findById(supShipCteDto.tlcId)
-            ?: throw EntityNotFoundException("Tlc not found: ${supShipCteDto.tlcId}")
-
-        val shipToLocation = locationService.findById(supShipCteDto.shipToLocationId)
-            ?: throw EntityNotFoundException("ShipToLocation not found: ${supShipCteDto.shipToLocationId}")
-
-        val shipFromLocation = locationService.findById(supShipCteDto.shipFromLocationId)
-            ?: throw EntityNotFoundException("ShipFromLocation not found: ${supShipCteDto.shipFromLocationId}")
-
-        val tlcSource = locationService.findById(supShipCteDto.tlcSourceId)
-                ?: throw EntityNotFoundException("TlcSourceLocation not found: ${supShipCteDto.tlcSourceId}")
-
+        val cteReceive = supShipCteDto.cteReceiveId?.let { getCteReceive(id, authPrincipal) }
+        val tlc = getTraceLotCode(supShipCteDto.tlcId, authPrincipal)
+        val shipToLocation = getLocation(supShipCteDto.shipToLocationId, authPrincipal)
+        val shipFromLocation = getLocation(supShipCteDto.shipFromLocationId, authPrincipal)
+        val tlcSource = getLocation(supShipCteDto.tlcSourceId, authPrincipal)
         val supShipCte = supShipCteDto.toSupCteShip(cteReceive, tlc, shipToLocation, shipFromLocation, tlcSource)
         val cteCoolResponse = supShipCteService.insert(supShipCte).toSupShipCteDto()
         return ResponseEntity.ok().body(cteCoolResponse)

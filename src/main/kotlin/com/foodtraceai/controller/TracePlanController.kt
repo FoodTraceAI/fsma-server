@@ -40,10 +40,8 @@ class TracePlanController : BaseController() {
         @Valid @RequestBody tracePlanDto: TracePlanDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<TracePlanDto> {
-        val location = locationService.findById(tracePlanDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${tracePlanDto.locationId}")
-        val contact = contactService.findById(tracePlanDto.tracePlanContactId)
-            ?: throw EntityNotFoundException("Contacts not found: ${tracePlanDto.tracePlanContactId}")
+        val location = getLocation(tracePlanDto.locationId,authPrincipal)
+        val contact = getContact(tracePlanDto.tracePlanContactId, authPrincipal)
         val tracePlan = tracePlanDto.toTracePlan(location,contact)
         val tracePlanResponse = tracePlanService.insert(tracePlan).toTracePlanDto()
         return ResponseEntity.created(URI.create(TRACE_PLAN_URL.plus("/${tracePlanResponse.id}")))
@@ -59,10 +57,8 @@ class TracePlanController : BaseController() {
     ): ResponseEntity<TracePlanDto> {
         if (tracePlanDto.id <= 0L || tracePlanDto.id != id)
             throw UnauthorizedRequestException("Conflicting TracePlanIds specified: $id != ${tracePlanDto.id}")
-        val location = locationService.findById(tracePlanDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${tracePlanDto.locationId}")
-        val contact = contactService.findById(tracePlanDto.tracePlanContactId)
-            ?: throw EntityNotFoundException("Contacts not found: ${tracePlanDto.tracePlanContactId}")
+        val location = getLocation(tracePlanDto.locationId,authPrincipal)
+        val contact = getContact(tracePlanDto.tracePlanContactId,authPrincipal)
         val tracePlan = tracePlanDto.toTracePlan(location,contact)
         val tracePlanResponse = tracePlanService.update(tracePlan).toTracePlanDto()
         return ResponseEntity.ok().body(tracePlanResponse)

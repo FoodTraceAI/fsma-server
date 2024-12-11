@@ -4,7 +4,6 @@ import com.foodtraceai.model.ContactDto
 import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.toContact
 import com.foodtraceai.model.toContactDto
-import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -27,9 +26,7 @@ class ContactController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<ContactDto> {
-        val contact = contactService.findById(id)
-            ?: throw EntityNotFoundException("Contact not found = $id")
-//        assertContactClientMatchesToken(fsaUser, business.contactId)
+        val contact = getContact(id, authPrincipal)
         return ResponseEntity.ok(contact.toContactDto())
     }
 

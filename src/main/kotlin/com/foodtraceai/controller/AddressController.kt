@@ -7,7 +7,6 @@ import com.foodtraceai.model.AddressDto
 import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.toAddress
 import com.foodtraceai.model.toAddressDto
-import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -30,9 +29,7 @@ class AddressController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<AddressDto> {
-        val address = addressService.findById(id)
-            ?: throw EntityNotFoundException("Address not found = $id")
-//        assertResellerClientMatchesToken(fsaUser, address.resellerId)
+        val address = getAddress(id,authPrincipal)
         return ResponseEntity.ok(address.toAddressDto())
     }
 

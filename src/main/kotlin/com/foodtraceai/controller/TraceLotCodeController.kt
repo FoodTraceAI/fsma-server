@@ -7,7 +7,6 @@ import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.TraceLotCodeDto
 import com.foodtraceai.model.toTraceLotCode
 import com.foodtraceai.model.toTraceLotCodeDto
-import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -32,8 +31,7 @@ class TraceLotCodeController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<TraceLotCodeDto> {
-        val traceLotCode = traceLotCodeService.findById(id)
-            ?: throw EntityNotFoundException("TraceLotCode not found = $id")
+        val traceLotCode = getTraceLotCode(id,authPrincipal)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
         return ResponseEntity.ok(traceLotCode.toTraceLotCodeDto())
     }

@@ -32,8 +32,7 @@ class LocationController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<LocationDto> {
-        val location = locationService.findById(id)
-            ?: throw EntityNotFoundException("Location not found = $id")
+        val location = getLocation(id,authPrincipal)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
         return ResponseEntity.ok(location.toLocationDto())
     }
@@ -44,14 +43,9 @@ class LocationController : BaseController() {
         @Valid @RequestBody locationDto: LocationDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<LocationDto> {
-        val business = foodBusService.findById(locationDto.foodBusId)
-            ?: throw EntityNotFoundException("FoodBuss not found: ${locationDto.foodBusId}")
-
-        val contact = contactService.findById(locationDto.locationContactId)
-            ?: throw EntityNotFoundException("Contacts not found: ${locationDto.locationContactId}")
-
-        val serviceAddress = addressService.findById(locationDto.addressId)
-            ?: throw EntityNotFoundException("Service Address not found: ${locationDto.addressId}")
+        val business = getFoodBus(locationDto.foodBusId,authPrincipal)
+        val contact = getContact(locationDto.locationContactId, authPrincipal)
+        val serviceAddress = getAddress(locationDto.addressId, authPrincipal)
         val location = locationDto.toLocation(business, contact, serviceAddress)
         val locationResponse = locationService.insert(location).toLocationDto()
         return ResponseEntity.created(URI.create(LOCATION_BASE_URL.plus("/${locationResponse.id}")))
@@ -71,11 +65,8 @@ class LocationController : BaseController() {
         val business = foodBusService.findById(locationDto.foodBusId)
             ?: throw EntityNotFoundException("Business not found: ${locationDto.foodBusId}")
 
-        val contact = contactService.findById(locationDto.locationContactId)
-            ?: throw EntityNotFoundException("Contacts not found: ${locationDto.locationContactId}")
-
-        val serviceAddress = addressService.findById(locationDto.addressId)
-            ?: throw EntityNotFoundException("ServiceAddress not found: ${locationDto.addressId}")
+        val contact = getContact(locationDto.locationContactId,authPrincipal)
+        val serviceAddress = getAddress(locationDto.addressId,authPrincipal)
 
         val location = locationDto.toLocation(business, contact, serviceAddress)
         val locationResponse = locationService.update(location).toLocationDto()

@@ -49,19 +49,14 @@ class CteIPackExemptController : BaseController() {
         @Valid @RequestBody cteIPackExemptDto: CteIPackExemptDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteIPackExemptDto> {
-        val location = locationService.findById(cteIPackExemptDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteIPackExemptDto.locationId}")
+        val location = getLocation(cteIPackExemptDto.locationId,authPrincipal)
+        val sourceLocation = getLocation(cteIPackExemptDto.sourceLocationId,authPrincipal)
 
-        val sourceLocation = locationService.findById(cteIPackExemptDto.sourceLocationId)
-            ?: throw EntityNotFoundException("SourceLocation not found: ${cteIPackExemptDto.sourceLocationId}")
-
-        val packTlc = traceLotCodeService.findById(cteIPackExemptDto.packTlcId)
-            ?: throw EntityNotFoundException("PackTlc not found: ${cteIPackExemptDto.packTlcId}")
+        val packTlc = getTraceLotCode(cteIPackExemptDto.packTlcId,authPrincipal)
 
         var packTlcSource: Location? = null
         if (cteIPackExemptDto.packTlcSourceId != null)
-            packTlcSource = locationService.findById(cteIPackExemptDto.packTlcSourceId)
-                ?: throw EntityNotFoundException("PackTlcSource not found: ${cteIPackExemptDto.packTlcSourceId}")
+            packTlcSource = getLocation(cteIPackExemptDto.packTlcSourceId,authPrincipal)
 
         val iPackExempt = cteIPackExemptDto.toCteIPackExempt(location, sourceLocation, packTlc, packTlcSource)
         val iPackExemptResponse = cteIPackExemptService.insert(iPackExempt).toCteIPackExemptDto()
@@ -79,19 +74,14 @@ class CteIPackExemptController : BaseController() {
         if (cteIPackExemptDto.id <= 0L || cteIPackExemptDto.id != id)
             throw UnauthorizedRequestException("Conflicting cteIPackExemptDto Ids specified: $id != ${cteIPackExemptDto.id}")
 
-        val location = locationService.findById(cteIPackExemptDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteIPackExemptDto.locationId}")
+        val location = getLocation(cteIPackExemptDto.locationId,authPrincipal)
+        val sourceLocation = getLocation(cteIPackExemptDto.sourceLocationId,authPrincipal)
 
-        val sourceLocation = locationService.findById(cteIPackExemptDto.sourceLocationId)
-            ?: throw EntityNotFoundException("SourceLocation not found: ${cteIPackExemptDto.sourceLocationId}")
-
-        val packTlc = traceLotCodeService.findById(cteIPackExemptDto.packTlcId)
-            ?: throw EntityNotFoundException("PackTlc not found: ${cteIPackExemptDto.packTlcId}")
+        val packTlc = getTraceLotCode(cteIPackExemptDto.packTlcId,authPrincipal)
 
         var packTlcSource: Location? = null
         if (cteIPackExemptDto.packTlcSourceId != null)
-            packTlcSource = locationService.findById(cteIPackExemptDto.packTlcSourceId)
-                ?: throw EntityNotFoundException("PackTlcSource not found: ${cteIPackExemptDto.packTlcSourceId}")
+            packTlcSource = getLocation(cteIPackExemptDto.packTlcSourceId,authPrincipal)
 
         val cteIPackExempt = cteIPackExemptDto.toCteIPackExempt(location, sourceLocation, packTlc, packTlcSource)
         val iPackExemptCto = cteIPackExemptService.update(cteIPackExempt).toCteIPackExemptDto()

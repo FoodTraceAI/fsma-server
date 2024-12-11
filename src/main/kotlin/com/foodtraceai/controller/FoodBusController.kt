@@ -28,9 +28,7 @@ class FoodBusController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<FoodBusDto> {
-        val foodBus = foodBusService.findById(id)
-            ?: throw EntityNotFoundException("FoodBusiness not found: $id")
-//        assertResellerClientMatchesToken(fsaUser, business.resellerId)
+        val foodBus = getFoodBus(id, authPrincipal)
         return ResponseEntity.ok(foodBus.toFoodBusDto())
     }
 
@@ -41,16 +39,10 @@ class FoodBusController : BaseController() {
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<FoodBusDto> {
         var reseller: Reseller? = null
-        foodBusDto.resellerId?.let {
-            reseller = resellerService.findById(it)
-                ?: throw EntityNotFoundException("Reseller not found: ${foodBusDto.resellerId}")
-        }
+        foodBusDto.resellerId?.let { reseller = getReseller(it, authPrincipal) }
 
-        val mainAddress = addressService.findById(foodBusDto.mainAddressId)
-            ?: throw EntityNotFoundException("Address not found: ${foodBusDto.mainAddressId}")
-
-        val contact = contactService.findById(foodBusDto.foodBusContactId)
-            ?: throw EntityNotFoundException("Contact not found: ${foodBusDto.foodBusContactId}")
+        val mainAddress = getAddress(foodBusDto.mainAddressId, authPrincipal)
+        val contact = getContact(foodBusDto.foodBusContactId, authPrincipal)
 
         val franchisor = if (foodBusDto.franchisorId == null) null
         else franchisorService.findById(foodBusDto.franchisorId)
@@ -72,17 +64,10 @@ class FoodBusController : BaseController() {
         if (foodBusDto.id <= 0L || foodBusDto.id != id)
             throw UnauthorizedRequestException("Conflicting BusinessIds specified: $id != ${foodBusDto.id}")
 
-        var reseller: Reseller? = null
-        foodBusDto.resellerId?.let {
-            reseller = resellerService.findById(it)
-                ?: throw EntityNotFoundException("Reseller not found: ${foodBusDto.resellerId}")
-        }
+        var reseller: Reseller? = foodBusDto.resellerId?.let { getReseller(it, authPrincipal) }
 
-        val mainAddress = addressService.findById(foodBusDto.mainAddressId)
-            ?: throw EntityNotFoundException("Address not found: ${foodBusDto.mainAddressId}")
-
-        val foodBusContact = contactService.findById(foodBusDto.foodBusContactId)
-            ?: throw EntityNotFoundException("Contact not found: ${foodBusDto.foodBusContactId}")
+        val mainAddress = getAddress(foodBusDto.mainAddressId, authPrincipal)
+        val foodBusContact = getContact(foodBusDto.foodBusContactId, authPrincipal)
 
         val franchisor = foodBusDto.franchisorId?.let {
             franchisorService.findById(it)

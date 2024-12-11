@@ -48,54 +48,39 @@ class CteIPackSproutsController : BaseController() {
         @Valid @RequestBody cteIPackSproutsDto: CteIPackSproutsDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteIPackSproutsDto> {
-        val location = locationService.findById(cteIPackSproutsDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteIPackSproutsDto.locationId}")
+        val location = getLocation(cteIPackSproutsDto.locationId,authPrincipal)
+        val harvestLocation = getLocation(cteIPackSproutsDto.harvestLocationId,authPrincipal)
 
-        val harvestLocation = locationService.findById(cteIPackSproutsDto.harvestLocationId)
-            ?: throw EntityNotFoundException("HarvestLocation not found: ${cteIPackSproutsDto.harvestLocationId}")
-
-        val harvestFoodBus = foodBusService.findById(cteIPackSproutsDto.harvestBusinessId)
-            ?: throw EntityNotFoundException("HarvestBus not found: ${cteIPackSproutsDto.harvestBusinessId}")
+        val harvestFoodBus = getFoodBus(cteIPackSproutsDto.harvestBusinessId,authPrincipal)
 
         var coolLocation: Location? = null
         if (cteIPackSproutsDto.coolLocationId != null)
-            coolLocation = locationService.findById(cteIPackSproutsDto.coolLocationId)
-                ?: throw EntityNotFoundException("CoolLocation not found: ${cteIPackSproutsDto.coolLocationId}")
+            coolLocation = getLocation(cteIPackSproutsDto.coolLocationId,authPrincipal)
 
-        val packTlc = traceLotCodeService.findById(cteIPackSproutsDto.packTlcId)
-            ?: throw EntityNotFoundException("PackTlc not found: ${cteIPackSproutsDto.packTlcId}")
+        val packTlc = getTraceLotCode(cteIPackSproutsDto.packTlcId,authPrincipal)
 
         var packTlcSource: Location? = null
         if (cteIPackSproutsDto.packTlcSourceId != null)
-            packTlcSource = locationService.findById(cteIPackSproutsDto.packTlcSourceId)
-                ?: throw EntityNotFoundException("PackTlcSource not found: ${cteIPackSproutsDto.packTlcSourceId}")
+            packTlcSource = getLocation(cteIPackSproutsDto.packTlcSourceId,authPrincipal)
 
         var seedGrowerLocation: Location? = null
         if (cteIPackSproutsDto.seedGrowerLocationId != null)
-            seedGrowerLocation = locationService.findById(cteIPackSproutsDto.seedGrowerLocationId)
-                ?: throw EntityNotFoundException("SeedGrowerLocation not found: ${cteIPackSproutsDto.seedGrowerLocationId}")
+            seedGrowerLocation = getLocation(cteIPackSproutsDto.seedGrowerLocationId,authPrincipal)
+        val seedConditionerLocation = getLocation(cteIPackSproutsDto.seedConditionerLocationId,authPrincipal)
 
-        val seedConditionerLocation = locationService.findById(cteIPackSproutsDto.seedConditionerLocationId)
-            ?: throw EntityNotFoundException("SeedConditionerLocation not found: ${cteIPackSproutsDto.seedConditionerLocationId}")
+        val seedTlc = getTraceLotCode(cteIPackSproutsDto.seedTlcId,authPrincipal)
 
-        val seedTlc = traceLotCodeService.findById(cteIPackSproutsDto.seedTlcId)
-            ?: throw EntityNotFoundException("SeedTlc not found: ${cteIPackSproutsDto.seedTlcId}")
-
-        val seedPackingHouseLocation = locationService.findById(cteIPackSproutsDto.seedPackingHouseLocationId)
-            ?: throw EntityNotFoundException("SeedPackingHouseLocation not found: ${cteIPackSproutsDto.seedPackingHouseLocationId}")
+        val seedPackingHouseLocation = getLocation(cteIPackSproutsDto.seedPackingHouseLocationId,authPrincipal)
 
         var seedPackingHouseTlc: TraceLotCode? = null
         if (cteIPackSproutsDto.seedPackingHouseTlcId != null)
-            seedPackingHouseTlc = traceLotCodeService.findById(cteIPackSproutsDto.seedPackingHouseTlcId)
-                ?: throw EntityNotFoundException("SeedPackingHouseTlc not found: ${cteIPackSproutsDto.seedPackingHouseTlcId}")
+            seedPackingHouseTlc = getTraceLotCode(cteIPackSproutsDto.seedPackingHouseTlcId,authPrincipal)
 
-        val seedSupplierLocation = locationService.findById(cteIPackSproutsDto.seedSupplierLocationId)
-            ?: throw EntityNotFoundException("SeedSupplierLocation not found: ${cteIPackSproutsDto.seedSupplierLocationId}")
+        val seedSupplierLocation = getLocation(cteIPackSproutsDto.seedSupplierLocationId,authPrincipal)
 
         var seedSupplierTlc: TraceLotCode? = null
         if (cteIPackSproutsDto.seedSupplierTlcId != null)
-            seedSupplierTlc = traceLotCodeService.findById(cteIPackSproutsDto.seedSupplierTlcId)
-                ?: throw EntityNotFoundException("SeedSupplierTlc not found: ${cteIPackSproutsDto.seedSupplierTlcId}")
+            seedSupplierTlc = getTraceLotCode(cteIPackSproutsDto.seedSupplierTlcId,authPrincipal)
 
         val cteIPackSprouts = cteIPackSproutsDto.toCteIPackSprouts(
             location, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
@@ -117,54 +102,40 @@ class CteIPackSproutsController : BaseController() {
         if (cteIPackSproutsDto.id <= 0L || cteIPackSproutsDto.id != id)
             throw UnauthorizedRequestException("Conflicting cteIPackSproutsDto Ids specified: $id != ${cteIPackSproutsDto.id}")
 
-        val location = locationService.findById(cteIPackSproutsDto.locationId)
-            ?: throw EntityNotFoundException("Location not found: ${cteIPackSproutsDto.locationId}")
+        val location = getLocation(cteIPackSproutsDto.locationId,authPrincipal)
+         val harvestLocation = getLocation(cteIPackSproutsDto.harvestLocationId,authPrincipal)
 
-         val harvestLocation = locationService.findById(cteIPackSproutsDto.harvestLocationId)
-            ?: throw EntityNotFoundException("HarvestLocation not found: ${cteIPackSproutsDto.harvestLocationId}")
-
-        val harvestFoodBus = foodBusService.findById(cteIPackSproutsDto.harvestBusinessId)
-            ?: throw EntityNotFoundException("HarvestBus not found: ${cteIPackSproutsDto.harvestBusinessId}")
+        val harvestFoodBus = getFoodBus(cteIPackSproutsDto.harvestBusinessId,authPrincipal)
 
         var coolLocation: Location? = null
         if (cteIPackSproutsDto.coolLocationId != null)
-            coolLocation = locationService.findById(cteIPackSproutsDto.coolLocationId)
-                ?: throw EntityNotFoundException("CoolLocation not found: ${cteIPackSproutsDto.coolLocationId}")
+            coolLocation = getLocation(cteIPackSproutsDto.coolLocationId,authPrincipal)
 
-        val packTlc = traceLotCodeService.findById(cteIPackSproutsDto.packTlcId)
-            ?: throw EntityNotFoundException("PackTlc not found: ${cteIPackSproutsDto.packTlcId}")
+        val packTlc = getTraceLotCode(cteIPackSproutsDto.packTlcId,authPrincipal)
 
         var packTlcSource: Location? = null
         if (cteIPackSproutsDto.packTlcSourceId != null)
-            packTlcSource = locationService.findById(cteIPackSproutsDto.packTlcSourceId)
-                ?: throw EntityNotFoundException("PackTlcSource not found: ${cteIPackSproutsDto.packTlcSourceId}")
+            packTlcSource = getLocation(cteIPackSproutsDto.packTlcSourceId,authPrincipal)
 
         var seedGrowerLocation: Location? = null
         if (cteIPackSproutsDto.seedGrowerLocationId != null)
-            seedGrowerLocation = locationService.findById(cteIPackSproutsDto.seedGrowerLocationId)
-                ?: throw EntityNotFoundException("SeedGrowerLocation not found: ${cteIPackSproutsDto.seedGrowerLocationId}")
+            seedGrowerLocation = getLocation(cteIPackSproutsDto.seedGrowerLocationId,authPrincipal)
 
-        val seedConditionerLocation = locationService.findById(cteIPackSproutsDto.seedConditionerLocationId)
-            ?: throw EntityNotFoundException("SeedConditionerLocation not found: ${cteIPackSproutsDto.seedConditionerLocationId}")
+        val seedConditionerLocation = getLocation(cteIPackSproutsDto.seedConditionerLocationId,authPrincipal)
 
-        val seedTlc = traceLotCodeService.findById(cteIPackSproutsDto.seedTlcId)
-            ?: throw EntityNotFoundException("SeedTlc not found: ${cteIPackSproutsDto.seedTlcId}")
+        val seedTlc = getTraceLotCode(cteIPackSproutsDto.seedTlcId,authPrincipal)
 
-        val seedPackingHouseLocation = locationService.findById(cteIPackSproutsDto.seedPackingHouseLocationId)
-            ?: throw EntityNotFoundException("SeedPackingHouseLocation not found: ${cteIPackSproutsDto.seedPackingHouseLocationId}")
+        val seedPackingHouseLocation = getLocation(cteIPackSproutsDto.seedPackingHouseLocationId,authPrincipal)
 
         var seedPackingHouseTlc: TraceLotCode? = null
         if (cteIPackSproutsDto.seedPackingHouseTlcId != null)
-            seedPackingHouseTlc = traceLotCodeService.findById(cteIPackSproutsDto.seedPackingHouseTlcId)
-                ?: throw EntityNotFoundException("SeedPackingHouseTlc not found: ${cteIPackSproutsDto.seedPackingHouseTlcId}")
+            seedPackingHouseTlc = getTraceLotCode(cteIPackSproutsDto.seedPackingHouseTlcId,authPrincipal)
 
-        val seedSupplierLocation = locationService.findById(cteIPackSproutsDto.seedSupplierLocationId)
-            ?: throw EntityNotFoundException("SeedSupplierLocation not found: ${cteIPackSproutsDto.seedSupplierLocationId}")
+        val seedSupplierLocation = getLocation(cteIPackSproutsDto.seedSupplierLocationId,authPrincipal)
 
         var seedSupplierTlc: TraceLotCode? = null
         if (cteIPackSproutsDto.seedSupplierTlcId != null)
-            seedSupplierTlc = traceLotCodeService.findById(cteIPackSproutsDto.seedSupplierTlcId)
-                ?: throw EntityNotFoundException("SeedSupplierTlc not found: ${cteIPackSproutsDto.seedSupplierTlcId}")
+            seedSupplierTlc = getTraceLotCode(cteIPackSproutsDto.seedSupplierTlcId,authPrincipal)
 
         val cteIPackSprouts = cteIPackSproutsDto.toCteIPackSprouts(
             location, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
