@@ -6,6 +6,7 @@ package com.foodtraceai.controller
 import com.foodtraceai.auth.JwtService
 import com.foodtraceai.model.*
 import com.foodtraceai.model.cte.CteReceive
+import com.foodtraceai.model.supplier.SupShipCte
 import com.foodtraceai.service.*
 import com.foodtraceai.service.cte.*
 import com.foodtraceai.service.supplier.SupShipCteService
@@ -144,6 +145,14 @@ class BaseController {
 //        assertContactClientMatchesToken(fsaUser, business.contactId)
         return reseller
     }
+
+    fun getSupShipCte(id: Long, authPrincipal: FsmaUser): SupShipCte {
+        val supShipCte = supShipCteService.findById(id)
+            ?: throw EntityNotFoundException("SupShipCte not found: $id")
+//        assertContactClientMatchesToken(fsaUser, business.contactId)
+        return supShipCte
+    }
+
 
     fun getTraceLotCode(id: Long, authPrincipal: FsmaUser): TraceLotCode {
         val traceLotCode = traceLotCodeService.findById(id)

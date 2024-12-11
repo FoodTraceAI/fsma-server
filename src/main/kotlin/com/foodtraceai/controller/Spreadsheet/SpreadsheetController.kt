@@ -1,9 +1,6 @@
-// ----------------------------------------------------------------------------
-// Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
-// ----------------------------------------------------------------------------
+package com.foodtraceai.controller.Spreadsheet
 
-package com.foodtraceai.controller
-
+import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.util.BadRequestException

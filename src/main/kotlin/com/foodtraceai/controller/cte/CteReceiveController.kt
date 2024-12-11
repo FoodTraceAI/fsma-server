@@ -35,6 +35,13 @@ class CteReceiveController : BaseController() {
         return ResponseEntity.ok(cteReceive.toCteReceiveDto())
     }
 
+    @GetMapping("/findAll")
+    fun findAll():ResponseEntity<List<CteReceiveDto>> {
+        val cteReceiveList = cteReceiveService.findAll()
+        return ResponseEntity.ok(cteReceiveList.map{it.toCteReceiveDto()})
+    }
+
+
     // -- Create a new Address
     @PostMapping
     fun create(
@@ -42,11 +49,8 @@ class CteReceiveController : BaseController() {
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
         val location = getLocation(cteReceiveDto.locationId,authPrincipal)
-
         val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId,authPrincipal)
-
         val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId,authPrincipal)
-
         val tlcSource = getLocation(cteReceiveDto.tlcSourceId,authPrincipal)
 
         val cteReceive = cteReceiveDto.toCteReceive(
@@ -68,11 +72,8 @@ class CteReceiveController : BaseController() {
             throw UnauthorizedRequestException("Conflicting CteReceive Ids specified: $id != ${cteReceiveDto.id}")
 
         val location = getLocation(cteReceiveDto.locationId,authPrincipal)
-
         val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId,authPrincipal)
-
         val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId,authPrincipal)
-
         val tlcSource= getLocation(cteReceiveDto.tlcSourceId,authPrincipal)
 
         val cteReceive = cteReceiveDto.toCteReceive(location, traceLotCode, shipFromLocation, tlcSource)
@@ -86,9 +87,9 @@ class CteReceiveController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<Void> {
-        cteReceiveService.findById(id)?.let { ctcCoolCto ->
+        cteReceiveService.findById(id)?.let { cteReceive ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)
-            cteReceiveService.delete(ctcCoolCto) // soft delete?
+            cteReceiveService.delete(cteReceive) // soft delete?
         }
         return ResponseEntity.noContent().build()
     }

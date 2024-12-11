@@ -1,15 +1,16 @@
-package com.foodtraceai.controller
+package com.foodtraceai.controller.supplier
 
+import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.cte.CteReceive
-import com.foodtraceai.model.supplier.SupShipCteDto
-import com.foodtraceai.model.supplier.toSupShipCteDto
-import com.foodtraceai.util.SupCteStatus
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
@@ -18,26 +19,7 @@ private const val SUPPLIER_BASE_URL = "/api/v1/supplier"
 @RestController
 @RequestMapping(value = [SUPPLIER_BASE_URL])
 @SecurityRequirement(name = "bearerAuth")
-class SupplierController : BaseController() {
-
-    // TODO: Remove me. This API is for testing only
-    // http://localhost:8080/api/v1/supplier/findShipCte?sscc=sscc1&tlcId=1&shipFromLocationId=1
-    @GetMapping("/findShipCte")
-    private fun findShipCte(
-        @RequestParam(value = "sscc", required = true) sscc: String,
-        @RequestParam(value = "tlcId", required = true) tlcId: Long,
-        @RequestParam(value = "shipToLocationId", required = true) shipToLocationId: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
-    ): ResponseEntity<SupShipCteDto?> {
-        val supShipCte = supplierService.findSupShipCte(
-            sscc = sscc,
-            tlcId = tlcId,
-            shipToLocationId = shipToLocationId,
-            supCteStatus = SupCteStatus.Pending,
-        )
-
-        return ResponseEntity.ok(supShipCte?.toSupShipCteDto())
-    }
+class MakeReceiveCteController : BaseController() {
 
     data class ShipArgs(
         val sscc: String,
