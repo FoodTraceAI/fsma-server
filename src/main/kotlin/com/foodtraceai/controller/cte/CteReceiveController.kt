@@ -35,6 +35,7 @@ class CteReceiveController : BaseController() {
         return ResponseEntity.ok(cteReceive.toCteReceiveDto())
     }
 
+    // TODO - add security to this API
     @GetMapping("/findAll")
     fun findAll():ResponseEntity<List<CteReceiveDto>> {
         val cteReceiveList = cteReceiveService.findAll()

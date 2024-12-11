@@ -36,6 +36,7 @@ class SupShipCteController : BaseController() {
         return ResponseEntity.ok(supShipCte.toSupShipCteDto())
     }
 
+    // TODO - add security to this API
     @GetMapping("/findAll")
     fun findAll():ResponseEntity<List<SupShipCteDto>> {
         val supShipCteList = supShipCteService.findAll()
