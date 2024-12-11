@@ -31,8 +31,7 @@ class FranchisorController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<FranchisorDto> {
-        val franchisor = franchisorService.findById(id)
-            ?: throw EntityNotFoundException("Franchisor not found = $id")
+        val franchisor = getFranchisor(id,authPrincipal)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
         return ResponseEntity.ok(franchisor.toFranchisorDto())
     }

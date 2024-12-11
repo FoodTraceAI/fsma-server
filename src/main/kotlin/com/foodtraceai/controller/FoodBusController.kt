@@ -4,7 +4,6 @@
 package com.foodtraceai.controller
 
 import com.foodtraceai.model.*
-import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -43,11 +42,7 @@ class FoodBusController : BaseController() {
 
         val mainAddress = getAddress(foodBusDto.mainAddressId, authPrincipal)
         val contact = getContact(foodBusDto.foodBusContactId, authPrincipal)
-
-        val franchisor = if (foodBusDto.franchisorId == null) null
-        else franchisorService.findById(foodBusDto.franchisorId)
-            ?: throw EntityNotFoundException("Franchisor not found: ${foodBusDto.franchisorId}")
-
+        val franchisor = foodBusDto.franchisorId?.let{ getFranchisor(it,authPrincipal)}
         val foodBus = foodBusDto.toFoodBus(reseller, mainAddress, contact, franchisor)
         val foodBusResponse = foodBusService.insert(foodBus).toFoodBusDto()
         return ResponseEntity.created(URI.create(FOOD_BUS_BASE_URL.plus("/${foodBusResponse.id}")))
@@ -63,17 +58,10 @@ class FoodBusController : BaseController() {
     ): ResponseEntity<FoodBusDto> {
         if (foodBusDto.id <= 0L || foodBusDto.id != id)
             throw UnauthorizedRequestException("Conflicting BusinessIds specified: $id != ${foodBusDto.id}")
-
-        var reseller: Reseller? = foodBusDto.resellerId?.let { getReseller(it, authPrincipal) }
-
+        val reseller: Reseller? = foodBusDto.resellerId?.let { getReseller(it, authPrincipal) }
         val mainAddress = getAddress(foodBusDto.mainAddressId, authPrincipal)
         val foodBusContact = getContact(foodBusDto.foodBusContactId, authPrincipal)
-
-        val franchisor = foodBusDto.franchisorId?.let {
-            franchisorService.findById(it)
-                ?: throw EntityNotFoundException("Franchisor not found: $it")
-        }
-
+        val franchisor = foodBusDto.franchisorId?.let { getFranchisor(it,authPrincipal) }
         val foodBus = foodBusDto.toFoodBus(reseller, mainAddress, foodBusContact, franchisor)
         val foodBusResponse = foodBusService.update(foodBus)
         return ResponseEntity.ok().body(foodBusResponse.toFoodBusDto())
