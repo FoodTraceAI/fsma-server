@@ -95,7 +95,7 @@ class TestsAddress {
     @Test
     fun `add address`() {
         val (accessToken, _) = authenticate(rootAuthLogin)
-        val addressId = 7   // DataLoader loads first 3 addresses, other unit tests add 3 and delete 1
+        val addressId = 8   // DataLoader loads first 4 addresses, other unit tests add 3 and delete 1
         val mvcResult = mockMvc.post("/api/v1/address") {
             header("Authorization", "Bearer $accessToken")
             content = objectMapper.writeValueAsString(addressDto)
@@ -113,7 +113,6 @@ class TestsAddress {
             jsonPath("$.lat") { value(addressDto.lat) }
             jsonPath("$.lon") { value(addressDto.lon) }
         }.andReturn()
-
         // AddressId added if ne
         // val addressId: Long = JsonPath.read(mvcResult.response.contentAsString, "$.id")
     }

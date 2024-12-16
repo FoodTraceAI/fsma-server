@@ -31,16 +31,20 @@ class DataLoader : ApplicationRunner {
     @Autowired
     private lateinit var addressService: AddressService
     private val addressList: MutableList<Address> = mutableListOf()
+    private lateinit var foodTraceAddress: Address
+    private lateinit var freshAddress: Address
+    private lateinit var happyAddress: Address
+    private lateinit var pepiProcessorAddress: Address
 
     @Autowired
     private lateinit var contactService: ContactService
     private val contactList: MutableList<Contact> = mutableListOf()
+    private lateinit var freshProduceContact: Contact
+    private lateinit var happyRestaurantContact: Contact
+    private lateinit var pepiProcessorContact: Contact
     private lateinit var billingContact: Contact
-    private lateinit var joeContact: Contact
     private lateinit var mainContact: Contact
     private lateinit var newContact: Contact
-    private lateinit var steveContact: Contact
-    private lateinit var tedContact: Contact
     private lateinit var tracePlanContact: Contact
 
     @Autowired
@@ -50,6 +54,9 @@ class DataLoader : ApplicationRunner {
     @Autowired
     private lateinit var foodBusService: FoodBusService
     private val foodBusList: MutableList<FoodBus> = mutableListOf()
+    private lateinit var freshProduceBus: FoodBus
+    private lateinit var happyRestaurantBus: FoodBus
+    private lateinit var pepiProcessorBus: FoodBus
 
     @Autowired
     private lateinit var fsmaUserService: FsmaUserService
@@ -62,6 +69,8 @@ class DataLoader : ApplicationRunner {
     @Autowired
     private lateinit var resellerService: ResellerService
     private val resellerList: MutableList<Reseller> = mutableListOf()
+    private lateinit var foodTraceReseller: Reseller
+    private lateinit var freshProduceReseller: Reseller
 
     @Autowired
     private lateinit var supShipCteService: SupShipCteService
@@ -160,47 +169,83 @@ class DataLoader : ApplicationRunner {
 
     fun addAddresses() {
         var addressDto = AddressDto(
-            street = "1413 Durness Ct.",
-            city = "Naperville",
-            state = UsaCanadaState.IL,
-            postalCode = "60565",
-            country = Country.USA,
-            lat = 35.1268133,
-            lon = -90.0087413
-        )
-
-        var address = addressDto.toAddress()
-        addressList.add(addressService.insert(address))
-
-        addressDto = AddressDto(
-            street = "1622 Central Ave",
-            city = "Memphis",
-            state = UsaCanadaState.TN,
-            postalCode = "38104-5064",
-            country = Country.USA,
-            lat = 35.1268133,
-            lon = -90.0087413
-        )
-
-        address = addressDto.toAddress()
-        addressList.add(addressService.insert(address))
-
-        addressDto = AddressDto(
-            street = "630 N. Main",
-            city = "Naperville",
+            street = "1 FoodTrace Street",
+            city = "FoodTrace City",
             state = UsaCanadaState.IL,
             postalCode = "60563",
             country = Country.USA,
             lat = 35.1268133,
             lon = -90.0087413
         )
+        foodTraceAddress = addressDto.toAddress()
+        addressList.add(addressService.insert(foodTraceAddress))
 
-        address = addressDto.toAddress()
-        addressList.add(addressService.insert(address))
+        addressDto = AddressDto(
+            street = "100 Fresh Street",
+            city = "Fresh City",
+            state = UsaCanadaState.IL,
+            postalCode = "60563",
+            country = Country.USA,
+            lat = 35.1268133,
+            lon = -90.0087413
+        )
+        freshAddress = addressDto.toAddress()
+        addressList.add(addressService.insert(freshAddress))
+
+        addressDto = AddressDto(
+            street = "200 Happy Ave",
+            city = "Happy City",
+            state = UsaCanadaState.TN,
+            postalCode = "38104-5064",
+            country = Country.USA,
+            lat = 35.1268133,
+            lon = -90.0087413
+        )
+        happyAddress = addressDto.toAddress()
+        addressList.add(addressService.insert(happyAddress))
+
+        addressDto = AddressDto(
+            street = "300 Processor Lane",
+            city = "Processor City",
+            state = UsaCanadaState.IL,
+            postalCode = "60565",
+            country = Country.USA,
+            lat = 35.1268133,
+            lon = -90.0087413
+        )
+        pepiProcessorAddress = addressDto.toAddress()
+        addressList.add(addressService.insert(pepiProcessorAddress))
     }
 
     fun addContacts() {
         var contact = Contact(
+            firstName = "FreshFirstName",
+            lastName = "FreshLastName",
+            phone = "1-800-555-1212",
+            email = "FirstName.Lastname@gmail.com"
+        )
+        freshProduceContact = contactService.insert(contact)
+        contactList.add(freshProduceContact)
+
+        contact = Contact(
+            firstName = "Happy",
+            lastName = "Restaurant",
+            email = "happy.restaurant@gmail.com",
+            phone = "800-555-1212",
+        )
+        happyRestaurantContact = contactService.insert(contact)
+        contactList.add(happyRestaurantContact)
+
+        contact = Contact(
+            firstName = "FirstName FoodProcessor",
+            lastName = "LastName FoodProcesssor",
+            phone = "1-800-555-1212",
+            email = "food.processor@gmail.com"
+        )
+        pepiProcessorContact = contactService.insert(contact)
+        contactList.add(pepiProcessorContact)
+
+        contact = Contact(
             firstName = "billingContactFirstName",
             lastName = "billingContactLastName",
             phone = "billingContactPhone",
@@ -208,15 +253,6 @@ class DataLoader : ApplicationRunner {
         )
         billingContact = contactService.insert(contact)
         contactList.add(billingContact)
-
-        contact = Contact(
-            firstName = "Joe",
-            lastName = "Smith",
-            email = "joe.smith@gmail.com",
-            phone = "800-555-1212",
-        )
-        joeContact = contactService.insert(contact)
-        contactList.add(joeContact)
 
         contact = Contact(
             firstName = "mainContactFirstName",
@@ -237,97 +273,94 @@ class DataLoader : ApplicationRunner {
         contactList.add(newContact)
 
         contact = Contact(
-            firstName = "Steve",
-            lastName = "Eick",
-            phone = "1-800-555-1212",
-            email = "steve@gmail.com"
-        )
-        steveContact = contactService.insert(contact)
-        contactList.add(steveContact)
-
-        contact = Contact(
-            firstName = "Steve",
-            lastName = "Eick",
-            phone = "1-800-555-1212",
-            email = "steve@gmail.com"
-        )
-        tedContact = contactService.insert(contact)
-        contactList.add(tedContact)
-
-        contact = Contact(
-            firstName = "tracePlanContact firstName",
-            lastName = "tracePlanContact lastName",
-            email = "tracePlanContact email",
-            phone = "tracePlanContact 800-555-1212"
+            firstName = "trace",
+            lastName = "PlanContact",
+            phone = "800-555-1212",
+            email = "trace@gmail.com"
         )
         tracePlanContact = contactService.insert(contact)
         contactList.add(tracePlanContact)
     }
 
     fun addResellers() {
-        val resellerDto = ResellerDto(
+        var resellerDto = ResellerDto(
             addressDto = addressList[0].toAddressDto(),
-            accountRep = "Steve",
+            accountRep = "FoodTraceAI Account Rep",
             businessName = "FoodTraceAI",
             mainContactId = mainContact.id,
             billingContactId = billingContact.id,
             billingAddressDto = addressList[0].toAddressDto(),
             resellerType = ResellerType.Distributor,
         )
-        val reseller = resellerDto.toReseller(mainContact, billingContact)
-        resellerList.add(resellerService.insert(reseller))
+        foodTraceReseller = resellerDto.toReseller(mainContact, billingContact)
+        resellerList.add(resellerService.insert(foodTraceReseller))
+
+        resellerDto = ResellerDto(
+            addressDto = addressList[1].toAddressDto(),
+            accountRep = "Account Rep",
+            businessName = "Fresh Produce",
+            mainContactId = mainContact.id,
+            billingContactId = billingContact.id,
+            billingAddressDto = addressList[1].toAddressDto(),
+            resellerType = ResellerType.Distributor,
+        )
+        freshProduceReseller = resellerDto.toReseller(mainContact, billingContact)
+        resellerList.add(resellerService.insert(freshProduceReseller))
     }
 
     fun addFoodBusinesses() {
         var foodBus = FoodBus(
-            reseller = resellerList[0],
-            mainAddress = addressList[0],
-            foodBusName = "FoodTraceAI",
-            foodBusContact = steveContact,
-            foodBusDesc = "Restaurant"
+            reseller = freshProduceReseller,
+            mainAddress = freshAddress,
+            foodBusName = "Fresh Produce Distributor",
+            foodBusContact = freshProduceContact,
+            foodBusDesc = "Distributor"
         )
-        foodBusList.add(foodBusService.insert(foodBus))
+        freshProduceBus = foodBusService.insert(foodBus)
+        foodBusList.add(freshProduceBus)
 
         foodBus = FoodBus(
-            reseller = resellerList[0],
-            mainAddress = addressList[0],
-            foodBusName = "KaleidoscopeInc",
-            foodBusContact = joeContact,
+            reseller = freshProduceReseller,
+            mainAddress = happyAddress,
+            foodBusName = "Happy Restaurant",
+            foodBusContact = happyRestaurantContact,
             foodBusDesc = "Restaurant"
         )
-        foodBusList.add(foodBusService.insert(foodBus))
+        happyRestaurantBus = foodBusService.insert(foodBus)
+        foodBusList.add(happyRestaurantBus)
 
         foodBus = FoodBus(
-            reseller = resellerList[0],
-            mainAddress = addressList[0],
-            foodBusName = "FB @ 630 N. Main",
-            foodBusContact = tedContact,
-            foodBusDesc = "Restaurant"
+            reseller = null,
+            mainAddress = pepiProcessorAddress,
+            foodBusName = "Pepi Processor",
+            foodBusContact = pepiProcessorContact,
+            foodBusDesc = "Processor"
         )
-        foodBusList.add(foodBusService.insert(foodBus))
+        pepiProcessorBus = foodBusService.insert(foodBus)
+        foodBusList.add(pepiProcessorBus)
     }
 
     fun addLocations() {
         var location = Location(
-            foodBus = foodBusList[0],
-            locationContact = foodBusList[0].foodBusContact,
-            address = foodBusList[0].mainAddress
+            foodBus = freshProduceBus,
+            locationContact = freshProduceContact,
+            address = freshAddress,
         )
         val response = locationService.insert(location)
         val retrieve = locationService.findById(response.id)
         locationList.add(retrieve!!)
 
         location = Location(
-            foodBus = foodBusList[1],
-            locationContact = foodBusList[1].foodBusContact,
-            address = foodBusList[1].mainAddress
+            foodBus = happyRestaurantBus,
+            locationContact = happyRestaurantContact,
+            address = happyAddress
         )
         locationList.add(locationService.insert(location))
 
         location = Location(
-            foodBus = foodBusList[2],
-            locationContact = foodBusList[2].foodBusContact,
-            address = foodBusList[2].mainAddress
+            foodBus = pepiProcessorBus,
+            locationContact = pepiProcessorContact,
+            address = pepiProcessorAddress
         )
         locationList.add(locationService.insert(location))
     }
