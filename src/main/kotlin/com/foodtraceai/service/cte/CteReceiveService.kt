@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.service.cte
 
+import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.repository.cte.CteReceiveRepository
 import com.foodtraceai.service.BaseService
@@ -13,6 +14,12 @@ import java.time.LocalDate
 class CteReceiveService(
     private val cteReceiveRepository: CteReceiveRepository
 ) : BaseService<CteReceive>(cteReceiveRepository, "CteReceive") {
+
+    fun findAll(fsmaUser: FsmaUser): List<CteReceive> {
+        return cteReceiveRepository.findAll(
+            locationId = fsmaUser.location.id,
+        )
+    }
 
     fun findAllByOptionalParams(
         tlcVal: String? = null,

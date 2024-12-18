@@ -30,29 +30,29 @@ class CteReceiveController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
-        val cteReceive = getCteReceive(id,authPrincipal)
+        val cteReceive = getCteReceive(id, authPrincipal)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
         return ResponseEntity.ok(cteReceive.toCteReceiveDto())
     }
 
-    // TODO - add security to this API
     @GetMapping("/findAll")
-    fun findAll():ResponseEntity<List<CteReceiveDto>> {
-        val cteReceiveList = cteReceiveService.findAll()
-        return ResponseEntity.ok(cteReceiveList.map{it.toCteReceiveDto()})
+    fun findAll(
+        @AuthenticationPrincipal authPrincipal: FsmaUser
+    ): ResponseEntity<List<CteReceiveDto>> {
+        val cteReceiveList = cteReceiveService.findAll(authPrincipal)
+        return ResponseEntity.ok(cteReceiveList.map { it.toCteReceiveDto() })
     }
 
-
-    // -- Create a new Address
+    // -- Create a new CteReceiveDto
     @PostMapping
     fun create(
         @Valid @RequestBody cteReceiveDto: CteReceiveDto,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
-        val location = getLocation(cteReceiveDto.locationId,authPrincipal)
-        val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId,authPrincipal)
-        val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId,authPrincipal)
-        val tlcSource = getLocation(cteReceiveDto.tlcSourceId,authPrincipal)
+        val location = getLocation(cteReceiveDto.locationId, authPrincipal)
+        val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId, authPrincipal)
+        val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId, authPrincipal)
+        val tlcSource = getLocation(cteReceiveDto.tlcSourceId, authPrincipal)
 
         val cteReceive = cteReceiveDto.toCteReceive(
             location, traceLotCode, shipFromLocation, tlcSource
@@ -72,10 +72,10 @@ class CteReceiveController : BaseController() {
         if (cteReceiveDto.id <= 0L || cteReceiveDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteReceive Ids specified: $id != ${cteReceiveDto.id}")
 
-        val location = getLocation(cteReceiveDto.locationId,authPrincipal)
-        val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId,authPrincipal)
-        val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId,authPrincipal)
-        val tlcSource= getLocation(cteReceiveDto.tlcSourceId,authPrincipal)
+        val location = getLocation(cteReceiveDto.locationId, authPrincipal)
+        val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId, authPrincipal)
+        val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId, authPrincipal)
+        val tlcSource = getLocation(cteReceiveDto.tlcSourceId, authPrincipal)
 
         val cteReceive = cteReceiveDto.toCteReceive(location, traceLotCode, shipFromLocation, tlcSource)
         val cteReceiveCto = cteReceiveService.update(cteReceive).toCteReceiveDto()

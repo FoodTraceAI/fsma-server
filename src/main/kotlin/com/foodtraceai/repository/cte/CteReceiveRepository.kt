@@ -13,6 +13,16 @@ import java.time.LocalDate
 @Repository
 interface CteReceiveRepository : BaseRepository<CteReceive> {
     @Query(
+        value = "select cte from CteReceive cte " +
+                "where (:locationId = cte.location.id) and " +
+                "(cte.dateDeleted is null) " +
+                "order by cte.receiveDate"
+    )
+    fun findAll(
+        @Param("locationId") locationId: Long,
+    ): List<CteReceive>
+
+    @Query(
         value = "select cte from CteReceive cte join tlc on cte.tlc.id = tlc.id " +
                 "where (:tlcVal is null or tlc.tlcVal = :tlcVal) and " +
                 "(:ipsLocationId is null or cte.ipsLocation.id = :ipsLocationId) and " +

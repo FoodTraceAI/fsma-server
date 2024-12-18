@@ -407,6 +407,48 @@ class DataLoader : ApplicationRunner {
         fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
             ?: throw Exception("Failed to create FsmaUser: ${fsmaUserDto.email}")
         fsmaUserList.add(fmsaUser)
+
+        fsmaUserDto = FsmaUserDto(
+            foodBusId = freshProduceBus.id,
+            locationId = locationList[0].id,
+            email = "fresh@foodtraceai.com",
+            password = "123",
+            roles = listOf(Role.FoodBusinessUser),
+            firstname = "Fresh",
+            lastname = "UserFresh",
+        )
+        resDto = authService.createNewFsmaUser(fsmaUserDto)
+        fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
+            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserDto.email}")
+        fsmaUserList.add(fmsaUser)
+
+        fsmaUserDto = FsmaUserDto(
+            foodBusId = happyRestaurantBus.id,
+            locationId = locationList[1].id,
+            email = "happy@foodtraceai.com",
+            password = "123",
+            roles = listOf(Role.FoodBusinessUser),
+            firstname = "Happy",
+            lastname = "UserHappy",
+        )
+        resDto = authService.createNewFsmaUser(fsmaUserDto)
+        fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
+            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserDto.email}")
+        fsmaUserList.add(fmsaUser)
+
+        fsmaUserDto = FsmaUserDto(
+            foodBusId =pepiProcessorBus.id,
+            locationId = locationList[2].id,
+            email = "pepi@foodtraceai.com",
+            password = "123",
+            roles = listOf(Role.FoodBusinessUser),
+            firstname = "Pepi",
+            lastname = "UserPepi",
+        )
+        resDto = authService.createNewFsmaUser(fsmaUserDto)
+        fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
+            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserDto.email}")
+        fsmaUserList.add(fmsaUser)
     }
 
     fun addTlcs() {
