@@ -5,6 +5,7 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
+import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.model.cte.CteReceiveDto
 import com.foodtraceai.model.cte.toCteReceive
 import com.foodtraceai.model.cte.toCteReceiveDto
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import java.time.LocalDate
+import java.time.OffsetDateTime
 
 private const val CTE_RECEIVE_BASE_URL = "/api/v1/cte/receive"
 
@@ -93,5 +96,28 @@ class CteReceiveController : BaseController() {
             cteReceiveService.delete(cteReceive) // soft delete?
         }
         return ResponseEntity.noContent().build()
+    }
+
+    data class ShipArgs(
+        val sscc: String,
+        val tlcId: Long,
+        val receiveLocationId: Long,
+        val receiveDate: LocalDate,
+        val receiveTime: OffsetDateTime,
+    )
+
+    @PostMapping("/makeReceiveCte")
+    private fun makeReceiveCte(
+        @Valid @RequestBody shipArgs: ShipArgs,
+        @AuthenticationPrincipal authPrincipal: FsmaUser,
+    ): ResponseEntity<CteReceive> {
+        val cteReceive = cteReceiveService.makeReceiveCteFromSupShipCte(
+            shipArgs.sscc,
+            shipArgs.tlcId,
+            shipArgs.receiveLocationId,
+            shipArgs.receiveDate,
+            shipArgs.receiveTime,
+        )
+        return ResponseEntity.ok(cteReceive)
     }
 }

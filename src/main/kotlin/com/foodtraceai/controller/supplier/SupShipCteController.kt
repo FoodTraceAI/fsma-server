@@ -32,15 +32,16 @@ class SupShipCteController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal authPrincipal: FsmaUser
     ): ResponseEntity<SupShipCteDto> {
-        val supShipCte = getSupShipCte(id,authPrincipal)
+        val supShipCte = getSupShipCte(id, authPrincipal)
         return ResponseEntity.ok(supShipCte.toSupShipCteDto())
     }
 
-    // TODO - add security to this API
     @GetMapping("/findAll")
-    fun findAll():ResponseEntity<List<SupShipCteDto>> {
-        val supShipCteList = supShipCteService.findAll()
-        return ResponseEntity.ok(supShipCteList.map{it.toSupShipCteDto()})
+    fun findAll(
+        @AuthenticationPrincipal fsmaUser: FsmaUser,
+    ): ResponseEntity<List<SupShipCteDto>> {
+        val supShipCteList = supShipCteService.findAll(fsmaUser)
+        return ResponseEntity.ok(supShipCteList.map { it.toSupShipCteDto() })
     }
 
     // TODO: Remove me. This API is for testing only
@@ -49,13 +50,12 @@ class SupShipCteController : BaseController() {
     private fun findShipCte(
         @RequestParam(value = "sscc", required = true) sscc: String,
         @RequestParam(value = "tlcId", required = true) tlcId: Long,
-        @RequestParam(value = "shipToLocationId", required = true) shipToLocationId: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<SupShipCteDto?> {
-        val supShipCte = supplierService.findSupShipCte(
+        val supShipCte = supShipCteService.findSupShipCte(
             sscc = sscc,
             tlcId = tlcId,
-            shipToLocationId = shipToLocationId,
+            shipToLocationId = fsmaUser.location.id,
             supCteStatus = SupCteStatus.Pending,
         )
 

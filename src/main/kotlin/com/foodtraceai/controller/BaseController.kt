@@ -86,9 +86,6 @@ class BaseController {
     protected lateinit var spreadsheetService: SpreadsheetService
 
     @Autowired
-    protected lateinit var supplierService: SupplierService
-
-    @Autowired
     protected lateinit var supShipCteService: SupShipCteService
 
     @Autowired
@@ -112,8 +109,9 @@ class BaseController {
     }
 
     fun getCteReceive(id: Long, authPrincipal: FsmaUser): CteReceive {
-        val cteReceive =cteReceiveService.findById(id)
+        val cteReceive = cteReceiveService.findById(id)
             ?: throw EntityNotFoundException("CteReceive not found: $id")
+        assertFsmaUserLocationMatchessToken(authPrincipal, cteReceive.location.id)
 //        assertContactClientMatchesToken(fsaUser, business.contactId)
         return cteReceive
     }
@@ -135,6 +133,7 @@ class BaseController {
     fun getLocation(id: Long, authPrincipal: FsmaUser): Location {
         val location = locationService.findById(id)
             ?: throw EntityNotFoundException("Location not found: $id")
+        assertFsmaUserLocationMatchessToken(authPrincipal, location.id)
 //        assertContactClientMatchesToken(fsaUser, business.contactId)
         return location
     }
@@ -149,10 +148,10 @@ class BaseController {
     fun getSupShipCte(id: Long, authPrincipal: FsmaUser): SupShipCte {
         val supShipCte = supShipCteService.findById(id)
             ?: throw EntityNotFoundException("SupShipCte not found: $id")
+        assertFsmaUserLocationMatchessToken(authPrincipal, supShipCte.shipToLocation.id)
 //        assertContactClientMatchesToken(fsaUser, business.contactId)
         return supShipCte
     }
-
 
     fun getTraceLotCode(id: Long, authPrincipal: FsmaUser): TraceLotCode {
         val traceLotCode = traceLotCodeService.findById(id)
@@ -160,6 +159,27 @@ class BaseController {
 //        assertContactClientMatchesToken(fsaUser, business.contactId)
         return traceLotCode
     }
+
+    protected fun assertFsmaUserLocationMatchessToken(
+        authPrincipal: FsmaUser,
+        modelLocationId: Long,
+    ) {
+        if (
+            authPrincipal.isRootAdmin() ||
+            isLocationCheck(authPrincipal, modelLocationId)
+
+        //TODO: remove
+//            isResellerCheck(authPrincipal, modelResellerId) ||
+//            isClientCheck(authPrincipal, modelResellerId, modelClientId)
+        ) return
+
+
+        // Permissions are wrong
+        throw BadRequestException("Invalid request")
+    }
+
+    private fun isLocationCheck(authPrincipal: FsmaUser, modelLocationId: Long) =
+        modelLocationId == authPrincipal.location.id
 
     //    fun getFsaUser(id: Long, authPrincipal: FsmaUser): FsaUser {
 //        val fsaUser = fsaUserService.findById(id)
@@ -270,7 +290,7 @@ class BaseController {
 //    }
 //
 //    // ----------------------------
-//
+
     protected fun assertFoodBusinessMatchesToken(
         authPrincipal: FsmaUser,
         modelFoodBusinessId: Long,
