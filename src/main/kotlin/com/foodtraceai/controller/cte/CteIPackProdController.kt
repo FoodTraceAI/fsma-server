@@ -31,7 +31,7 @@ class CteIPackProdController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteIPackProdDto> {
         val cteIPackProd = cteIPackProdService.findById(id)
             ?: throw EntityNotFoundException("CteIPackProd not found = $id")
@@ -43,18 +43,18 @@ class CteIPackProdController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteIPackProdDto: CteIPackProdDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteIPackProdDto> {
-        val location = getLocation(cteIPackProdDto.locationId, authPrincipal)
-        val harvestLocation = getLocation(cteIPackProdDto.harvestLocationId, authPrincipal)
+        val location = getLocation(cteIPackProdDto.locationId, fsmaUser)
+        val harvestLocation = getLocation(cteIPackProdDto.harvestLocationId, fsmaUser)
 
-        val harvestBusiness = getFoodBus(cteIPackProdDto.harvestBusinessId, authPrincipal)
+        val harvestBusiness = getFoodBus(cteIPackProdDto.harvestBusinessId, fsmaUser)
 
-        val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it,authPrincipal)}
+        val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it,fsmaUser)}
 
-        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId,authPrincipal)
+        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId,fsmaUser)
 
-        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let {            getLocation(it,authPrincipal)         }
+        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let {            getLocation(it,fsmaUser)         }
 
         val cteIPackProd = cteIPackProdDto.toCteIPackProd(
             location, harvestLocation, harvestBusiness,
@@ -70,19 +70,19 @@ class CteIPackProdController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteIPackProdDto: CteIPackProdDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteIPackProdDto> {
         if (cteIPackProdDto.id <= 0L || cteIPackProdDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteIPackProd Ids specified: $id != ${cteIPackProdDto.id}")
 
-        val location = getLocation(cteIPackProdDto.locationId, authPrincipal)
-        val harvestLocation = getLocation(cteIPackProdDto.harvestLocationId,authPrincipal)
+        val location = getLocation(cteIPackProdDto.locationId, fsmaUser)
+        val harvestLocation = getLocation(cteIPackProdDto.harvestLocationId,fsmaUser)
 
-        val harvestBusiness = getFoodBus(cteIPackProdDto.harvestBusinessId, authPrincipal)
-        val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it, authPrincipal) }
+        val harvestBusiness = getFoodBus(cteIPackProdDto.harvestBusinessId, fsmaUser)
+        val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it, fsmaUser) }
 
-        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId,authPrincipal)
-        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let { getLocation(it, authPrincipal) }
+        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId,fsmaUser)
+        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let { getLocation(it, fsmaUser) }
 
         val cteIPackProd = cteIPackProdDto.toCteIPackProd(
             location, harvestLocation, harvestBusiness,
@@ -96,7 +96,7 @@ class CteIPackProdController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteIPackProdService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

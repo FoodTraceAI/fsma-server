@@ -29,7 +29,7 @@ class CteTransController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteTransDto> {
         val cteTransform = cteTransService.findById(id)
             ?: throw EntityNotFoundException("CteTransform not found = $id")
@@ -41,15 +41,15 @@ class CteTransController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteTransDto: CteTransDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteTransDto> {
-        val location = getLocation(cteTransDto.locationId,authPrincipal)
+        val location = getLocation(cteTransDto.locationId,fsmaUser)
 
-        val traceLotCode = getTraceLotCode(cteTransDto.inputTlcId,authPrincipal)
+        val traceLotCode = getTraceLotCode(cteTransDto.inputTlcId,fsmaUser)
 
-        val transformLotCode = getTraceLotCode(cteTransDto.newTlcId,authPrincipal)
+        val transformLotCode = getTraceLotCode(cteTransDto.newTlcId,fsmaUser)
 
-        val transformFromLocation = getLocation(cteTransDto.newTlcLocationId,authPrincipal)
+        val transformFromLocation = getLocation(cteTransDto.newTlcLocationId,fsmaUser)
 
         val cteTransform = cteTransDto.toCteTrans(location, traceLotCode, transformLotCode, transformFromLocation)
         val cteTransformResponse = cteTransService.insert(cteTransform).toCteTransDto()
@@ -62,18 +62,18 @@ class CteTransController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteTransDto: CteTransDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteTransDto> {
         if (cteTransDto.id <= 0L || cteTransDto.id != id)
             throw UnauthorizedRequestException("Conflicting cteTransDto Ids specified: $id != ${cteTransDto.id}")
 
-        val location = getLocation(cteTransDto.locationId,authPrincipal)
+        val location = getLocation(cteTransDto.locationId,fsmaUser)
 
-        val traceLotCode = getTraceLotCode(cteTransDto.inputTlcId,authPrincipal)
+        val traceLotCode = getTraceLotCode(cteTransDto.inputTlcId,fsmaUser)
 
-        val transformLotCode = getTraceLotCode(cteTransDto.newTlcId,authPrincipal)
+        val transformLotCode = getTraceLotCode(cteTransDto.newTlcId,fsmaUser)
 
-        val transformFromLocation = getLocation(cteTransDto.newTlcLocationId,authPrincipal)
+        val transformFromLocation = getLocation(cteTransDto.newTlcLocationId,fsmaUser)
 
         val cteTransform = cteTransDto.toCteTrans(location, traceLotCode, transformLotCode, transformFromLocation)
         val cteTransformCto = cteTransService.update(cteTransform).toCteTransDto()
@@ -84,7 +84,7 @@ class CteTransController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteTransService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

@@ -24,9 +24,9 @@ class ContactController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<ContactDto> {
-        val contact = getContact(id, authPrincipal)
+        val contact = getContact(id, fsmaUser)
         return ResponseEntity.ok(contact.toContactDto())
     }
 
@@ -34,7 +34,7 @@ class ContactController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody contactDto: ContactDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<ContactDto> {
         val contact = contactDto.toContact()
         val contactResponse = contactService.insert(contact).toContactDto()
@@ -47,7 +47,7 @@ class ContactController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody contactDto: ContactDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<ContactDto> {
         if (contactDto.id <= 0L || contactDto.id != id)
             throw UnauthorizedRequestException("Conflicting ContactDtos specified: $id != ${contactDto.id}")
@@ -60,7 +60,7 @@ class ContactController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         contactService.findById(id)?.let { business ->
 //            assertContactClientMatchesToken(fsaUser, business.contactId)

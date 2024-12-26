@@ -25,9 +25,9 @@ class FoodBusController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FoodBusDto> {
-        val foodBus = getFoodBus(id, authPrincipal)
+        val foodBus = getFoodBus(id, fsmaUser)
         return ResponseEntity.ok(foodBus.toFoodBusDto())
     }
 
@@ -35,14 +35,14 @@ class FoodBusController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody foodBusDto: FoodBusDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FoodBusDto> {
         var reseller: Reseller? = null
-        foodBusDto.resellerId?.let { reseller = getReseller(it, authPrincipal) }
+        foodBusDto.resellerId?.let { reseller = getReseller(it, fsmaUser) }
 
-        val mainAddress = getAddress(foodBusDto.mainAddressId, authPrincipal)
-        val contact = getContact(foodBusDto.foodBusContactId, authPrincipal)
-        val franchisor = foodBusDto.franchisorId?.let{ getFranchisor(it,authPrincipal)}
+        val mainAddress = getAddress(foodBusDto.mainAddressId, fsmaUser)
+        val contact = getContact(foodBusDto.foodBusContactId, fsmaUser)
+        val franchisor = foodBusDto.franchisorId?.let{ getFranchisor(it,fsmaUser)}
         val foodBus = foodBusDto.toFoodBus(reseller, mainAddress, contact, franchisor)
         val foodBusResponse = foodBusService.insert(foodBus).toFoodBusDto()
         return ResponseEntity.created(URI.create(FOOD_BUS_BASE_URL.plus("/${foodBusResponse.id}")))
@@ -54,14 +54,14 @@ class FoodBusController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody foodBusDto: FoodBusDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FoodBusDto> {
         if (foodBusDto.id <= 0L || foodBusDto.id != id)
             throw UnauthorizedRequestException("Conflicting BusinessIds specified: $id != ${foodBusDto.id}")
-        val reseller: Reseller? = foodBusDto.resellerId?.let { getReseller(it, authPrincipal) }
-        val mainAddress = getAddress(foodBusDto.mainAddressId, authPrincipal)
-        val foodBusContact = getContact(foodBusDto.foodBusContactId, authPrincipal)
-        val franchisor = foodBusDto.franchisorId?.let { getFranchisor(it,authPrincipal) }
+        val reseller: Reseller? = foodBusDto.resellerId?.let { getReseller(it, fsmaUser) }
+        val mainAddress = getAddress(foodBusDto.mainAddressId, fsmaUser)
+        val foodBusContact = getContact(foodBusDto.foodBusContactId, fsmaUser)
+        val franchisor = foodBusDto.franchisorId?.let { getFranchisor(it,fsmaUser) }
         val foodBus = foodBusDto.toFoodBus(reseller, mainAddress, foodBusContact, franchisor)
         val foodBusResponse = foodBusService.update(foodBus)
         return ResponseEntity.ok().body(foodBusResponse.toFoodBusDto())
@@ -71,7 +71,7 @@ class FoodBusController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         foodBusService.findById(id)?.let { business ->
 //            assertResellerClientMatchesToken(fsaUser, business.resellerId)

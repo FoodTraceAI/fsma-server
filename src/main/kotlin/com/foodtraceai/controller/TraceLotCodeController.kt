@@ -29,9 +29,9 @@ class TraceLotCodeController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TraceLotCodeDto> {
-        val traceLotCode = getTraceLotCode(id,authPrincipal)
+        val traceLotCode = getTraceLotCode(id,fsmaUser)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
         return ResponseEntity.ok(traceLotCode.toTraceLotCodeDto())
     }
@@ -40,7 +40,7 @@ class TraceLotCodeController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody traceLotCodeDto: TraceLotCodeDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TraceLotCodeDto> {
         val traceLotCode = traceLotCodeDto.toTraceLotCode()
         val traceLotCodeResponse = traceLotCodeService.insert(traceLotCode).toTraceLotCodeDto()
@@ -53,7 +53,7 @@ class TraceLotCodeController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody traceLotCodeDto: TraceLotCodeDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TraceLotCodeDto> {
         if (traceLotCodeDto.id <= 0L || traceLotCodeDto.id != id)
             throw UnauthorizedRequestException("Conflicting TraceLotCodeIds specified: $id != ${traceLotCodeDto.id}")
@@ -66,7 +66,7 @@ class TraceLotCodeController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         traceLotCodeService.findById(id)?.let { traceLotCode ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

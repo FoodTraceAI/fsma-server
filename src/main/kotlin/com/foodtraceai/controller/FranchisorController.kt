@@ -29,9 +29,9 @@ class FranchisorController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FranchisorDto> {
-        val franchisor = getFranchisor(id,authPrincipal)
+        val franchisor = getFranchisor(id,fsmaUser)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
         return ResponseEntity.ok(franchisor.toFranchisorDto())
     }
@@ -40,13 +40,13 @@ class FranchisorController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody franchisorDto: FranchisorDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FranchisorDto> {
-        val address = getAddress(franchisorDto.addressId, authPrincipal)
+        val address = getAddress(franchisorDto.addressId, fsmaUser)
             ?: throw EntityNotFoundException("Franchisor Address not found: ${franchisorDto.addressId}")
-        val billingAddress = franchisorDto.billingAddressId?.let { getAddress(it, authPrincipal) }
-        val mainContact = getContact(franchisorDto.mainContactId, authPrincipal)
-        val billingContact = franchisorDto.billingContactId?.let { getContact(it, authPrincipal)        }
+        val billingAddress = franchisorDto.billingAddressId?.let { getAddress(it, fsmaUser) }
+        val mainContact = getContact(franchisorDto.mainContactId, fsmaUser)
+        val billingContact = franchisorDto.billingContactId?.let { getContact(it, fsmaUser)        }
 
         val franchisor = franchisorDto.toFranchisor(address, mainContact, billingAddress, billingContact)
         val franchisorResponse = franchisorService.insert(franchisor).toFranchisorDto()
@@ -59,15 +59,15 @@ class FranchisorController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody franchisorDto: FranchisorDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FranchisorDto> {
         if (franchisorDto.id <= 0L || franchisorDto.id != id)
             throw UnauthorizedRequestException("Conflicting FranchisorIds specified: $id != ${franchisorDto.id}")
 
-        val address = getAddress(franchisorDto.addressId, authPrincipal)
-        val billingAddress = franchisorDto.billingAddressId?.let {getAddress(it,authPrincipal)}
-        val mainContact = getContact(franchisorDto.mainContactId, authPrincipal)
-        val billingContact = franchisorDto.billingContactId?.let { getContact(it, authPrincipal)        }
+        val address = getAddress(franchisorDto.addressId, fsmaUser)
+        val billingAddress = franchisorDto.billingAddressId?.let {getAddress(it,fsmaUser)}
+        val mainContact = getContact(franchisorDto.mainContactId, fsmaUser)
+        val billingContact = franchisorDto.billingContactId?.let { getContact(it, fsmaUser)        }
 
         val franchisor = franchisorDto.toFranchisor(address, mainContact, billingAddress, billingContact)
         val franchisorResponse = franchisorService.update(franchisor).toFranchisorDto()
@@ -78,7 +78,7 @@ class FranchisorController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         franchisorService.findById(id)?.let { franchisor ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

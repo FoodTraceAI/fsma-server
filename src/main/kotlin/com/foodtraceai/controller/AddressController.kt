@@ -27,9 +27,9 @@ class AddressController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<AddressDto> {
-        val address = getAddress(id,authPrincipal)
+        val address = getAddress(id,fsmaUser)
         return ResponseEntity.ok(address.toAddressDto())
     }
 
@@ -37,7 +37,7 @@ class AddressController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody addressDto: AddressDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<AddressDto> {
         val address = addressDto.toAddress()
         val addressResponse = addressService.insert(address).toAddressDto()
@@ -51,7 +51,7 @@ class AddressController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody addressDto: AddressDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<AddressDto> {
         if (addressDto.id <= 0L || addressDto.id != id)
             throw UnauthorizedRequestException("Conflicting AddressIds specified: $id != ${addressDto.id}")
@@ -64,7 +64,7 @@ class AddressController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         addressService.findById(id)?.let { address ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

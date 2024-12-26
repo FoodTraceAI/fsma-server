@@ -31,18 +31,18 @@ class CteReceiveController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
-        val cteReceive = getCteReceive(id, authPrincipal)
+        val cteReceive = getCteReceive(id, fsmaUser)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
         return ResponseEntity.ok(cteReceive.toCteReceiveDto())
     }
 
     @GetMapping("/findAll")
     fun findAll(
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<List<CteReceiveDto>> {
-        val cteReceiveList = cteReceiveService.findAll(authPrincipal)
+        val cteReceiveList = cteReceiveService.findAll(fsmaUser)
         return ResponseEntity.ok(cteReceiveList.map { it.toCteReceiveDto() })
     }
 
@@ -50,12 +50,12 @@ class CteReceiveController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteReceiveDto: CteReceiveDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
-        val location = getLocation(cteReceiveDto.locationId, authPrincipal)
-        val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId, authPrincipal)
-        val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId, authPrincipal)
-        val tlcSource = getLocation(cteReceiveDto.tlcSourceId, authPrincipal)
+        val location = getLocation(cteReceiveDto.locationId, fsmaUser)
+        val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId, fsmaUser)
+        val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId, fsmaUser)
+        val tlcSource = getLocation(cteReceiveDto.tlcSourceId, fsmaUser)
 
         val cteReceive = cteReceiveDto.toCteReceive(
             location, traceLotCode, shipFromLocation, tlcSource
@@ -70,15 +70,15 @@ class CteReceiveController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteReceiveDto: CteReceiveDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveDto> {
         if (cteReceiveDto.id <= 0L || cteReceiveDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteReceive Ids specified: $id != ${cteReceiveDto.id}")
 
-        val location = getLocation(cteReceiveDto.locationId, authPrincipal)
-        val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId, authPrincipal)
-        val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId, authPrincipal)
-        val tlcSource = getLocation(cteReceiveDto.tlcSourceId, authPrincipal)
+        val location = getLocation(cteReceiveDto.locationId, fsmaUser)
+        val traceLotCode = getTraceLotCode(cteReceiveDto.tlcId, fsmaUser)
+        val shipFromLocation = getLocation(cteReceiveDto.ipsLocationId, fsmaUser)
+        val tlcSource = getLocation(cteReceiveDto.tlcSourceId, fsmaUser)
 
         val cteReceive = cteReceiveDto.toCteReceive(location, traceLotCode, shipFromLocation, tlcSource)
         val cteReceiveCto = cteReceiveService.update(cteReceive).toCteReceiveDto()
@@ -89,7 +89,7 @@ class CteReceiveController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteReceiveService.findById(id)?.let { cteReceive ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)
@@ -109,7 +109,7 @@ class CteReceiveController : BaseController() {
     @PostMapping("/makeReceiveCte")
     private fun makeReceiveCte(
         @Valid @RequestBody shipArgs: ShipArgs,
-        @AuthenticationPrincipal authPrincipal: FsmaUser,
+        @AuthenticationPrincipal fsmaUser: FsmaUser,
     ): ResponseEntity<CteReceive> {
         val cteReceive = cteReceiveService.makeReceiveCteFromSupShipCte(
             shipArgs.sscc,

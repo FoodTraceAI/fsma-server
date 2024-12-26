@@ -29,7 +29,7 @@ class CteShipController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteShipDto> {
         val cteShip = cteShipService.findById(id)
             ?: throw EntityNotFoundException("CteShip not found = $id")
@@ -41,14 +41,14 @@ class CteShipController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteShipDto: CteShipDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteShipDto> {
-        val location = getLocation(cteShipDto.locationId,authPrincipal)
+        val location = getLocation(cteShipDto.locationId,fsmaUser)
 
-        val traceLotCode = getTraceLotCode(cteShipDto.tlcId,authPrincipal)
+        val traceLotCode = getTraceLotCode(cteShipDto.tlcId,fsmaUser)
 
-        val shipToLocation = getLocation(cteShipDto.shipToLocationId,authPrincipal)
-        val tlcSource = getLocation(cteShipDto.tlcSourceId,authPrincipal)
+        val shipToLocation = getLocation(cteShipDto.shipToLocationId,fsmaUser)
+        val tlcSource = getLocation(cteShipDto.tlcSourceId,fsmaUser)
 
         val cteShip = cteShipDto.toCteShip( traceLotCode, shipToLocation,location, tlcSource)
         val cteShipResponse = cteShipService.insert(cteShip).toCteShipDto()
@@ -61,17 +61,17 @@ class CteShipController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteShipDto: CteShipDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteShipDto> {
         if (cteShipDto.id <= 0L || cteShipDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteShip Ids specified: $id != ${cteShipDto.id}")
 
-        val location = getLocation(cteShipDto.locationId,authPrincipal)
+        val location = getLocation(cteShipDto.locationId,fsmaUser)
 
-        val traceLotCode = getTraceLotCode(cteShipDto.tlcId,authPrincipal)
+        val traceLotCode = getTraceLotCode(cteShipDto.tlcId,fsmaUser)
 
-        val shipToLocation = getLocation(cteShipDto.shipToLocationId,authPrincipal)
-        val tlcSource = getLocation(cteShipDto.tlcSourceId,authPrincipal)
+        val shipToLocation = getLocation(cteShipDto.shipToLocationId,fsmaUser)
+        val tlcSource = getLocation(cteShipDto.tlcSourceId,fsmaUser)
 
         val cteShip = cteShipDto.toCteShip(traceLotCode, shipToLocation, location, tlcSource)
         val cteShipCto = cteShipService.update(cteShip).toCteShipDto()
@@ -82,7 +82,7 @@ class CteShipController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteShipService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

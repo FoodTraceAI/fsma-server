@@ -32,7 +32,7 @@ class CteCoolController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteCoolDto> {
         val cteCool = cteCoolService.findById(id)
             ?: throw EntityNotFoundException("CteCool not found = $id")
@@ -44,10 +44,10 @@ class CteCoolController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteCoolDto: CteCoolDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteCoolDto> {
-        val location = getLocation(cteCoolDto.locationId,authPrincipal)
-        val subsequentRecipient = getLocation(cteCoolDto.isrLocationId,authPrincipal)
+        val location = getLocation(cteCoolDto.locationId,fsmaUser)
+        val subsequentRecipient = getLocation(cteCoolDto.isrLocationId,fsmaUser)
 
         val cteCool = cteCoolDto.toCteCool(location, subsequentRecipient)
         val cteCoolResponse = cteCoolService.insert(cteCool).toCteCoolDto()
@@ -60,13 +60,13 @@ class CteCoolController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteCoolDto: CteCoolDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteCoolDto> {
         if (cteCoolDto.id <= 0L || cteCoolDto.id != id)
             throw UnauthorizedRequestException("Conflicting CtcCool Ids specified: $id != ${cteCoolDto.id}")
 
-        val location = getLocation(cteCoolDto.locationId,authPrincipal)
-        val subsequentRecipient = getLocation(cteCoolDto.isrLocationId,authPrincipal)
+        val location = getLocation(cteCoolDto.locationId,fsmaUser)
+        val subsequentRecipient = getLocation(cteCoolDto.isrLocationId,fsmaUser)
 
         val cteCool = cteCoolDto.toCteCool(location, subsequentRecipient)
         val cteCoolCto = cteCoolService.update(cteCool).toCteCoolDto()
@@ -77,7 +77,7 @@ class CteCoolController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteCoolService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

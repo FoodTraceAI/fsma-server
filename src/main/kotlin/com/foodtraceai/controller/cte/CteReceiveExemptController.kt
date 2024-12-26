@@ -34,7 +34,7 @@ class cteReceiveExemptController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveExemptDto> {
         val cteReceiveExempt = cteReceiveExemptService.findById(id)
             ?: throw EntityNotFoundException("cteReceiveExempt not found = $id")
@@ -46,13 +46,13 @@ class cteReceiveExemptController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteReceiveExemptDto: CteReceiveExemptDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveExemptDto> {
-        val location = getLocation(cteReceiveExemptDto.locationId,authPrincipal)
+        val location = getLocation(cteReceiveExemptDto.locationId,fsmaUser)
 
-        val traceLotCode = getTraceLotCode(cteReceiveExemptDto.traceLotCodeId,authPrincipal)
+        val traceLotCode = getTraceLotCode(cteReceiveExemptDto.traceLotCodeId,fsmaUser)
 
-        val shipFromLocation = getLocation(cteReceiveExemptDto.ipsLocationId,authPrincipal)
+        val shipFromLocation = getLocation(cteReceiveExemptDto.ipsLocationId,fsmaUser)
 
         val cteReceiveExempt = cteReceiveExemptDto.toCteReceiveExempt(
             traceLotCode, shipFromLocation, location
@@ -67,16 +67,16 @@ class cteReceiveExemptController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteReceiveExemptDto: CteReceiveExemptDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveExemptDto> {
         if (cteReceiveExemptDto.id <= 0L || cteReceiveExemptDto.id != id)
             throw UnauthorizedRequestException("Conflicting cteReceiveExempt Ids specified: $id != ${cteReceiveExemptDto.id}")
 
-        val location = getLocation(cteReceiveExemptDto.locationId,authPrincipal)
+        val location = getLocation(cteReceiveExemptDto.locationId,fsmaUser)
 
-        val traceLotCode = getTraceLotCode(cteReceiveExemptDto.traceLotCodeId,authPrincipal)
+        val traceLotCode = getTraceLotCode(cteReceiveExemptDto.traceLotCodeId,fsmaUser)
 
-        val shipFromLocation = getLocation(cteReceiveExemptDto.ipsLocationId,authPrincipal)
+        val shipFromLocation = getLocation(cteReceiveExemptDto.ipsLocationId,fsmaUser)
 
         val cteReceiveExempt = cteReceiveExemptDto.toCteReceiveExempt(traceLotCode, shipFromLocation, location)
         val cteReceiveExemptCto = cteReceiveExemptService.update(cteReceiveExempt).toCteReceiveExemptDto()
@@ -87,7 +87,7 @@ class cteReceiveExemptController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteReceiveExemptService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

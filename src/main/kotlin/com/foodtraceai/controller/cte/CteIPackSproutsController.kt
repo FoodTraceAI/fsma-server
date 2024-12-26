@@ -34,7 +34,7 @@ class CteIPackSproutsController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteIPackSproutsDto> {
         val cteSprouts = cteIPackSproutsService.findById(id)
             ?: throw EntityNotFoundException("CteSprouts not found = $id")
@@ -46,41 +46,41 @@ class CteIPackSproutsController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteIPackSproutsDto: CteIPackSproutsDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteIPackSproutsDto> {
-        val location = getLocation(cteIPackSproutsDto.locationId,authPrincipal)
-        val harvestLocation = getLocation(cteIPackSproutsDto.harvestLocationId,authPrincipal)
+        val location = getLocation(cteIPackSproutsDto.locationId,fsmaUser)
+        val harvestLocation = getLocation(cteIPackSproutsDto.harvestLocationId,fsmaUser)
 
-        val harvestFoodBus = getFoodBus(cteIPackSproutsDto.harvestBusinessId,authPrincipal)
+        val harvestFoodBus = getFoodBus(cteIPackSproutsDto.harvestBusinessId,fsmaUser)
 
         var coolLocation: Location? = null
         if (cteIPackSproutsDto.coolLocationId != null)
-            coolLocation = getLocation(cteIPackSproutsDto.coolLocationId,authPrincipal)
+            coolLocation = getLocation(cteIPackSproutsDto.coolLocationId,fsmaUser)
 
-        val packTlc = getTraceLotCode(cteIPackSproutsDto.packTlcId,authPrincipal)
+        val packTlc = getTraceLotCode(cteIPackSproutsDto.packTlcId,fsmaUser)
 
         var packTlcSource: Location? = null
         if (cteIPackSproutsDto.packTlcSourceId != null)
-            packTlcSource = getLocation(cteIPackSproutsDto.packTlcSourceId,authPrincipal)
+            packTlcSource = getLocation(cteIPackSproutsDto.packTlcSourceId,fsmaUser)
 
         var seedGrowerLocation: Location? = null
         if (cteIPackSproutsDto.seedGrowerLocationId != null)
-            seedGrowerLocation = getLocation(cteIPackSproutsDto.seedGrowerLocationId,authPrincipal)
-        val seedConditionerLocation = getLocation(cteIPackSproutsDto.seedConditionerLocationId,authPrincipal)
+            seedGrowerLocation = getLocation(cteIPackSproutsDto.seedGrowerLocationId,fsmaUser)
+        val seedConditionerLocation = getLocation(cteIPackSproutsDto.seedConditionerLocationId,fsmaUser)
 
-        val seedTlc = getTraceLotCode(cteIPackSproutsDto.seedTlcId,authPrincipal)
+        val seedTlc = getTraceLotCode(cteIPackSproutsDto.seedTlcId,fsmaUser)
 
-        val seedPackingHouseLocation = getLocation(cteIPackSproutsDto.seedPackingHouseLocationId,authPrincipal)
+        val seedPackingHouseLocation = getLocation(cteIPackSproutsDto.seedPackingHouseLocationId,fsmaUser)
 
         var seedPackingHouseTlc: TraceLotCode? = null
         if (cteIPackSproutsDto.seedPackingHouseTlcId != null)
-            seedPackingHouseTlc = getTraceLotCode(cteIPackSproutsDto.seedPackingHouseTlcId,authPrincipal)
+            seedPackingHouseTlc = getTraceLotCode(cteIPackSproutsDto.seedPackingHouseTlcId,fsmaUser)
 
-        val seedSupplierLocation = getLocation(cteIPackSproutsDto.seedSupplierLocationId,authPrincipal)
+        val seedSupplierLocation = getLocation(cteIPackSproutsDto.seedSupplierLocationId,fsmaUser)
 
         var seedSupplierTlc: TraceLotCode? = null
         if (cteIPackSproutsDto.seedSupplierTlcId != null)
-            seedSupplierTlc = getTraceLotCode(cteIPackSproutsDto.seedSupplierTlcId,authPrincipal)
+            seedSupplierTlc = getTraceLotCode(cteIPackSproutsDto.seedSupplierTlcId,fsmaUser)
 
         val cteIPackSprouts = cteIPackSproutsDto.toCteIPackSprouts(
             location, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
@@ -97,45 +97,45 @@ class CteIPackSproutsController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteIPackSproutsDto: CteIPackSproutsDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteIPackSproutsDto> {
         if (cteIPackSproutsDto.id <= 0L || cteIPackSproutsDto.id != id)
             throw UnauthorizedRequestException("Conflicting cteIPackSproutsDto Ids specified: $id != ${cteIPackSproutsDto.id}")
 
-        val location = getLocation(cteIPackSproutsDto.locationId,authPrincipal)
-         val harvestLocation = getLocation(cteIPackSproutsDto.harvestLocationId,authPrincipal)
+        val location = getLocation(cteIPackSproutsDto.locationId,fsmaUser)
+         val harvestLocation = getLocation(cteIPackSproutsDto.harvestLocationId,fsmaUser)
 
-        val harvestFoodBus = getFoodBus(cteIPackSproutsDto.harvestBusinessId,authPrincipal)
+        val harvestFoodBus = getFoodBus(cteIPackSproutsDto.harvestBusinessId,fsmaUser)
 
         var coolLocation: Location? = null
         if (cteIPackSproutsDto.coolLocationId != null)
-            coolLocation = getLocation(cteIPackSproutsDto.coolLocationId,authPrincipal)
+            coolLocation = getLocation(cteIPackSproutsDto.coolLocationId,fsmaUser)
 
-        val packTlc = getTraceLotCode(cteIPackSproutsDto.packTlcId,authPrincipal)
+        val packTlc = getTraceLotCode(cteIPackSproutsDto.packTlcId,fsmaUser)
 
         var packTlcSource: Location? = null
         if (cteIPackSproutsDto.packTlcSourceId != null)
-            packTlcSource = getLocation(cteIPackSproutsDto.packTlcSourceId,authPrincipal)
+            packTlcSource = getLocation(cteIPackSproutsDto.packTlcSourceId,fsmaUser)
 
         var seedGrowerLocation: Location? = null
         if (cteIPackSproutsDto.seedGrowerLocationId != null)
-            seedGrowerLocation = getLocation(cteIPackSproutsDto.seedGrowerLocationId,authPrincipal)
+            seedGrowerLocation = getLocation(cteIPackSproutsDto.seedGrowerLocationId,fsmaUser)
 
-        val seedConditionerLocation = getLocation(cteIPackSproutsDto.seedConditionerLocationId,authPrincipal)
+        val seedConditionerLocation = getLocation(cteIPackSproutsDto.seedConditionerLocationId,fsmaUser)
 
-        val seedTlc = getTraceLotCode(cteIPackSproutsDto.seedTlcId,authPrincipal)
+        val seedTlc = getTraceLotCode(cteIPackSproutsDto.seedTlcId,fsmaUser)
 
-        val seedPackingHouseLocation = getLocation(cteIPackSproutsDto.seedPackingHouseLocationId,authPrincipal)
+        val seedPackingHouseLocation = getLocation(cteIPackSproutsDto.seedPackingHouseLocationId,fsmaUser)
 
         var seedPackingHouseTlc: TraceLotCode? = null
         if (cteIPackSproutsDto.seedPackingHouseTlcId != null)
-            seedPackingHouseTlc = getTraceLotCode(cteIPackSproutsDto.seedPackingHouseTlcId,authPrincipal)
+            seedPackingHouseTlc = getTraceLotCode(cteIPackSproutsDto.seedPackingHouseTlcId,fsmaUser)
 
-        val seedSupplierLocation = getLocation(cteIPackSproutsDto.seedSupplierLocationId,authPrincipal)
+        val seedSupplierLocation = getLocation(cteIPackSproutsDto.seedSupplierLocationId,fsmaUser)
 
         var seedSupplierTlc: TraceLotCode? = null
         if (cteIPackSproutsDto.seedSupplierTlcId != null)
-            seedSupplierTlc = getTraceLotCode(cteIPackSproutsDto.seedSupplierTlcId,authPrincipal)
+            seedSupplierTlc = getTraceLotCode(cteIPackSproutsDto.seedSupplierTlcId,fsmaUser)
 
         val cteIPackSprouts = cteIPackSproutsDto.toCteIPackSprouts(
             location, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
@@ -150,7 +150,7 @@ class CteIPackSproutsController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteIPackSproutsService.findById(id)?.let { cteIPackSprouts ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

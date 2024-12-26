@@ -30,9 +30,9 @@ class SupShipCteController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<SupShipCteDto> {
-        val supShipCte = getSupShipCte(id, authPrincipal)
+        val supShipCte = getSupShipCte(id, fsmaUser)
         return ResponseEntity.ok(supShipCte.toSupShipCteDto())
     }
 
@@ -66,15 +66,15 @@ class SupShipCteController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody supShipCteDto: SupShipCteDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<SupShipCteDto> {
         val cteReceive = supShipCteDto.cteReceiveId?.let {
             cteReceiveService.findById(it) ?: throw EntityNotFoundException("CteReceiveId not found: ${it}")
         }
-        val tlc = getTraceLotCode(supShipCteDto.tlcId, authPrincipal)
-        val shipToLocation = getLocation(supShipCteDto.shipToLocationId, authPrincipal)
-        val shipFromLocation = getLocation(supShipCteDto.shipFromLocationId, authPrincipal)
-        val tlcSource = getLocation(supShipCteDto.tlcSourceId, authPrincipal)
+        val tlc = getTraceLotCode(supShipCteDto.tlcId, fsmaUser)
+        val shipToLocation = getLocation(supShipCteDto.shipToLocationId, fsmaUser)
+        val shipFromLocation = getLocation(supShipCteDto.shipFromLocationId, fsmaUser)
+        val tlcSource = getLocation(supShipCteDto.tlcSourceId, fsmaUser)
         val supShipCte = supShipCteDto.toSupCteShip(cteReceive, tlc, shipToLocation, shipFromLocation, tlcSource)
         val cteCoolResponse = supShipCteService.insert(supShipCte).toSupShipCteDto()
         return ResponseEntity.created(URI.create(SUP_SHIP_CTE_BASE_URL.plus("/${cteCoolResponse.id}")))
@@ -86,13 +86,13 @@ class SupShipCteController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody supShipCteDto: SupShipCteDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<SupShipCteDto> {
-        val cteReceive = supShipCteDto.cteReceiveId?.let { getCteReceive(id, authPrincipal) }
-        val tlc = getTraceLotCode(supShipCteDto.tlcId, authPrincipal)
-        val shipToLocation = getLocation(supShipCteDto.shipToLocationId, authPrincipal)
-        val shipFromLocation = getLocation(supShipCteDto.shipFromLocationId, authPrincipal)
-        val tlcSource = getLocation(supShipCteDto.tlcSourceId, authPrincipal)
+        val cteReceive = supShipCteDto.cteReceiveId?.let { getCteReceive(id, fsmaUser) }
+        val tlc = getTraceLotCode(supShipCteDto.tlcId, fsmaUser)
+        val shipToLocation = getLocation(supShipCteDto.shipToLocationId, fsmaUser)
+        val shipFromLocation = getLocation(supShipCteDto.shipFromLocationId, fsmaUser)
+        val tlcSource = getLocation(supShipCteDto.tlcSourceId, fsmaUser)
         val supShipCte = supShipCteDto.toSupCteShip(cteReceive, tlc, shipToLocation, shipFromLocation, tlcSource)
         val cteCoolResponse = supShipCteService.insert(supShipCte).toSupShipCteDto()
         return ResponseEntity.ok().body(cteCoolResponse)
@@ -102,7 +102,7 @@ class SupShipCteController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteCoolService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

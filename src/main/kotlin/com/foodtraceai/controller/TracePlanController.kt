@@ -26,7 +26,7 @@ class TracePlanController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TracePlanDto> {
         val tracePlan = tracePlanService.findById(id)
             ?: throw EntityNotFoundException("TracePlan not found = $id")
@@ -38,10 +38,10 @@ class TracePlanController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody tracePlanDto: TracePlanDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TracePlanDto> {
-        val location = getLocation(tracePlanDto.locationId,authPrincipal)
-        val contact = getContact(tracePlanDto.tracePlanContactId, authPrincipal)
+        val location = getLocation(tracePlanDto.locationId,fsmaUser)
+        val contact = getContact(tracePlanDto.tracePlanContactId, fsmaUser)
         val tracePlan = tracePlanDto.toTracePlan(location,contact)
         val tracePlanResponse = tracePlanService.insert(tracePlan).toTracePlanDto()
         return ResponseEntity.created(URI.create(TRACE_PLAN_URL.plus("/${tracePlanResponse.id}")))
@@ -53,12 +53,12 @@ class TracePlanController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody tracePlanDto: TracePlanDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TracePlanDto> {
         if (tracePlanDto.id <= 0L || tracePlanDto.id != id)
             throw UnauthorizedRequestException("Conflicting TracePlanIds specified: $id != ${tracePlanDto.id}")
-        val location = getLocation(tracePlanDto.locationId,authPrincipal)
-        val contact = getContact(tracePlanDto.tracePlanContactId,authPrincipal)
+        val location = getLocation(tracePlanDto.locationId,fsmaUser)
+        val contact = getContact(tracePlanDto.tracePlanContactId,fsmaUser)
         val tracePlan = tracePlanDto.toTracePlan(location,contact)
         val tracePlanResponse = tracePlanService.update(tracePlan).toTracePlanDto()
         return ResponseEntity.ok().body(tracePlanResponse)
@@ -68,7 +68,7 @@ class TracePlanController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         tracePlanService.findById(id)?.let { tracePlan ->
 //            assertResellerClientMatchesToken(fsaUser, tracePlan.resellerId)

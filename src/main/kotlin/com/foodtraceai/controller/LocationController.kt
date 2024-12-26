@@ -30,9 +30,9 @@ class LocationController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<LocationDto> {
-        val location = getLocation(id,authPrincipal)
+        val location = getLocation(id,fsmaUser)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
         return ResponseEntity.ok(location.toLocationDto())
     }
@@ -41,11 +41,11 @@ class LocationController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody locationDto: LocationDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<LocationDto> {
-        val business = getFoodBus(locationDto.foodBusId,authPrincipal)
-        val contact = getContact(locationDto.locationContactId, authPrincipal)
-        val serviceAddress = getAddress(locationDto.addressId, authPrincipal)
+        val business = getFoodBus(locationDto.foodBusId,fsmaUser)
+        val contact = getContact(locationDto.locationContactId, fsmaUser)
+        val serviceAddress = getAddress(locationDto.addressId, fsmaUser)
         val location = locationDto.toLocation(business, contact, serviceAddress)
         val locationResponse = locationService.insert(location).toLocationDto()
         return ResponseEntity.created(URI.create(LOCATION_BASE_URL.plus("/${locationResponse.id}")))
@@ -57,7 +57,7 @@ class LocationController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody locationDto: LocationDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<LocationDto> {
         if (locationDto.id <= 0L || locationDto.id != id)
             throw UnauthorizedRequestException("Conflicting LocationIds specified: $id != ${locationDto.id}")
@@ -65,8 +65,8 @@ class LocationController : BaseController() {
         val business = foodBusService.findById(locationDto.foodBusId)
             ?: throw EntityNotFoundException("Business not found: ${locationDto.foodBusId}")
 
-        val contact = getContact(locationDto.locationContactId,authPrincipal)
-        val serviceAddress = getAddress(locationDto.addressId,authPrincipal)
+        val contact = getContact(locationDto.locationContactId,fsmaUser)
+        val serviceAddress = getAddress(locationDto.addressId,fsmaUser)
 
         val location = locationDto.toLocation(business, contact, serviceAddress)
         val locationResponse = locationService.update(location).toLocationDto()
@@ -77,7 +77,7 @@ class LocationController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         locationService.findById(id)?.let { location ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

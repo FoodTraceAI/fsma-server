@@ -29,7 +29,7 @@ class CteHarvestController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteHarvestDto> {
         val cteHarvest = cteHarvestService.findById(id)
             ?: throw EntityNotFoundException("CteHarvest not found = $id")
@@ -41,11 +41,11 @@ class CteHarvestController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteHarvestDto: CteHarvestDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteHarvestDto> {
-        val location = getLocation(cteHarvestDto.locationId,authPrincipal)
-        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId,authPrincipal)
-        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId,authPrincipal)
+        val location = getLocation(cteHarvestDto.locationId,fsmaUser)
+        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId,fsmaUser)
+        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId,fsmaUser)
 
         val cteHarvest = cteHarvestDto.toCteHarvest(location, subsequentRecipient, harvestLocation)
         val cteHarvestResponse = cteHarvestService.insert(cteHarvest).toCteHarvestDto()
@@ -58,14 +58,14 @@ class CteHarvestController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteHarvestDto: CteHarvestDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteHarvestDto> {
         if (cteHarvestDto.id <= 0L || cteHarvestDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteHarvest Ids specified: $id != ${cteHarvestDto.id}")
 
-        val location = getLocation(cteHarvestDto.locationId,authPrincipal)
-        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId,authPrincipal)
-        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId,authPrincipal)
+        val location = getLocation(cteHarvestDto.locationId,fsmaUser)
+        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId,fsmaUser)
+        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId,fsmaUser)
 
         val cteHarvest = cteHarvestDto.toCteHarvest(location, subsequentRecipient, harvestLocation)
         val cteHarvestCto = cteHarvestService.update(cteHarvest).toCteHarvestDto()
@@ -76,7 +76,7 @@ class CteHarvestController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteHarvestService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

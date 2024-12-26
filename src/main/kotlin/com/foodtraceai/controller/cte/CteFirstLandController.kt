@@ -31,7 +31,7 @@ class CteFirstLandController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteFirstLandDto> {
         val cteFirstLand = cteFirstLandService.findById(id)
             ?: throw EntityNotFoundException("CteFirstLand not found = $id")
@@ -43,13 +43,13 @@ class CteFirstLandController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody cteFirstLandDto: CteFirstLandDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteFirstLandDto> {
-        val location = getLocation(cteFirstLandDto.locationId,authPrincipal)
+        val location = getLocation(cteFirstLandDto.locationId,fsmaUser)
 
         var tlcSource: Location? = null
         if (cteFirstLandDto.tlcSourceId != null)
-            tlcSource = getLocation(cteFirstLandDto.tlcSourceId,authPrincipal)
+            tlcSource = getLocation(cteFirstLandDto.tlcSourceId,fsmaUser)
 
         val cteFirstLand = cteFirstLandDto.toCteFirstLand(location, tlcSource)
         val cteFirstLandResponse = cteFirstLandService.insert(cteFirstLand).toCteFirstLandDto()
@@ -62,16 +62,16 @@ class CteFirstLandController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody cteFirstLandDto: CteFirstLandDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteFirstLandDto> {
         if (cteFirstLandDto.id <= 0L || cteFirstLandDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteFirstLandDto Ids specified: $id != ${cteFirstLandDto.id}")
 
-        val location = getLocation(cteFirstLandDto.locationId,authPrincipal)
+        val location = getLocation(cteFirstLandDto.locationId,fsmaUser)
 
         var tlcSource: Location? = null
         if (cteFirstLandDto.tlcSourceId != null)
-            tlcSource = getLocation(cteFirstLandDto.tlcSourceId,authPrincipal)
+            tlcSource = getLocation(cteFirstLandDto.tlcSourceId,fsmaUser)
 
         val cteFirstLand = cteFirstLandDto.toCteFirstLand(location, tlcSource)
         val cteFirstLandCto = cteFirstLandService.update(cteFirstLand).toCteFirstLandDto()
@@ -82,7 +82,7 @@ class CteFirstLandController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteFirstLandService.findById(id)?.let { ctcCoolCto ->
 //            assertResellerClientMatchesToken(fsaUser, address.resellerId)

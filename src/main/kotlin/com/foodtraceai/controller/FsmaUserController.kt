@@ -29,7 +29,7 @@ class FsmaUserController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FsmaUserDto> {
         val fsma = fsmaUserService.findById(id)
             ?: throw EntityNotFoundException("FsmaUser not found = $id")
@@ -40,10 +40,10 @@ class FsmaUserController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody fsmaUserDto: FsmaUserDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FsmaUserDto> {
-        val foodBus = getFoodBus(fsmaUserDto.foodBusId,authPrincipal)
-        val location = getLocation(fsmaUserDto.locationId,authPrincipal)
+        val foodBus = getFoodBus(fsmaUserDto.foodBusId,fsmaUser)
+        val location = getLocation(fsmaUserDto.locationId,fsmaUser)
         val newFsmaUser = fsmaUserDto.toFsmaUser(foodBus, location)
         val newFsmaUserResponse = fsmaUserService.insert(newFsmaUser).toFsmaUserDto()
         return ResponseEntity.created(URI.create(FSMA_USER_BASE_URL.plus("/${newFsmaUserResponse.id}")))
@@ -55,13 +55,13 @@ class FsmaUserController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody fsmaUserDto: FsmaUserDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FsmaUserDto> {
         if (fsmaUserDto.id <= 0L || fsmaUserDto.id != id)
             throw UnauthorizedRequestException("Conflicting FsmaUserIds specified: $id != ${fsmaUserDto.id}")
 
-        val foodBus = getFoodBus(fsmaUserDto.foodBusId,authPrincipal)
-        val location = getLocation(fsmaUserDto.locationId,authPrincipal)
+        val foodBus = getFoodBus(fsmaUserDto.foodBusId,fsmaUser)
+        val location = getLocation(fsmaUserDto.locationId,fsmaUser)
 
         val fsma = fsmaUserDto.toFsmaUser(foodBus, location)
         val fsmaUserResponse = fsmaUserService.update(fsma).toFsmaUserDto()
@@ -72,7 +72,7 @@ class FsmaUserController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         fsmaUserService.findById(id)?.let { fsmaUser ->
             fsmaUserService.delete(fsmaUser) // soft delete?

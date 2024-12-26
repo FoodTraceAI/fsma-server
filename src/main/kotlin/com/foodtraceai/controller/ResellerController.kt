@@ -27,9 +27,9 @@ class ResellerController : BaseController() {
     @GetMapping("/{id}")
     fun findById(
         @PathVariable(value = "id") id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<ResellerDto> {
-        val reseller = getReseller(id,authPrincipal)
+        val reseller = getReseller(id,fsmaUser)
 //        assertResellerClientMatchesToken(fsaUser, business.resellerId)
         return ResponseEntity.ok(reseller.toResellerDto())
     }
@@ -38,10 +38,10 @@ class ResellerController : BaseController() {
     @PostMapping
     fun create(
         @Valid @RequestBody resellerDto: ResellerDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<ResellerDto> {
-        val mainContact = getContact(resellerDto.mainContactId, authPrincipal)
-        val billingContact = resellerDto.billingContactId?.let { getContact(it, authPrincipal) }
+        val mainContact = getContact(resellerDto.mainContactId, fsmaUser)
+        val billingContact = resellerDto.billingContactId?.let { getContact(it, fsmaUser) }
         val reseller = resellerDto.toReseller(mainContact = mainContact, billingContact = billingContact)
         val resellerResponse = resellerService.insert(reseller).toResellerDto()
         return ResponseEntity.created(URI.create(RESELLER_BASE_URL.plus("/${resellerResponse.id}")))
@@ -53,12 +53,12 @@ class ResellerController : BaseController() {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody resellerDto: ResellerDto,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<ResellerDto> {
         if (resellerDto.id <= 0L || resellerDto.id != id)
             throw UnauthorizedRequestException("Conflicting ResellerDtos specified: $id != ${resellerDto.id}")
-        val mainContact = getContact(resellerDto.mainContactId, authPrincipal)
-        val billingContact = resellerDto.billingContactId?.let { getContact(it, authPrincipal) }
+        val mainContact = getContact(resellerDto.mainContactId, fsmaUser)
+        val billingContact = resellerDto.billingContactId?.let { getContact(it, fsmaUser) }
         val reseller = resellerDto.toReseller(mainContact = mainContact, billingContact = billingContact)
         val resellerResponse = resellerService.update(reseller)
         return ResponseEntity.ok().body(resellerResponse.toResellerDto())
@@ -68,7 +68,7 @@ class ResellerController : BaseController() {
     @DeleteMapping("/{id}")
     fun deleteById(
         @PathVariable id: Long,
-        @AuthenticationPrincipal authPrincipal: FsmaUser
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         resellerService.findById(id)?.let { business ->
 //            assertResellerClientMatchesToken(fsaUser, business.resellerId)
