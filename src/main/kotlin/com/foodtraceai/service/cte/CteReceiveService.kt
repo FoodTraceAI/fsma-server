@@ -22,7 +22,7 @@ class CteReceiveService(
 
     fun findAll(fsmaUser: FsmaUser): List<CteReceive> {
         return cteReceiveRepository.findAll(
-            locationId = fsmaUser.location.id,
+            locationId = if(fsmaUser.isRootAdmin()) null else fsmaUser.location.id,
         )
     }
 

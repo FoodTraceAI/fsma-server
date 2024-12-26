@@ -3,37 +3,19 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.foodtraceai.auth.AuthLogin
-import com.foodtraceai.auth.AuthService
 import com.foodtraceai.model.FsmaUserDto
-import com.foodtraceai.service.FsmaUserService
 import com.foodtraceai.util.Role
-import com.jayway.jsonpath.JsonPath
 import org.hamcrest.Matchers.equalToIgnoringCase
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.post
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TestsAuthController {
-    @Autowired
-    private lateinit var authService: AuthService
-
-    @Autowired
-    private lateinit var fsmaUserService: FsmaUserService
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
+class TestsAuthController : TestsBase() {
 
     // TODO: add passwordreset token logic - we will need this
 //    @Autowired
@@ -42,21 +24,6 @@ class TestsAuthController {
 //    @BeforeEach
 //    fun before() = SetupFsmaTests.setup()
 //    @BeforeAll
-
-    fun authenticate(authLogin: AuthLogin): List<String> {
-        val mvcResult = mockMvc.post("/api/v1/auth/login") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(authLogin)
-        }.andExpect {
-            status { isOk() }
-            content { contentType(MediaType.APPLICATION_JSON) }
-        }.andReturn()
-
-        return listOf(
-            JsonPath.read(mvcResult.response.contentAsString, "$.accessToken"),
-            JsonPath.read(mvcResult.response.contentAsString, "$.refreshToken"),
-        )
-    }
 
     @Test
     fun `get root admin`() {
@@ -71,7 +38,7 @@ class TestsAuthController {
             lastname = "Root",
         )
         val rootAuthLogin = AuthLogin(email = rootDto.email, password = rootDto.password, refreshToken = null)
-        val accessToken: String = authenticate(rootAuthLogin)[0]
+        val accessToken: String = authenticate(rootAuthLogin).first
         val rootId: Long = rootDto.id
         mockMvc.get("/api/v1/fsmauser/$rootId") {
             header("Authorization", "Bearer $accessToken")

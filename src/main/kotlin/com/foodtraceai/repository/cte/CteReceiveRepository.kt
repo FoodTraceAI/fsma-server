@@ -14,12 +14,12 @@ import java.time.LocalDate
 interface CteReceiveRepository : BaseRepository<CteReceive> {
     @Query(
         value = "select cte from CteReceive cte " +
-                "where (:locationId = cte.location.id) and " +
+                "where (:locationId is null or :locationId = cte.location.id) and " +
                 "(cte.dateDeleted is null) " +
                 "order by cte.receiveDate"
     )
     fun findAll(
-        @Param("locationId") locationId: Long,
+        @Param("locationId") locationId: Long?,
     ): List<CteReceive>
 
     @Query(

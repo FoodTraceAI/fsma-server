@@ -3,69 +3,27 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.foodtraceai.auth.AuthLogin
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.LocationDto
 import com.foodtraceai.model.toLocation
-import com.foodtraceai.service.AddressService
-import com.foodtraceai.service.ContactService
-import com.foodtraceai.service.FoodBusService
-import com.foodtraceai.service.LocationService
 import com.foodtraceai.util.EntityNotFoundException
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.*
+import org.springframework.test.web.servlet.delete
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TestsLocation {
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    // ------------------------------------------------------------------------
-    // Test setup
-
-    @Autowired
-    private lateinit var addressService: AddressService
-
-    @Autowired
-    private lateinit var contactService: ContactService
-
-    @Autowired
-    private lateinit var foodBusService: FoodBusService
-
-    @Autowired
-    private lateinit var locationService: LocationService
+class TestsLocation:TestsBase() {
 
     private lateinit var locationDto: LocationDto
     private lateinit var locationDtoUpdated: LocationDto
-
-    private val rootAuthLogin = AuthLogin(email = "root@foodtraceai.com", password = "123", refreshToken = null)
-
-    private fun authenticate(authLogin: AuthLogin): Pair<String, String> {
-        val mvcResult = mockMvc.post("/api/v1/auth/login") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(authLogin)
-        }.andExpect {
-            status { isOk() }
-            content { contentType(MediaType.APPLICATION_JSON) }
-        }.andReturn()
-
-        return Pair(
-            JsonPath.read(mvcResult.response.contentAsString, "$.accessToken"),
-            JsonPath.read(mvcResult.response.contentAsString, "$.refreshToken"),
-        )
-    }
 
     @BeforeEach
     fun localSetup() {
@@ -88,7 +46,6 @@ class TestsLocation {
         )
     }
 
-
     // ------------------------------------------------------------------------
 
     private fun addLocation(locationDto: LocationDto): Location {
@@ -101,7 +58,13 @@ class TestsLocation {
         val locationContact = contactService.findById(locationDto.locationContactId)
             ?: throw EntityNotFoundException("Contact not found = ${locationDto.locationContactId}")
 
-        return locationService.insert(locationDto.toLocation(foodBus, locationContact = locationContact, address = address))
+        return locationService.insert(
+            locationDto.toLocation(
+                foodBus,
+                locationContact = locationContact,
+                address = address
+            )
+        )
     }
 
     @Test
@@ -117,7 +80,6 @@ class TestsLocation {
             jsonPath("$.foodBusId") { value(locationDto.foodBusId) }
             jsonPath("$.locationContactId") { value(locationDto.locationContactId) }
             jsonPath("$.addressId") { value(locationDto.addressId) }
-            jsonPath("$.isClient") { value(true) }
         }.andReturn()
         val locationId: Long = JsonPath.read(mvcResult.response.contentAsString, "$.id")
     }

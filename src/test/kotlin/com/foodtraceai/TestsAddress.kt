@@ -3,58 +3,27 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.foodtraceai.auth.AuthLogin
 import com.foodtraceai.model.AddressDto
 import com.foodtraceai.model.toAddress
-import com.foodtraceai.service.AddressService
 import com.foodtraceai.util.Country
 import com.foodtraceai.util.UsaCanadaState
-import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.*
+import org.springframework.test.web.servlet.delete
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TestsAddress {
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    // ------------------------------------------------------------------------
-    // Test setup
-
-    @Autowired
-    private lateinit var addressService: AddressService
+class TestsAddress : TestsBase() {
 
     private lateinit var addressDto: AddressDto
     private lateinit var addressDtoUpdated: AddressDto
-    private val resellerId = 1L
-    private val rootAuthLogin = AuthLogin(email = "root@foodtraceai.com", password = "123", refreshToken = null)
-
-    private fun authenticate(authLogin: AuthLogin): Pair<String, String> {
-        val mvcResult = mockMvc.post("/api/v1/auth/login") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(authLogin)
-        }.andExpect {
-            status { isOk() }
-            content { contentType(MediaType.APPLICATION_JSON) }
-        }.andReturn()
-
-        return Pair(
-            JsonPath.read(mvcResult.response.contentAsString, "$.accessToken"),
-            JsonPath.read(mvcResult.response.contentAsString, "$.refreshToken"),
-        )
-    }
 
     @BeforeAll
     fun localSetup() {

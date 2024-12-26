@@ -3,51 +3,25 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.foodtraceai.auth.AuthLogin
 import com.foodtraceai.model.TraceLotCodeDto
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TestsTraceLotCode {
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
+class TestsTraceLotCode : TestsBase() {
 
     // ------------------------------------------------------------------------
     // Test setup
     private lateinit var traceLotCodeDto: TraceLotCodeDto
     private var traceLotCodeId: Long = 0
-    private val rootAuthLogin = AuthLogin(email = "root@foodtraceai.com", password = "123", refreshToken = null)
     private lateinit var accessToken: String
-
-    fun authenticate(authLogin: AuthLogin): Pair<String, String> {
-        val mvcResult = mockMvc.post("/api/v1/auth/login") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(authLogin)
-        }.andExpect {
-            status { isOk() }
-            content { contentType(MediaType.APPLICATION_JSON) }
-        }.andReturn()
-
-        return Pair(
-            JsonPath.read(mvcResult.response.contentAsString, "$.accessToken"),
-            JsonPath.read(mvcResult.response.contentAsString, "$.refreshToken"),
-        )
-    }
 
     fun addTraceLotCode(): Long {
         val mvcResult = mockMvc.post("/api/v1/tlc") {
