@@ -104,7 +104,7 @@ class SupShipCteController : BaseController() {
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteCoolService.findById(id)?.let { ctcCoolCto ->
-//            assertResellerClientMatchesToken(fsaUser, address.resellerId)
+            assertFsmaUserLocationMatchessToken(fsmaUser, ctcCoolCto.location.id)
             cteCoolService.delete(ctcCoolCto) // soft delete?
         }
         return ResponseEntity.noContent().build()

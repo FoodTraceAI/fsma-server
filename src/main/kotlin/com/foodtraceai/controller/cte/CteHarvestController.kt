@@ -78,9 +78,9 @@ class CteHarvestController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
-        cteHarvestService.findById(id)?.let { ctcCoolCto ->
-//            assertResellerClientMatchesToken(fsaUser, address.resellerId)
-            cteHarvestService.delete(ctcCoolCto) // soft delete?
+        cteHarvestService.findById(id)?.let { cte ->
+            assertFsmaUserLocationMatchessToken(fsmaUser, cte.location.id)
+            cteHarvestService.delete(cte) // soft delete?
         }
         return ResponseEntity.noContent().build()
     }

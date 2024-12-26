@@ -21,9 +21,8 @@ class CteReceiveService(
 ) : BaseService<CteReceive>(cteReceiveRepository, "CteReceive") {
 
     fun findAll(fsmaUser: FsmaUser): List<CteReceive> {
-        return cteReceiveRepository.findAll(
-            locationId = if(fsmaUser.isRootAdmin()) null else fsmaUser.location.id,
-        )
+        val locationId = if (fsmaUser.isRootAdmin()) null else fsmaUser.location.id
+        return cteReceiveRepository.findAll(locationId)
     }
 
     fun findAllByOptionalParams(

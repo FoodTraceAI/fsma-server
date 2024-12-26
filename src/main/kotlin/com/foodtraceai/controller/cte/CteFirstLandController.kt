@@ -45,11 +45,11 @@ class CteFirstLandController : BaseController() {
         @Valid @RequestBody cteFirstLandDto: CteFirstLandDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteFirstLandDto> {
-        val location = getLocation(cteFirstLandDto.locationId,fsmaUser)
+        val location = getLocation(cteFirstLandDto.locationId, fsmaUser)
 
         var tlcSource: Location? = null
         if (cteFirstLandDto.tlcSourceId != null)
-            tlcSource = getLocation(cteFirstLandDto.tlcSourceId,fsmaUser)
+            tlcSource = getLocation(cteFirstLandDto.tlcSourceId, fsmaUser)
 
         val cteFirstLand = cteFirstLandDto.toCteFirstLand(location, tlcSource)
         val cteFirstLandResponse = cteFirstLandService.insert(cteFirstLand).toCteFirstLandDto()
@@ -67,15 +67,15 @@ class CteFirstLandController : BaseController() {
         if (cteFirstLandDto.id <= 0L || cteFirstLandDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteFirstLandDto Ids specified: $id != ${cteFirstLandDto.id}")
 
-        val location = getLocation(cteFirstLandDto.locationId,fsmaUser)
+        val location = getLocation(cteFirstLandDto.locationId, fsmaUser)
 
         var tlcSource: Location? = null
         if (cteFirstLandDto.tlcSourceId != null)
-            tlcSource = getLocation(cteFirstLandDto.tlcSourceId,fsmaUser)
+            tlcSource = getLocation(cteFirstLandDto.tlcSourceId, fsmaUser)
 
         val cteFirstLand = cteFirstLandDto.toCteFirstLand(location, tlcSource)
-        val cteFirstLandCto = cteFirstLandService.update(cteFirstLand).toCteFirstLandDto()
-        return ResponseEntity.ok().body(cteFirstLandCto)
+        val cteFirstLandResponse = cteFirstLandService.update(cteFirstLand).toCteFirstLandDto()
+        return ResponseEntity.ok().body(cteFirstLandResponse)
     }
 
     // -- Delete an existing Address

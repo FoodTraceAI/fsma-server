@@ -16,9 +16,8 @@ class SupShipCteService(
 ) : BaseService<SupShipCte>(supShipCteRepository, "SupShipCte") {
 
     fun findAll(fsmaUser: FsmaUser): List<SupShipCte> {
-        return supShipCteRepository.findAll(
-            locationId = fsmaUser.location.id,
-        )
+        val locationId = if (fsmaUser.isRootAdmin()) null else fsmaUser.location.id
+        return supShipCteRepository.findAll(locationId)
     }
 
     // RFE or Restaurant has received a shipment

@@ -81,8 +81,8 @@ class CteReceiveController : BaseController() {
         val tlcSource = getLocation(cteReceiveDto.tlcSourceId, fsmaUser)
 
         val cteReceive = cteReceiveDto.toCteReceive(location, traceLotCode, shipFromLocation, tlcSource)
-        val cteReceiveCto = cteReceiveService.update(cteReceive).toCteReceiveDto()
-        return ResponseEntity.ok().body(cteReceiveCto)
+        val cteReceiveResponse = cteReceiveService.update(cteReceive).toCteReceiveDto()
+        return ResponseEntity.ok().body(cteReceiveResponse)
     }
 
     // -- Delete an existing Address
@@ -91,9 +91,9 @@ class CteReceiveController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
-        cteReceiveService.findById(id)?.let { cteReceive ->
-//            assertResellerClientMatchesToken(fsaUser, address.resellerId)
-            cteReceiveService.delete(cteReceive) // soft delete?
+        cteReceiveService.findById(id)?.let { cte ->
+            assertFsmaUserLocationMatchessToken(fsmaUser, cte.location.id)
+            cteReceiveService.delete(cte) // soft delete?
         }
         return ResponseEntity.noContent().build()
     }

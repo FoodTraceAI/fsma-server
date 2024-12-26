@@ -46,8 +46,8 @@ class CteCoolController : BaseController() {
         @Valid @RequestBody cteCoolDto: CteCoolDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteCoolDto> {
-        val location = getLocation(cteCoolDto.locationId,fsmaUser)
-        val subsequentRecipient = getLocation(cteCoolDto.isrLocationId,fsmaUser)
+        val location = getLocation(cteCoolDto.locationId, fsmaUser)
+        val subsequentRecipient = getLocation(cteCoolDto.isrLocationId, fsmaUser)
 
         val cteCool = cteCoolDto.toCteCool(location, subsequentRecipient)
         val cteCoolResponse = cteCoolService.insert(cteCool).toCteCoolDto()
@@ -65,12 +65,12 @@ class CteCoolController : BaseController() {
         if (cteCoolDto.id <= 0L || cteCoolDto.id != id)
             throw UnauthorizedRequestException("Conflicting CtcCool Ids specified: $id != ${cteCoolDto.id}")
 
-        val location = getLocation(cteCoolDto.locationId,fsmaUser)
-        val subsequentRecipient = getLocation(cteCoolDto.isrLocationId,fsmaUser)
+        val location = getLocation(cteCoolDto.locationId, fsmaUser)
+        val subsequentRecipient = getLocation(cteCoolDto.isrLocationId, fsmaUser)
 
         val cteCool = cteCoolDto.toCteCool(location, subsequentRecipient)
-        val cteCoolCto = cteCoolService.update(cteCool).toCteCoolDto()
-        return ResponseEntity.ok().body(cteCoolCto)
+        val cteCoolResponse = cteCoolService.update(cteCool).toCteCoolDto()
+        return ResponseEntity.ok().body(cteCoolResponse)
     }
 
     // -- Delete an existing Address

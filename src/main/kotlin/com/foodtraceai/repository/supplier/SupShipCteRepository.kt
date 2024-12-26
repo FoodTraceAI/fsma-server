@@ -14,12 +14,12 @@ import org.springframework.stereotype.Repository
 interface SupShipCteRepository : BaseRepository<SupShipCte> {
     @Query(
         value = "select sup from SupShipCte sup " +
-                "where (:locationId = sup.shipToLocation.id) and " +
+                "where (:locationId is null or :locationId = sup.shipToLocation.id) and " +
                 "(sup.dateDeleted is null) " +
                 "order by sup.dateCreated"
     )
     fun findAll(
-        @Param("locationId") locationId: Long,
+        @Param("locationId") locationId: Long?,
     ): List<SupShipCte>
 
     fun findAllBySsccAndTlcIdAndShipToLocationIdAndSupCteStatus(
