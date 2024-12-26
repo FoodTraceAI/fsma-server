@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// Copyright Kaleidoscope, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller
 
@@ -9,7 +9,6 @@ import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.model.supplier.SupShipCte
 import com.foodtraceai.service.*
 import com.foodtraceai.service.cte.*
-import com.foodtraceai.service.supplier.SupShipCteService
 import com.foodtraceai.util.BadRequestException
 import com.foodtraceai.util.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired

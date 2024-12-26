@@ -9,7 +9,7 @@ import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.model.supplier.SupShipCte
 import com.foodtraceai.service.*
 import com.foodtraceai.service.cte.CteReceiveService
-import com.foodtraceai.service.supplier.SupShipCteService
+import com.foodtraceai.service.SupShipCteService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner

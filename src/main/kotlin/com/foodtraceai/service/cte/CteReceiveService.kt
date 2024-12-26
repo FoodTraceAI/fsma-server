@@ -7,7 +7,7 @@ import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.repository.cte.CteReceiveRepository
 import com.foodtraceai.service.BaseService
-import com.foodtraceai.service.supplier.SupShipCteService
+import com.foodtraceai.service.SupShipCteService
 import com.foodtraceai.util.SupCteStatus
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service

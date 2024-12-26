@@ -1,9 +1,8 @@
 // ----------------------------------------------------------------------------
 // Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
 // ----------------------------------------------------------------------------
-package com.foodtraceai.controller.supplier
+package com.foodtraceai.controller
 
-import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.supplier.SupShipCteDto
 import com.foodtraceai.model.supplier.toSupCteShip

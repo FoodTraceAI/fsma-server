@@ -1,12 +1,11 @@
 // ----------------------------------------------------------------------------
 // Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
 // ----------------------------------------------------------------------------
-package com.foodtraceai.service.supplier
+package com.foodtraceai.service
 
 import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.supplier.SupShipCte
 import com.foodtraceai.repository.supplier.SupShipCteRepository
-import com.foodtraceai.service.BaseService
 import com.foodtraceai.util.EntityException
 import com.foodtraceai.util.SupCteStatus
 import org.springframework.stereotype.Service

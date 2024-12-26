@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// Copyright Kaleidoscope, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
 // ----------------------------------------------------------------------------
 // Description:
 //  MimeAttachments contains a list of MimeAttachment instances which are the
