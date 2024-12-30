@@ -1,12 +1,8 @@
 // ----------------------------------------------------------------------------
 // Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
 // ----------------------------------------------------------------------------
-package com.foodtraceai.model.supplier
+package com.foodtraceai.model
 
-import com.foodtraceai.model.BaseModel
-import com.foodtraceai.model.FoodBus
-import com.foodtraceai.model.Location
-import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.util.FtlItem
 import com.foodtraceai.util.ReferenceDocumentType

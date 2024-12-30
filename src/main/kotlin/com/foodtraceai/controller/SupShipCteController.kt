@@ -4,9 +4,9 @@
 package com.foodtraceai.controller
 
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.supplier.SupShipCteDto
-import com.foodtraceai.model.supplier.toSupCteShip
-import com.foodtraceai.model.supplier.toSupShipCteDto
+import com.foodtraceai.model.SupShipCteDto
+import com.foodtraceai.model.toSupCteShip
+import com.foodtraceai.model.toSupShipCteDto
 import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.SupCteStatus
 import io.swagger.v3.oas.annotations.security.SecurityRequirement

@@ -6,7 +6,7 @@ package com.foodtraceai.controller
 import com.foodtraceai.auth.JwtService
 import com.foodtraceai.model.*
 import com.foodtraceai.model.cte.CteReceive
-import com.foodtraceai.model.supplier.SupShipCte
+import com.foodtraceai.model.SupShipCte
 import com.foodtraceai.service.*
 import com.foodtraceai.service.cte.*
 import com.foodtraceai.util.BadRequestException

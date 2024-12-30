@@ -4,8 +4,8 @@
 package com.foodtraceai.service
 
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.supplier.SupShipCte
-import com.foodtraceai.repository.supplier.SupShipCteRepository
+import com.foodtraceai.model.SupShipCte
+import com.foodtraceai.repository.SupShipCteRepository
 import com.foodtraceai.util.EntityException
 import com.foodtraceai.util.SupCteStatus
 import org.springframework.stereotype.Service

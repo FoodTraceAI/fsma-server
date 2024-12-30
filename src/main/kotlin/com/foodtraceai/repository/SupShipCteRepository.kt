@@ -1,10 +1,9 @@
 // ----------------------------------------------------------------------------
 // Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
 // ----------------------------------------------------------------------------
-package com.foodtraceai.repository.supplier
+package com.foodtraceai.repository
 
-import com.foodtraceai.model.supplier.SupShipCte
-import com.foodtraceai.repository.BaseRepository
+import com.foodtraceai.model.SupShipCte
 import com.foodtraceai.util.SupCteStatus
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
