@@ -5,7 +5,6 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.model.cte.CteReceiveDto
 import com.foodtraceai.model.cte.toCteReceive
 import com.foodtraceai.model.cte.toCteReceiveDto
@@ -110,7 +109,8 @@ class CteReceiveController : BaseController() {
     private fun makeReceiveCte(
         @Valid @RequestBody shipArgs: ShipArgs,
         @AuthenticationPrincipal fsmaUser: FsmaUser,
-    ): ResponseEntity<CteReceive> {
+    ): ResponseEntity<CteReceiveDto> {
+        assertFsmaUserLocationMatchessToken(fsmaUser,shipArgs.receiveLocationId)
         val cteReceive = cteReceiveService.makeReceiveCteFromSupShipCte(
             shipArgs.sscc,
             shipArgs.tlcId,
@@ -118,6 +118,6 @@ class CteReceiveController : BaseController() {
             shipArgs.receiveDate,
             shipArgs.receiveTime,
         )
-        return ResponseEntity.ok(cteReceive)
+        return ResponseEntity.ok(cteReceive.toCteReceiveDto())
     }
 }
