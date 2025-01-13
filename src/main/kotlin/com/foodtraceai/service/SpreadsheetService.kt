@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
+// Copyright 2025 FoodTraceAI LLC or its affiliates. All Rights Reserved.
 // ----------------------------------------------------------------------------
 
 package com.foodtraceai.service

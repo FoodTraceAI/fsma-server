@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
+// Copyright 2025 FoodTraceAI LLC or its affiliates. All Rights Reserved.
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller.cte
 
@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 // ----------------------------------------------------------------------------
-// Copyright 2024 FoodTraceAI LLC or its affiliates. All Rights Reserved.
+// Copyright 2025 FoodTraceAI LLC or its affiliates. All Rights Reserved.
 // ----------------------------------------------------------------------------
 import java.net.URI
 
