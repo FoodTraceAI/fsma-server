@@ -6,7 +6,6 @@ package com.foodtraceai.controller
 import com.foodtraceai.auth.JwtService
 import com.foodtraceai.model.*
 import com.foodtraceai.model.cte.CteReceive
-import com.foodtraceai.model.SupShipCte
 import com.foodtraceai.service.*
 import com.foodtraceai.service.cte.*
 import com.foodtraceai.util.BadRequestException
@@ -129,11 +128,11 @@ class BaseController {
         return franchisor
     }
 
-    fun getLocation(id: Long, fsmaUser: FsmaUser): Location {
+    fun getLocation(id: Long, fsmaUser: FsmaUser? = null): Location {
         val location = locationService.findById(id)
             ?: throw EntityNotFoundException("Location not found: $id")
-        assertFsmaUserLocationMatchessToken(fsmaUser, location.id)
-//        assertContactClientMatchesToken(fsaUser, business.contactId)
+        if (fsmaUser != null)
+            assertFsmaUserLocationMatchessToken(fsmaUser, location.id)
         return location
     }
 

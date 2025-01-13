@@ -6,10 +6,8 @@ package com.foodtraceai.util
 import com.foodtraceai.auth.AuthService
 import com.foodtraceai.model.*
 import com.foodtraceai.model.cte.CteReceive
-import com.foodtraceai.model.SupShipCte
 import com.foodtraceai.service.*
 import com.foodtraceai.service.cte.CteReceiveService
-import com.foodtraceai.service.SupShipCteService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -32,15 +30,15 @@ class DataLoader : ApplicationRunner {
     private lateinit var addressService: AddressService
     private val addressList: MutableList<Address> = mutableListOf()
     private lateinit var foodTraceAddress: Address
-    private lateinit var freshAddress: Address
-    private lateinit var happyAddress: Address
+    private lateinit var freshProdDistAddress: Address
+    private lateinit var happyRestAddress: Address
     private lateinit var pepiProcessorAddress: Address
 
     @Autowired
     private lateinit var contactService: ContactService
     private val contactList: MutableList<Contact> = mutableListOf()
-    private lateinit var freshProduceContact: Contact
-    private lateinit var happyRestaurantContact: Contact
+    private lateinit var freshProdDistContact: Contact
+    private lateinit var happyRestContact: Contact
     private lateinit var pepiProcessorContact: Contact
     private lateinit var billingContact: Contact
     private lateinit var mainContact: Contact
@@ -54,8 +52,8 @@ class DataLoader : ApplicationRunner {
     @Autowired
     private lateinit var foodBusService: FoodBusService
     private val foodBusList: MutableList<FoodBus> = mutableListOf()
-    private lateinit var freshProduceBus: FoodBus
-    private lateinit var happyRestaurantBus: FoodBus
+    private lateinit var freshProdDistBus: FoodBus
+    private lateinit var happyRestBus: FoodBus
     private lateinit var pepiProcessorBus: FoodBus
 
     @Autowired
@@ -65,6 +63,9 @@ class DataLoader : ApplicationRunner {
     @Autowired
     private lateinit var locationService: LocationService
     private val locationList: MutableList<Location> = mutableListOf()
+    private lateinit var freshProdDistLocation: Location
+    private lateinit var happyRestaurantLocation: Location
+    private lateinit var pepiLocation: Location
 
     @Autowired
     private lateinit var resellerService: ResellerService
@@ -189,8 +190,8 @@ class DataLoader : ApplicationRunner {
             lat = 35.1268133,
             lon = -90.0087413
         )
-        freshAddress = addressDto.toAddress()
-        addressList.add(addressService.insert(freshAddress))
+        freshProdDistAddress = addressDto.toAddress()
+        addressList.add(addressService.insert(freshProdDistAddress))
 
         addressDto = AddressDto(
             street = "200 Happy Ave",
@@ -201,8 +202,8 @@ class DataLoader : ApplicationRunner {
             lat = 35.1268133,
             lon = -90.0087413
         )
-        happyAddress = addressDto.toAddress()
-        addressList.add(addressService.insert(happyAddress))
+        happyRestAddress = addressDto.toAddress()
+        addressList.add(addressService.insert(happyRestAddress))
 
         addressDto = AddressDto(
             street = "300 Processor Lane",
@@ -224,8 +225,8 @@ class DataLoader : ApplicationRunner {
             phone = "1-800-555-1212",
             email = "FirstName.Lastname@gmail.com"
         )
-        freshProduceContact = contactService.insert(contact)
-        contactList.add(freshProduceContact)
+        freshProdDistContact = contactService.insert(contact)
+        contactList.add(freshProdDistContact)
 
         contact = Contact(
             firstName = "Happy",
@@ -233,8 +234,8 @@ class DataLoader : ApplicationRunner {
             email = "happy.restaurant@gmail.com",
             phone = "800-555-1212",
         )
-        happyRestaurantContact = contactService.insert(contact)
-        contactList.add(happyRestaurantContact)
+        happyRestContact = contactService.insert(contact)
+        contactList.add(happyRestContact)
 
         contact = Contact(
             firstName = "FirstName FoodProcessor",
@@ -311,23 +312,23 @@ class DataLoader : ApplicationRunner {
     fun addFoodBusinesses() {
         var foodBus = FoodBus(
             reseller = freshProduceReseller,
-            mainAddress = freshAddress,
+            mainAddress = freshProdDistAddress,
             foodBusName = "Fresh Produce Distributor",
-            foodBusContact = freshProduceContact,
+            foodBusContact = freshProdDistContact,
             foodBusDesc = "Distributor"
         )
-        freshProduceBus = foodBusService.insert(foodBus)
-        foodBusList.add(freshProduceBus)
+        freshProdDistBus = foodBusService.insert(foodBus)
+        foodBusList.add(freshProdDistBus)
 
         foodBus = FoodBus(
             reseller = freshProduceReseller,
-            mainAddress = happyAddress,
+            mainAddress = happyRestAddress,
             foodBusName = "Happy Restaurant",
-            foodBusContact = happyRestaurantContact,
+            foodBusContact = happyRestContact,
             foodBusDesc = "Restaurant"
         )
-        happyRestaurantBus = foodBusService.insert(foodBus)
-        foodBusList.add(happyRestaurantBus)
+        happyRestBus = foodBusService.insert(foodBus)
+        foodBusList.add(happyRestBus)
 
         foodBus = FoodBus(
             reseller = null,
@@ -342,27 +343,31 @@ class DataLoader : ApplicationRunner {
 
     fun addLocations() {
         var location = Location(
-            foodBus = freshProduceBus,
-            locationContact = freshProduceContact,
-            address = freshAddress,
+            foodBus = freshProdDistBus,
+            locationContact = freshProdDistContact,
+            address = freshProdDistAddress,
         )
-        val response = locationService.insert(location)
-        val retrieve = locationService.findById(response.id)
-        locationList.add(retrieve!!)
+        var response = locationService.insert(location)
+        freshProdDistLocation = locationService.findById(response.id)!!
+        locationList.add(freshProdDistLocation)
 
         location = Location(
-            foodBus = happyRestaurantBus,
-            locationContact = happyRestaurantContact,
-            address = happyAddress
+            foodBus = happyRestBus,
+            locationContact = happyRestContact,
+            address = happyRestAddress
         )
-        locationList.add(locationService.insert(location))
+        response = locationService.insert(location)
+        happyRestaurantLocation = locationService.findById(response.id)!!
+        locationList.add(happyRestaurantLocation)
 
         location = Location(
             foodBus = pepiProcessorBus,
             locationContact = pepiProcessorContact,
             address = pepiProcessorAddress
         )
-        locationList.add(locationService.insert(location))
+        response = locationService.insert(location)
+        pepiLocation = locationService.findById(response.id)!!
+        locationList.add(pepiLocation)
     }
 
     fun addFsmaUsers() {
@@ -409,7 +414,7 @@ class DataLoader : ApplicationRunner {
         fsmaUserList.add(fmsaUser)
 
         fsmaUserDto = FsmaUserDto(
-            foodBusId = freshProduceBus.id,
+            foodBusId = freshProdDistBus.id,
             locationId = locationList[0].id,
             email = "fresh@foodtraceai.com",
             password = "123",
@@ -423,7 +428,7 @@ class DataLoader : ApplicationRunner {
         fsmaUserList.add(fmsaUser)
 
         fsmaUserDto = FsmaUserDto(
-            foodBusId = happyRestaurantBus.id,
+            foodBusId = happyRestBus.id,
             locationId = locationList[1].id,
             email = "happy@foodtraceai.com",
             password = "123",
@@ -437,7 +442,7 @@ class DataLoader : ApplicationRunner {
         fsmaUserList.add(fmsaUser)
 
         fsmaUserDto = FsmaUserDto(
-            foodBusId =pepiProcessorBus.id,
+            foodBusId = pepiProcessorBus.id,
             locationId = locationList[2].id,
             email = "pepi@foodtraceai.com",
             password = "123",
@@ -459,8 +464,10 @@ class DataLoader : ApplicationRunner {
             batchLot = "187",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
+            tlcSource = pepiLocation,
         )
-        tlcList.add(tlcService.insert(tlc))
+        val response = tlcService.insert(tlc)
+        tlcList.add(response)
 
         tlc = TraceLotCode(
             tlcVal = "TraceLotCode2",
@@ -469,6 +476,7 @@ class DataLoader : ApplicationRunner {
             batchLot = "188",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
+            tlcSource = pepiLocation,
         )
         tlcList.add(tlcService.insert(tlc))
 
@@ -479,6 +487,7 @@ class DataLoader : ApplicationRunner {
             batchLot = "123456",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
+            tlcSource = pepiLocation,
         )
         tlcList.add(tlcService.insert(tlc))
     }

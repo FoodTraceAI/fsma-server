@@ -42,7 +42,9 @@ class TraceLotCodeController : BaseController() {
         @Valid @RequestBody traceLotCodeDto: TraceLotCodeDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TraceLotCodeDto> {
-        val traceLotCode = traceLotCodeDto.toTraceLotCode()
+        val traceLotCode = traceLotCodeDto.toTraceLotCode(
+            tlcSource = getLocation(traceLotCodeDto.tlcSourceId)
+        )
         val traceLotCodeResponse = traceLotCodeService.insert(traceLotCode).toTraceLotCodeDto()
         return ResponseEntity.created(URI.create(TRACE_LOT_CODE_BASE_URL.plus("/${traceLotCodeResponse.id}")))
             .body(traceLotCodeResponse)
@@ -57,7 +59,9 @@ class TraceLotCodeController : BaseController() {
     ): ResponseEntity<TraceLotCodeDto> {
         if (traceLotCodeDto.id <= 0L || traceLotCodeDto.id != id)
             throw UnauthorizedRequestException("Conflicting TraceLotCodeIds specified: $id != ${traceLotCodeDto.id}")
-        val traceLotCode = traceLotCodeDto.toTraceLotCode()
+        val traceLotCode = traceLotCodeDto.toTraceLotCode(
+            tlcSource = getLocation(traceLotCodeDto.tlcSourceId)
+        )
         val traceLotCodeResponse = traceLotCodeService.update(traceLotCode).toTraceLotCodeDto()
         return ResponseEntity.ok().body(traceLotCodeResponse)
     }

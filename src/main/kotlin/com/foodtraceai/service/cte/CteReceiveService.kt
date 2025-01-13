@@ -41,7 +41,7 @@ class CteReceiveService(
         )
     }
 
-    fun makeReceiveCteFromSupShipCte(
+    fun makeCteReceiveFromSupShipCte(
         sscc: String,
         tlcId: Long,
         receiveLocationId: Long,

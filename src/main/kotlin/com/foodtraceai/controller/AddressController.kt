@@ -29,7 +29,7 @@ class AddressController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<AddressDto> {
-        val address = getAddress(id,fsmaUser)
+        val address = getAddress(id, fsmaUser)
         return ResponseEntity.ok(address.toAddressDto())
     }
 
@@ -55,9 +55,8 @@ class AddressController : BaseController() {
     ): ResponseEntity<AddressDto> {
         if (addressDto.id <= 0L || addressDto.id != id)
             throw UnauthorizedRequestException("Conflicting AddressIds specified: $id != ${addressDto.id}")
-        val address = addressDto.toAddress()
-        val addressResponse = addressService.update(address).toAddressDto()
-        return ResponseEntity.ok().body(addressResponse)
+        val addressResponseDto = addressService.update(addressDto.toAddress()).toAddressDto()
+        return ResponseEntity.ok().body(addressResponseDto)
     }
 
     // -- Delete an existing Address

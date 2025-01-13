@@ -46,6 +46,7 @@ class TestsTraceLotCode : TestsBase() {
             packDate = null,
             harvestDate = null,
             sscc = null,
+            tlcSourceId = 1
         )
 
         traceLotCodeId = addTraceLotCode()

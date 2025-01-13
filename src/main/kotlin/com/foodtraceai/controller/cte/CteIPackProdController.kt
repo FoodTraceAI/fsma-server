@@ -50,11 +50,13 @@ class CteIPackProdController : BaseController() {
 
         val harvestBusiness = getFoodBus(cteIPackProdDto.harvestBusinessId, fsmaUser)
 
-        val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it,fsmaUser)}
+        val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it, fsmaUser) }
 
-        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId,fsmaUser)
+        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId, fsmaUser)
 
-        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let {            getLocation(it,fsmaUser)         }
+        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let {
+            getLocation(it, fsmaUser)
+        }
 
         val cteIPackProd = cteIPackProdDto.toCteIPackProd(
             location, harvestLocation, harvestBusiness,
@@ -76,12 +78,12 @@ class CteIPackProdController : BaseController() {
             throw UnauthorizedRequestException("Conflicting CteIPackProd Ids specified: $id != ${cteIPackProdDto.id}")
 
         val location = getLocation(cteIPackProdDto.locationId, fsmaUser)
-        val harvestLocation = getLocation(cteIPackProdDto.harvestLocationId,fsmaUser)
+        val harvestLocation = getLocation(cteIPackProdDto.harvestLocationId, fsmaUser)
 
         val harvestBusiness = getFoodBus(cteIPackProdDto.harvestBusinessId, fsmaUser)
         val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it, fsmaUser) }
 
-        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId,fsmaUser)
+        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId, fsmaUser)
         val packTlcSource = cteIPackProdDto.packTlcSourceId?.let { getLocation(it, fsmaUser) }
 
         val cteIPackProd = cteIPackProdDto.toCteIPackProd(

@@ -97,7 +97,7 @@ class CteReceiveController : BaseController() {
         return ResponseEntity.noContent().build()
     }
 
-    data class ShipArgs(
+    data class SupShipArgs(
         val sscc: String,
         val tlcId: Long,
         val receiveLocationId: Long,
@@ -105,18 +105,18 @@ class CteReceiveController : BaseController() {
         val receiveTime: OffsetDateTime,
     )
 
-    @PostMapping("/makeReceiveCte")
-    private fun makeReceiveCte(
-        @Valid @RequestBody shipArgs: ShipArgs,
+    @PostMapping("/makeCteReceive")
+    private fun makeCteReceive(
+        @Valid @RequestBody supShipArgs: SupShipArgs,
         @AuthenticationPrincipal fsmaUser: FsmaUser,
     ): ResponseEntity<CteReceiveDto> {
-        assertFsmaUserLocationMatchessToken(fsmaUser,shipArgs.receiveLocationId)
-        val cteReceive = cteReceiveService.makeReceiveCteFromSupShipCte(
-            shipArgs.sscc,
-            shipArgs.tlcId,
-            shipArgs.receiveLocationId,
-            shipArgs.receiveDate,
-            shipArgs.receiveTime,
+        assertFsmaUserLocationMatchessToken(fsmaUser, supShipArgs.receiveLocationId)
+        val cteReceive = cteReceiveService.makeCteReceiveFromSupShipCte(
+            supShipArgs.sscc,
+            supShipArgs.tlcId,
+            supShipArgs.receiveLocationId,
+            supShipArgs.receiveDate,
+            supShipArgs.receiveTime,
         )
         return ResponseEntity.ok(cteReceive.toCteReceiveDto())
     }

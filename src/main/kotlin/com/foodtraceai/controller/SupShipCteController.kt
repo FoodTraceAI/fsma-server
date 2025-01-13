@@ -7,7 +7,6 @@ import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.SupShipCteDto
 import com.foodtraceai.model.toSupCteShip
 import com.foodtraceai.model.toSupShipCteDto
-import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.SupCteStatus
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -67,9 +66,7 @@ class SupShipCteController : BaseController() {
         @Valid @RequestBody supShipCteDto: SupShipCteDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<SupShipCteDto> {
-        val cteReceive = supShipCteDto.cteReceiveId?.let {
-            cteReceiveService.findById(it) ?: throw EntityNotFoundException("CteReceiveId not found: ${it}")
-        }
+        val cteReceive = supShipCteDto.cteReceiveId?.let { getCteReceive(it, fsmaUser) }
         val tlc = getTraceLotCode(supShipCteDto.tlcId, fsmaUser)
         val shipToLocation = getLocation(supShipCteDto.shipToLocationId, fsmaUser)
         val shipFromLocation = getLocation(supShipCteDto.shipFromLocationId, fsmaUser)

@@ -3,10 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
@@ -24,6 +21,14 @@ data class TraceLotCode(
     val harvestDate: LocalDate? = null, // AI(13)
     val bestByDate: LocalDate? = null,  // AI(15)
     val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
+
+    // Extra parameters that seem to belong
+    // The location description for the traceability lot code source,
+    // or the traceability lot code source reference; and
+    @ManyToOne  //(cascade = [CascadeType.ALL])
+    @JoinColumn
+    val tlcSource: Location,
+    val tlcSourceReference: String? = null,
 
     @Column(updatable = false)
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
@@ -45,6 +50,10 @@ data class TraceLotCodeDto(
     val bestByDate: LocalDate? = null,  // AI(15)
     val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
 
+    // Extra parameters that seem to belong
+    val tlcSourceId: Long,
+    val tlcSourceReference: String? = null,
+
     val dateCreated: OffsetDateTime = OffsetDateTime.now(),
     val dateModified: OffsetDateTime = OffsetDateTime.now(),
     val isDeleted: Boolean = false,
@@ -63,13 +72,17 @@ fun TraceLotCode.toTraceLotCodeDto() = TraceLotCodeDto(
     harvestDate = harvestDate,
     bestByDate = bestByDate,
     logSerialNo = logSerialNo,
+    tlcSourceId = tlcSource.id,
+    tlcSourceReference = tlcSourceReference,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
 )
 
-fun TraceLotCodeDto.toTraceLotCode() = TraceLotCode(
+fun TraceLotCodeDto.toTraceLotCode(
+    tlcSource: Location,
+) = TraceLotCode(
     id = id,
     tlcVal = tlcVal,
     gtin = gtin,
@@ -79,6 +92,8 @@ fun TraceLotCodeDto.toTraceLotCode() = TraceLotCode(
     harvestDate = harvestDate,
     bestByDate = bestByDate,
     logSerialNo = logSerialNo,
+    tlcSource = tlcSource,
+    tlcSourceReference = tlcSourceReference,
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,
