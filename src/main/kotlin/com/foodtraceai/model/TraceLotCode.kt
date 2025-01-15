@@ -12,6 +12,8 @@ data class TraceLotCode(
     @Id @GeneratedValue
     override val id: Long = 0,
     val tlcVal: String,
+
+    // PTI Recommended
     val gtin: String? = null,   // AI(01) Case GTIN - not required
     val batchLot: String? = null,  // AI(10) Case Batch/Lot - not required
 
@@ -22,7 +24,7 @@ data class TraceLotCode(
     val bestByDate: LocalDate? = null,  // AI(15)
     val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
 
-    // Extra parameters that seem to belong
+    // Extra parameters that seem to belong to the TLC
     // The location description for the traceability lot code source,
     // or the traceability lot code source reference; and
     @ManyToOne  //(cascade = [CascadeType.ALL])
@@ -40,6 +42,8 @@ data class TraceLotCode(
 data class TraceLotCodeDto(
     val id: Long = 0,
     val tlcVal: String,
+
+    // PTI Recommended
     val gtin: String?,
     val batchLot: String?,
 

@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai
 
+import com.foodtraceai.controller.TraceLotCodeController
 import com.foodtraceai.model.TraceLotCodeDto
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
@@ -64,6 +65,27 @@ class TestsTraceLotCode : TestsBase() {
             jsonPath("$.id") { value(traceLotCodeId) }
             jsonPath("$.tlcVal") { value("trace lot code 1") }
             jsonPath("$.batchLot") { value("batchLot_1001") }
+        }
+    }
+
+    @Test
+    fun `make trace lot code`() {
+        val traceLotCodeArgs = TraceLotCodeController.TraceLotCodeArgs(
+            tlcVal = "tlcArgsVal",
+            batchLot = "batchLot_Args_sourceId2",
+            tlcSourceId = 2
+        )
+
+        mockMvc.post("/api/v1/tlc/makeTraceLotCode") {
+            header("Authorization", "Bearer $accessToken")
+            content = objectMapper.writeValueAsString(traceLotCodeArgs)
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isCreated() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+            jsonPath("$.tlcVal") { value(traceLotCodeArgs.tlcVal) }
+            jsonPath("$.batchLot") { value(traceLotCodeArgs.batchLot) }
+            jsonPath("$.tlcSourceId") { value(traceLotCodeArgs.tlcSourceId) }
         }
     }
 }
