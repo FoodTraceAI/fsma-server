@@ -15,8 +15,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
-private const val SUP_SHIP_CTE_BASE_URL = "/api/v1/supplier/shipcte"
-private const val SUP_SHIP_CTE_ALT_BASE_URL = "/api/v1/supshipcte"
+private const val SUP_SHIP_CTE_BASE_URL = "/api/v1/supplier/shipCte"
+private const val SUP_SHIP_CTE_ALT_BASE_URL = "/api/v1/supShipCte"
 
 @RestController
 @RequestMapping(value = [SUP_SHIP_CTE_BASE_URL, SUP_SHIP_CTE_ALT_BASE_URL])
