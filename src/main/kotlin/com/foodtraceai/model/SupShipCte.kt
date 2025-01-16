@@ -38,9 +38,8 @@ data class SupShipCte(
     val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
 
     // Gets populated when the shipment is received
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    @OnDelete(action = OnDeleteAction.CASCADE)
     val cteReceive: CteReceive? = null,
 
     // ************** KDEs *************
@@ -51,7 +50,6 @@ data class SupShipCte(
     // (a)(1) The traceability lot code for the food;
     @ManyToOne
     @JoinColumn
-    @OnDelete(action = OnDeleteAction.CASCADE)
     val tlc: TraceLotCode,  // from the supplier
 
     // (a)(2) The quantity and unit of measure of the food
