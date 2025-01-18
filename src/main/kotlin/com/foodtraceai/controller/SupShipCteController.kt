@@ -100,9 +100,9 @@ class SupShipCteController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
-        cteCoolService.findById(id)?.let { ctcCoolCto ->
-            assertFsmaUserLocationMatchessToken(fsmaUser, ctcCoolCto.location.id)
-            cteCoolService.delete(ctcCoolCto) // soft delete?
+        supShipCteService.findById(id)?.let { supShipCte ->
+            assertFsmaUserLocationMatchessToken(fsmaUser, supShipCte.shipToLocation.id)
+            supShipCteService.delete(supShipCte) // soft delete?
         }
         return ResponseEntity.noContent().build()
     }
