@@ -91,7 +91,7 @@ class CteReceiveController : BaseController() {
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteReceiveService.findById(id)?.let { cte ->
-            assertFsmaUserLocationMatchessToken(fsmaUser, cte.location.id)
+            assertFsmaUserLocationMatches(cte.location.id, fsmaUser)
             cteReceiveService.delete(cte) // soft delete?
         }
         return ResponseEntity.noContent().build()
@@ -110,7 +110,7 @@ class CteReceiveController : BaseController() {
         @Valid @RequestBody supShipArgs: SupShipArgs,
         @AuthenticationPrincipal fsmaUser: FsmaUser,
     ): ResponseEntity<CteReceiveDto> {
-        assertFsmaUserLocationMatchessToken(fsmaUser, supShipArgs.receiveLocationId)
+        assertFsmaUserLocationMatches(supShipArgs.receiveLocationId, fsmaUser)
         val cteReceive = cteReceiveService.makeCteReceiveFromSupShipCte(
             supShipArgs.sscc,
             supShipArgs.tlcId,

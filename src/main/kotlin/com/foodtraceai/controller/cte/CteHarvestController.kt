@@ -43,9 +43,9 @@ class CteHarvestController : BaseController() {
         @Valid @RequestBody cteHarvestDto: CteHarvestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteHarvestDto> {
-        val location = getLocation(cteHarvestDto.locationId,fsmaUser)
-        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId,fsmaUser)
-        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId,fsmaUser)
+        val location = getLocation(cteHarvestDto.locationId, fsmaUser)
+        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId, fsmaUser)
+        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId, fsmaUser)
 
         val cteHarvest = cteHarvestDto.toCteHarvest(location, subsequentRecipient, harvestLocation)
         val cteHarvestResponse = cteHarvestService.insert(cteHarvest).toCteHarvestDto()
@@ -63,9 +63,9 @@ class CteHarvestController : BaseController() {
         if (cteHarvestDto.id <= 0L || cteHarvestDto.id != id)
             throw UnauthorizedRequestException("Conflicting CteHarvest Ids specified: $id != ${cteHarvestDto.id}")
 
-        val location = getLocation(cteHarvestDto.locationId,fsmaUser)
-        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId,fsmaUser)
-        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId,fsmaUser)
+        val location = getLocation(cteHarvestDto.locationId, fsmaUser)
+        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId, fsmaUser)
+        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId, fsmaUser)
 
         val cteHarvest = cteHarvestDto.toCteHarvest(location, subsequentRecipient, harvestLocation)
         val cteHarvestCto = cteHarvestService.update(cteHarvest).toCteHarvestDto()
@@ -79,7 +79,7 @@ class CteHarvestController : BaseController() {
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteHarvestService.findById(id)?.let { cte ->
-            assertFsmaUserLocationMatchessToken(fsmaUser, cte.location.id)
+            assertFsmaUserLocationMatches(cte.location.id, fsmaUser)
             cteHarvestService.delete(cte) // soft delete?
         }
         return ResponseEntity.noContent().build()

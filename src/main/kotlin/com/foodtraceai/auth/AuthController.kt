@@ -110,7 +110,7 @@ class AuthController : BaseController() {
         if (maxRole(fsmaUser.roles) < maxRole(newUserDto.roles))
             throw UnauthorizedRequestException("FsmaUser cannot create role with higher permissions id=${newUserDto.id}")
 
-        assertFoodBusinessMatchesToken(fsmaUser, newUserDto.foodBusId)
+        assertFsmaUserFoodBusMatches(newUserDto.foodBusId, fsmaUser)
         return ResponseEntity.ok(authService.createNewFsmaUser(newUserDto))
     }
 

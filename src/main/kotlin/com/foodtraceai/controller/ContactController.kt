@@ -40,9 +40,10 @@ class ContactController : BaseController() {
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<ContactDto> {
         val contact = contactDto.toContact()
-        val contactResponse = contactService.insert(contact).toContactDto()
-        return ResponseEntity.created(URI.create(CONTACT_BASE_URL.plus("/${contactResponse.id}")))
-            .body(contactResponse)
+        val contactResponse = contactService.insert(contact)
+        return ResponseEntity
+            .created(URI.create(CONTACT_BASE_URL.plus("/${contactResponse.id}")))
+            .body(contactResponse.toContactDto())
     }
 
     // -- Update an existing business
@@ -65,9 +66,8 @@ class ContactController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
-        contactService.findById(id)?.let { business ->
-//            assertContactClientMatchesToken(fsaUser, business.contactId)
-            contactService.delete(business) // soft delete?
+        contactService.findById(id)?.let { contact ->
+            contactService.delete(contact) // soft delete?
         }
         return ResponseEntity.noContent().build()
     }

@@ -101,7 +101,7 @@ class SupShipCteController : BaseController() {
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         supShipCteService.findById(id)?.let { supShipCte ->
-            assertFsmaUserLocationMatchessToken(fsmaUser, supShipCte.shipToLocation.id)
+            assertFsmaUserLocationMatches(supShipCte.shipToLocation.id, fsmaUser)
             supShipCteService.delete(supShipCte) // soft delete?
         }
         return ResponseEntity.noContent().build()

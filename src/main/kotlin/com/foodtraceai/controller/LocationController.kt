@@ -7,7 +7,6 @@ import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.LocationDto
 import com.foodtraceai.model.toLocation
 import com.foodtraceai.model.toLocationDto
-import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -32,8 +31,8 @@ class LocationController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<LocationDto> {
-        val location = getLocation(id,fsmaUser)
-//        assertResellerClientMatchesToken(fsaUser, address.resellerId)
+        val location = getLocation(id, fsmaUser)
+        assertFsmaUserFoodBusMatches(location.foodBus.id, fsmaUser)
         return ResponseEntity.ok(location.toLocationDto())
     }
 
@@ -43,13 +42,15 @@ class LocationController : BaseController() {
         @Valid @RequestBody locationDto: LocationDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<LocationDto> {
-        val business = getFoodBus(locationDto.foodBusId,fsmaUser)
+        val foodBus = getFoodBus(locationDto.foodBusId, fsmaUser)
+        assertFsmaUserFoodBusMatches(foodBus.id, fsmaUser)
         val contact = getContact(locationDto.locationContactId, fsmaUser)
         val serviceAddress = getAddress(locationDto.addressId, fsmaUser)
-        val location = locationDto.toLocation(business, contact, serviceAddress)
-        val locationResponse = locationService.insert(location).toLocationDto()
-        return ResponseEntity.created(URI.create(LOCATION_BASE_URL.plus("/${locationResponse.id}")))
-            .body(locationResponse)
+        val location = locationDto.toLocation(foodBus, contact, serviceAddress)
+        val locationResponse = locationService.insert(location)
+        return ResponseEntity
+            .created(URI.create(LOCATION_BASE_URL.plus("/${locationResponse.id}")))
+            .body(locationResponse.toLocationDto())
     }
 
     // -- Update an existing Location
@@ -61,16 +62,15 @@ class LocationController : BaseController() {
     ): ResponseEntity<LocationDto> {
         if (locationDto.id <= 0L || locationDto.id != id)
             throw UnauthorizedRequestException("Conflicting LocationIds specified: $id != ${locationDto.id}")
+        assertFsmaUserLocationMatches(locationDto.id, fsmaUser)
 
-        val business = foodBusService.findById(locationDto.foodBusId)
-            ?: throw EntityNotFoundException("Business not found: ${locationDto.foodBusId}")
+        val foodBus = getFoodBus(locationDto.foodBusId, fsmaUser)
+        val contact = getContact(locationDto.locationContactId, fsmaUser)
+        val serviceAddress = getAddress(locationDto.addressId, fsmaUser)
 
-        val contact = getContact(locationDto.locationContactId,fsmaUser)
-        val serviceAddress = getAddress(locationDto.addressId,fsmaUser)
-
-        val location = locationDto.toLocation(business, contact, serviceAddress)
-        val locationResponse = locationService.update(location).toLocationDto()
-        return ResponseEntity.ok().body(locationResponse)
+        val location = locationDto.toLocation(foodBus, contact, serviceAddress)
+        val locationResponse = locationService.update(location)
+        return ResponseEntity.ok().body(locationResponse.toLocationDto())
     }
 
     // -- Delete an existing Location
@@ -80,7 +80,7 @@ class LocationController : BaseController() {
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         locationService.findById(id)?.let { location ->
-//            assertResellerClientMatchesToken(fsaUser, address.resellerId)
+            assertFsmaUserLocationMatches(location.id, fsmaUser)
             locationService.delete(location) // soft delete?
         }
         return ResponseEntity.noContent().build()

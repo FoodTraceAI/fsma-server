@@ -4,7 +4,6 @@ import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.TracePlanDto
 import com.foodtraceai.model.toTracePlan
 import com.foodtraceai.model.toTracePlanDto
-import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -17,7 +16,7 @@ private const val TRACE_PLAN_URL = "/api/v1/traceplan"
 private const val TRACE_PLAN_ALT_URL = "/api/v1/trace-plan"
 
 @RestController
-@RequestMapping(TRACE_PLAN_URL,TRACE_PLAN_ALT_URL)
+@RequestMapping(TRACE_PLAN_URL, TRACE_PLAN_ALT_URL)
 @SecurityRequirement(name = "bearerAuth")
 class TracePlanController : BaseController() {
 
@@ -28,9 +27,7 @@ class TracePlanController : BaseController() {
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TracePlanDto> {
-        val tracePlan = tracePlanService.findById(id)
-            ?: throw EntityNotFoundException("TracePlan not found = $id")
-//        assertResellerClientMatchesToken(fsaUser, tracePlan.resellerId)
+        val tracePlan = getTracePlan(id, fsmaUser)
         return ResponseEntity.ok(tracePlan.toTracePlanDto())
     }
 
@@ -40,12 +37,13 @@ class TracePlanController : BaseController() {
         @Valid @RequestBody tracePlanDto: TracePlanDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TracePlanDto> {
-        val location = getLocation(tracePlanDto.locationId,fsmaUser)
+        val location = getLocation(tracePlanDto.locationId, fsmaUser)
         val contact = getContact(tracePlanDto.tracePlanContactId, fsmaUser)
-        val tracePlan = tracePlanDto.toTracePlan(location,contact)
-        val tracePlanResponse = tracePlanService.insert(tracePlan).toTracePlanDto()
-        return ResponseEntity.created(URI.create(TRACE_PLAN_URL.plus("/${tracePlanResponse.id}")))
-            .body(tracePlanResponse)
+        val tracePlan = tracePlanDto.toTracePlan(location, contact)
+        val tracePlanResponse = tracePlanService.insert(tracePlan)
+        return ResponseEntity
+            .created(URI.create(TRACE_PLAN_URL.plus("/${tracePlanResponse.id}")))
+            .body(tracePlanResponse.toTracePlanDto())
     }
 
     // -- Update an existing TracePlan
@@ -57,9 +55,9 @@ class TracePlanController : BaseController() {
     ): ResponseEntity<TracePlanDto> {
         if (tracePlanDto.id <= 0L || tracePlanDto.id != id)
             throw UnauthorizedRequestException("Conflicting TracePlanIds specified: $id != ${tracePlanDto.id}")
-        val location = getLocation(tracePlanDto.locationId,fsmaUser)
-        val contact = getContact(tracePlanDto.tracePlanContactId,fsmaUser)
-        val tracePlan = tracePlanDto.toTracePlan(location,contact)
+        val location = getLocation(tracePlanDto.locationId, fsmaUser)
+        val contact = getContact(tracePlanDto.tracePlanContactId, fsmaUser)
+        val tracePlan = tracePlanDto.toTracePlan(location, contact)
         val tracePlanResponse = tracePlanService.update(tracePlan).toTracePlanDto()
         return ResponseEntity.ok().body(tracePlanResponse)
     }
@@ -70,8 +68,7 @@ class TracePlanController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
-        tracePlanService.findById(id)?.let { tracePlan ->
-//            assertResellerClientMatchesToken(fsaUser, tracePlan.resellerId)
+        getTracePlan(id, fsmaUser).let { tracePlan ->
             tracePlanService.delete(tracePlan) // soft delete?
         }
         return ResponseEntity.noContent().build()

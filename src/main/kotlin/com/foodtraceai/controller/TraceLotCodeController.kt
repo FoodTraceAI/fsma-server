@@ -70,8 +70,7 @@ class TraceLotCodeController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
-        traceLotCodeService.findById(id)?.let { traceLotCode ->
-//            assertResellerClientMatchesToken(fsaUser, address.resellerId)
+       getTraceLotCode(id, fsmaUser).let { traceLotCode ->
             traceLotCodeService.delete(traceLotCode) // soft delete?
         }
         return ResponseEntity.noContent().build()

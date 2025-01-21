@@ -87,7 +87,7 @@ class CteShipController : BaseController() {
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         cteShipService.findById(id)?.let { cteCoolCto ->
-            assertFsmaUserLocationMatchessToken(fsmaUser, cteCoolCto.location.id)
+            assertFsmaUserLocationMatches(cteCoolCto.location.id, fsmaUser)
             cteShipService.delete(cteCoolCto) // soft delete?
         }
         return ResponseEntity.noContent().build()
@@ -113,7 +113,7 @@ class CteShipController : BaseController() {
         @Valid @RequestBody cteShipArgs: CteShipArgs,
         @AuthenticationPrincipal fsmaUser: FsmaUser,
     ): ResponseEntity<CteShipDto> {
-        assertFsmaUserLocationMatchessToken(fsmaUser, cteShipArgs.locationId)
+        assertFsmaUserLocationMatches(cteShipArgs.locationId, fsmaUser)
         val tlc = getTraceLotCode(cteShipArgs.tlcId, fsmaUser)
         val cteShipResponseDto = cteShipService.insert(
             CteShip(

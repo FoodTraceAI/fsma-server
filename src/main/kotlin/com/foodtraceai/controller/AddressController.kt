@@ -66,7 +66,6 @@ class AddressController : BaseController() {
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
         addressService.findById(id)?.let { address ->
-//            assertResellerClientMatchesToken(fsaUser, address.resellerId)
             addressService.delete(address) // soft delete?
         }
         return ResponseEntity.noContent().build()
