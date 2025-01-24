@@ -169,7 +169,7 @@ class DataLoader : ApplicationRunner {
     }
 
     fun addAddresses() {
-        var addressDto = AddressDto(
+        var addressRequestDto = AddressRequestDto(
             street = "1 FoodTrace Street",
             city = "FoodTrace City",
             state = UsaCanadaState.IL,
@@ -178,10 +178,10 @@ class DataLoader : ApplicationRunner {
             lat = 35.1268133,
             lon = -90.0087413
         )
-        foodTraceAddress = addressDto.toAddress()
+        foodTraceAddress = addressRequestDto.toAddress()
         addressList.add(addressService.insert(foodTraceAddress))
 
-        addressDto = AddressDto(
+        addressRequestDto = AddressRequestDto(
             street = "100 Fresh Street",
             city = "Fresh City",
             state = UsaCanadaState.IL,
@@ -190,10 +190,10 @@ class DataLoader : ApplicationRunner {
             lat = 35.1268133,
             lon = -90.0087413
         )
-        freshProdDistAddress = addressDto.toAddress()
+        freshProdDistAddress = addressRequestDto.toAddress()
         addressList.add(addressService.insert(freshProdDistAddress))
 
-        addressDto = AddressDto(
+        addressRequestDto = AddressRequestDto(
             street = "200 Happy Ave",
             city = "Happy City",
             state = UsaCanadaState.TN,
@@ -202,10 +202,10 @@ class DataLoader : ApplicationRunner {
             lat = 35.1268133,
             lon = -90.0087413
         )
-        happyRestAddress = addressDto.toAddress()
+        happyRestAddress = addressRequestDto.toAddress()
         addressList.add(addressService.insert(happyRestAddress))
 
-        addressDto = AddressDto(
+        addressRequestDto = AddressRequestDto(
             street = "300 Processor Lane",
             city = "Processor City",
             state = UsaCanadaState.IL,
@@ -214,7 +214,7 @@ class DataLoader : ApplicationRunner {
             lat = 35.1268133,
             lon = -90.0087413
         )
-        pepiProcessorAddress = addressDto.toAddress()
+        pepiProcessorAddress = addressRequestDto.toAddress()
         addressList.add(addressService.insert(pepiProcessorAddress))
     }
 
@@ -285,24 +285,24 @@ class DataLoader : ApplicationRunner {
 
     fun addResellers() {
         var resellerDto = ResellerDto(
-            addressDto = addressList[0].toAddressDto(),
+            addressResponseDto = addressList[0].toAddressResponseDto(),
             accountRep = "FoodTraceAI Account Rep",
             businessName = "FoodTraceAI",
             mainContactId = mainContact.id,
             billingContactId = billingContact.id,
-            billingAddressDto = addressList[0].toAddressDto(),
+            billingAddressDto = addressList[0].toAddressResponseDto(),
             resellerType = ResellerType.Distributor,
         )
         foodTraceReseller = resellerDto.toReseller(mainContact, billingContact)
         resellerList.add(resellerService.insert(foodTraceReseller))
 
         resellerDto = ResellerDto(
-            addressDto = addressList[1].toAddressDto(),
+            addressResponseDto = addressList[1].toAddressResponseDto(),
             accountRep = "Account Rep",
             businessName = "Fresh Produce",
             mainContactId = mainContact.id,
             billingContactId = billingContact.id,
-            billingAddressDto = addressList[1].toAddressDto(),
+            billingAddressDto = addressList[1].toAddressResponseDto(),
             resellerType = ResellerType.Distributor,
         )
         freshProduceReseller = resellerDto.toReseller(mainContact, billingContact)

@@ -72,13 +72,13 @@ data class Reseller(
 data class ResellerDto(
     val id: Long = 0,
     @JsonProperty("address")
-    val addressDto: AddressDto,
+    val addressResponseDto: AddressResponseDto,
     val accountRep: String?,
     val businessName: String,
     val mainContactId: Long,
     val billingContactId: Long? = null,
     @JsonProperty("billingAddress")
-    val billingAddressDto: AddressDto?,
+    val billingAddressDto: AddressResponseDto?,
     val resellerType: ResellerType,
     val password: String? = null,
     val smtpCredentials: SmtpCredentials? = null,
@@ -95,12 +95,12 @@ data class ResellerDto(
 
 fun Reseller.toResellerDto() = ResellerDto(
     id = id,
-    addressDto = address.toAddressDto(),
+    addressResponseDto = address.toAddressResponseDto(),
     accountRep = accountRep,
     businessName = businessName,
     mainContactId = mainContact.id,
     billingContactId = billingContact?.id,
-    billingAddressDto = billingAddress?.toAddressDto(),
+    billingAddressDto = billingAddress?.toAddressResponseDto(),
     resellerType = resellerType,
     smtpCredentials = smtpCredentials,
     smsCredentials = smsCredentials,
@@ -119,7 +119,7 @@ fun ResellerDto.toReseller(
     billingContact: Contact?,
 ): Reseller = Reseller(
     id = id,
-    address = addressDto.toAddress(),
+    address = addressResponseDto.toAddress(),
     accountRep = accountRep,
     businessName = businessName,
     mainContact = mainContact,

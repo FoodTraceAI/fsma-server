@@ -3,11 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller
 
-import com.foodtraceai.model.AddressDto
-import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.toAddress
-import com.foodtraceai.model.toAddressDto
-import com.foodtraceai.util.UnauthorizedRequestException
+import com.foodtraceai.model.*
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -28,19 +24,19 @@ class AddressController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<AddressDto> {
+    ): ResponseEntity<AddressResponseDto> {
         val address = getAddress(id, fsmaUser)
-        return ResponseEntity.ok(address.toAddressDto())
+        return ResponseEntity.ok(address.toAddressResponseDto())
     }
 
     // -- Create a new Address
     @PostMapping
     fun create(
-        @Valid @RequestBody addressDto: AddressDto,
+        @Valid @RequestBody addressRequestDto: AddressRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<AddressDto> {
-        val address = addressDto.toAddress()
-        val addressResponse = addressService.insert(address).toAddressDto()
+    ): ResponseEntity<AddressResponseDto> {
+        val address = addressRequestDto.toAddress()
+        val addressResponse = addressService.insert(address).toAddressResponseDto()
         return ResponseEntity
             .created(URI.create(ADDRESS_BASE_URL.plus("/${addressResponse.id}")))
             .body(addressResponse)
@@ -50,13 +46,11 @@ class AddressController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody addressDto: AddressDto,
+        @Valid @RequestBody addressRequestDto: AddressRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<AddressDto> {
-        if (addressDto.id <= 0L || addressDto.id != id)
-            throw UnauthorizedRequestException("Conflicting AddressIds specified: $id != ${addressDto.id}")
-        val addressResponseDto = addressService.update(addressDto.toAddress()).toAddressDto()
-        return ResponseEntity.ok().body(addressResponseDto)
+    ): ResponseEntity<AddressResponseDto> {
+        val addressResponseDto = addressService.update(addressRequestDto.toAddress(id))
+        return ResponseEntity.ok().body(addressResponseDto.toAddressResponseDto())
     }
 
     // -- Delete an existing Address

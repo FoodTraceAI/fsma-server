@@ -29,13 +29,11 @@ data class Address(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
-
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : BaseModel<Address>()
 
-data class AddressDto(
-    val id: Long = 0,
-    val resellerId: Long? = null,
+data class AddressRequestDto(
     val street: String,
     val street2: String? = null,
     val city: String,
@@ -46,13 +44,28 @@ data class AddressDto(
     val lon: Double? = null,
     val gln: String? = null,
     val ffrn: String? = null,
-    val dateCreated: OffsetDateTime = OffsetDateTime.now(),
-    val dateModified: OffsetDateTime = OffsetDateTime.now(),
-    val isDeleted: Boolean = false,
-    val dateDeleted: OffsetDateTime? = null,
 )
 
-fun Address.toAddressDto() = AddressDto(
+data class AddressResponseDto(
+    override val id: Long = 0,
+    val street: String,
+    val street2: String? = null,
+    val city: String,
+    val state: UsaCanadaState,
+    val postalCode: String,
+    val country: Country,
+    val lat: Double? = null,
+    val lon: Double? = null,
+    val gln: String? = null,
+    val ffrn: String? = null,
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<AddressResponseDto>()
+
+fun Address.toAddressResponseDto() = AddressResponseDto(
     id = id,
     street = street,
     street2 = street2,
@@ -68,9 +81,10 @@ fun Address.toAddressDto() = AddressDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun AddressDto.toAddress() = Address(
+fun AddressRequestDto.toAddress(id: Long = 0) = Address(
     id = id,
     street = street,
     street2 = street2,
@@ -82,10 +96,20 @@ fun AddressDto.toAddress() = Address(
     lon = lon,
     gln = gln,
     ffrn = ffrn,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
+)
+
+fun AddressResponseDto.toAddress() = Address(
+    id = id,
+    street = street,
+    street2 = street2,
+    city = city,
+    state = state,
+    postalCode = postalCode,
+    country = country,
+    lat = lat,
+    lon = lon,
+    gln = gln,
+    ffrn = ffrn,
 )
 
 fun Address.format(
@@ -93,7 +117,7 @@ fun Address.format(
     showLatLon: Boolean = false,
 ): String {
     var address = ""
-    if(showStreet) {
+    if (showStreet) {
         address += street
         if (street2 != null)
             address += ", $street2"
@@ -102,9 +126,9 @@ fun Address.format(
             address += ", ${country.name}"
     }
 
-    if(showLatLon) {
+    if (showLatLon) {
         if (lat != null && lon != null)
-            address += ", lat: ${lat} & lng: ${lon}"
+            address += ", lat: $lat & lng: $lon"
     }
 
     return address

@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai
 
-import com.foodtraceai.model.AddressDto
+import com.foodtraceai.model.AddressRequestDto
 import com.foodtraceai.model.toAddress
 import com.foodtraceai.util.Country
 import com.foodtraceai.util.UsaCanadaState
@@ -22,16 +22,14 @@ import org.springframework.test.web.servlet.put
 @AutoConfigureMockMvc
 class TestsAddress : TestsBase() {
 
-    private lateinit var addressDto: AddressDto
-    private lateinit var addressDtoUpdated: AddressDto
+    private lateinit var addressRequestDto: AddressRequestDto
+    private lateinit var addressRequestDtoUpdated: AddressRequestDto
 
     @BeforeAll
     fun localSetup() {
 
         // -- Address
-        addressDto = AddressDto(
-            id = 0,
-            resellerId = 1,
+        addressRequestDto = AddressRequestDto(
             street = "1413 Durness Court",
             street2 = "Apt-101",
             city = "Naperville",
@@ -41,9 +39,7 @@ class TestsAddress : TestsBase() {
             lat = 41.742220,
             lon = -88.162270
         )
-        addressDtoUpdated = AddressDto(
-            id = 0,
-            resellerId = 1,
+        addressRequestDtoUpdated = AddressRequestDto(
             street = "1413 Durness Court",
             street2 = "Changed",
             city = "Naperville",
@@ -67,20 +63,20 @@ class TestsAddress : TestsBase() {
         val addressId = 8   // DataLoader loads first 4 addresses, other unit tests add 3 and delete 1
         val mvcResult = mockMvc.post("/api/v1/address") {
             header("Authorization", "Bearer $accessToken")
-            content = objectMapper.writeValueAsString(addressDto)
+            content = objectMapper.writeValueAsString(addressRequestDto)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(addressId) }
-            jsonPath("$.street") { value(addressDto.street) }
-            jsonPath("$.street2") { value(addressDto.street2) }
-            jsonPath("$.city") { value(addressDto.city) }
-            jsonPath("$.state") { value(addressDto.state.name) }
-            jsonPath("$.postalCode") { value(addressDto.postalCode) }
-            jsonPath("$.country") { value(addressDto.country.name) }
-            jsonPath("$.lat") { value(addressDto.lat) }
-            jsonPath("$.lon") { value(addressDto.lon) }
+            jsonPath("$.street") { value(addressRequestDto.street) }
+            jsonPath("$.street2") { value(addressRequestDto.street2) }
+            jsonPath("$.city") { value(addressRequestDto.city) }
+            jsonPath("$.state") { value(addressRequestDto.state.name) }
+            jsonPath("$.postalCode") { value(addressRequestDto.postalCode) }
+            jsonPath("$.country") { value(addressRequestDto.country.name) }
+            jsonPath("$.lat") { value(addressRequestDto.lat) }
+            jsonPath("$.lon") { value(addressRequestDto.lon) }
         }.andReturn()
         // AddressId added if ne
         // val addressId: Long = JsonPath.read(mvcResult.response.contentAsString, "$.id")
@@ -88,7 +84,7 @@ class TestsAddress : TestsBase() {
 
     @Test
     fun `get address`() {
-        val addressId = addressService.insert(addressDto.toAddress()).id
+        val addressId = addressService.insert(addressRequestDto.toAddress(0)).id
         val (accessToken, _) = authenticate(rootAuthLogin)
         mockMvc.get("/api/v1/address/$addressId") {
             header("Authorization", "Bearer $accessToken")
@@ -109,31 +105,30 @@ class TestsAddress : TestsBase() {
 
     @Test
     fun `update address`() {
-        val addressId = addressService.insert(addressDto.toAddress()).id
+        val addressId = addressService.insert(addressRequestDto.toAddress()).id
         val (accessToken, _) = authenticate(rootAuthLogin)
-        addressDtoUpdated = addressDtoUpdated.copy(id = addressId)
         mockMvc.put("/api/v1/address/$addressId") {
             header("Authorization", "Bearer $accessToken")
-            content = objectMapper.writeValueAsString(addressDtoUpdated)
+            content = objectMapper.writeValueAsString(addressRequestDtoUpdated)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(addressId) }
-            jsonPath("$.street") { value(addressDtoUpdated.street) }
-            jsonPath("$.street2") { value(addressDtoUpdated.street2) }
-            jsonPath("$.city") { value(addressDtoUpdated.city) }
-            jsonPath("$.state") { value(addressDtoUpdated.state.name) }
-            jsonPath("$.postalCode") { value(addressDtoUpdated.postalCode) }
-            jsonPath("$.country") { value(addressDtoUpdated.country.name) }
-            jsonPath("$.lat") { value(addressDtoUpdated.lat) }
-            jsonPath("$.lon") { value(addressDtoUpdated.lon) }
+            jsonPath("$.street") { value(addressRequestDtoUpdated.street) }
+            jsonPath("$.street2") { value(addressRequestDtoUpdated.street2) }
+            jsonPath("$.city") { value(addressRequestDtoUpdated.city) }
+            jsonPath("$.state") { value(addressRequestDtoUpdated.state.name) }
+            jsonPath("$.postalCode") { value(addressRequestDtoUpdated.postalCode) }
+            jsonPath("$.country") { value(addressRequestDtoUpdated.country.name) }
+            jsonPath("$.lat") { value(addressRequestDtoUpdated.lat) }
+            jsonPath("$.lon") { value(addressRequestDtoUpdated.lon) }
         }
     }
 
     @Test
     fun `delete address`() {
-        val addressId = addressService.insert(addressDto.toAddress()).id
+        val addressId = addressService.insert(addressRequestDto.toAddress(0)).id
         val (accessToken, _) = authenticate(rootAuthLogin)
         mockMvc.delete("/api/v1/address/$addressId") {
             header("Authorization", "Bearer $accessToken")
