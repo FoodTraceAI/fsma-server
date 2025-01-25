@@ -36,10 +36,10 @@ class AddressController : BaseController() {
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<AddressResponseDto> {
         val address = addressRequestDto.toAddress()
-        val addressResponse = addressService.insert(address).toAddressResponseDto()
+        val addressResponseDto = addressService.insert(address).toAddressResponseDto()
         return ResponseEntity
-            .created(URI.create(ADDRESS_BASE_URL.plus("/${addressResponse.id}")))
-            .body(addressResponse)
+            .created(URI.create(ADDRESS_BASE_URL.plus("/${addressResponseDto.id}")))
+            .body(addressResponseDto)
     }
 
     // -- Update an existing Address

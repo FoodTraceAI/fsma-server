@@ -7,9 +7,7 @@ import com.foodtraceai.model.AddressRequestDto
 import com.foodtraceai.model.toAddress
 import com.foodtraceai.util.Country
 import com.foodtraceai.util.UsaCanadaState
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
@@ -20,6 +18,7 @@ import org.springframework.test.web.servlet.put
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class TestsAddress : TestsBase() {
 
     private lateinit var addressRequestDto: AddressRequestDto
@@ -58,9 +57,10 @@ class TestsAddress : TestsBase() {
     // ------------------------------------------------------------------------
 
     @Test
+    @Order(1)
     fun `add address`() {
         val (accessToken, _) = authenticate(rootAuthLogin)
-        val addressId = 8   // DataLoader loads first 4 addresses, other unit tests add 3 and delete 1
+        val addressId = 5   // DataLoader loads first 4 addresses
         val mvcResult = mockMvc.post("/api/v1/address") {
             header("Authorization", "Bearer $accessToken")
             content = objectMapper.writeValueAsString(addressRequestDto)
@@ -83,6 +83,7 @@ class TestsAddress : TestsBase() {
     }
 
     @Test
+    @Order(2)
     fun `get address`() {
         val addressId = addressService.insert(addressRequestDto.toAddress(0)).id
         val (accessToken, _) = authenticate(rootAuthLogin)
@@ -104,6 +105,7 @@ class TestsAddress : TestsBase() {
     }
 
     @Test
+    @Order(3)
     fun `update address`() {
         val addressId = addressService.insert(addressRequestDto.toAddress()).id
         val (accessToken, _) = authenticate(rootAuthLogin)
@@ -127,6 +129,7 @@ class TestsAddress : TestsBase() {
     }
 
     @Test
+    @Order(4)
     fun `delete address`() {
         val addressId = addressService.insert(addressRequestDto.toAddress(0)).id
         val (accessToken, _) = authenticate(rootAuthLogin)

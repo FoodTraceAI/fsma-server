@@ -3,11 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller
 
-import com.foodtraceai.model.ContactDto
-import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.toContact
-import com.foodtraceai.model.toContactDto
-import com.foodtraceai.util.UnauthorizedRequestException
+import com.foodtraceai.model.*
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -28,36 +24,34 @@ class ContactController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<ContactDto> {
+    ): ResponseEntity<ContactResponseDto> {
         val contact = getContact(id, fsmaUser)
-        return ResponseEntity.ok(contact.toContactDto())
+        return ResponseEntity.ok(contact.toContactResponseDto())
     }
 
     // -- Create a new business
     @PostMapping
     fun create(
-        @Valid @RequestBody contactDto: ContactDto,
+        @Valid @RequestBody contactRequestDto: ContactRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<ContactDto> {
-        val contact = contactDto.toContact()
-        val contactResponse = contactService.insert(contact)
+    ): ResponseEntity<ContactResponseDto> {
+        val contact = contactRequestDto.toContact()
+        val contactResponseDto = contactService.insert(contact).toContactResponseDto()
         return ResponseEntity
-            .created(URI.create(CONTACT_BASE_URL.plus("/${contactResponse.id}")))
-            .body(contactResponse.toContactDto())
+            .created(URI.create(CONTACT_BASE_URL.plus("/${contactResponseDto.id}")))
+            .body(contactResponseDto)
     }
 
     // -- Update an existing business
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody contactDto: ContactDto,
+        @Valid @RequestBody contactRequestDto: ContactRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<ContactDto> {
-        if (contactDto.id <= 0L || contactDto.id != id)
-            throw UnauthorizedRequestException("Conflicting ContactDtos specified: $id != ${contactDto.id}")
-        val contact = contactDto.toContact()
+    ): ResponseEntity<ContactResponseDto> {
+        val contact = contactRequestDto.toContact(id)
         val contactResponse = contactService.update(contact)
-        return ResponseEntity.ok().body(contactResponse.toContactDto())
+        return ResponseEntity.ok().body(contactResponse.toContactResponseDto())
     }
 
     // -- Delete an existing business

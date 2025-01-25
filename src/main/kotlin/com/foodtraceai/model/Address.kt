@@ -110,6 +110,11 @@ fun AddressResponseDto.toAddress() = Address(
     lon = lon,
     gln = gln,
     ffrn = ffrn,
+    dateCreated = dateCreated,
+    dateModified = dateModified,
+    isDeleted = isDeleted,
+    dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
 fun Address.format(

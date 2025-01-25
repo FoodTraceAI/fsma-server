@@ -23,22 +23,31 @@ data class Contact(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : BaseModel<Contact>()
 
-data class ContactDto(
-    val id: Long = 0,
+data class ContactRequestDto(
     val firstName: String,
     val lastName: String,
     val email: String,
     val phone: String,
-    val dateCreated: OffsetDateTime = OffsetDateTime.now(),
-    val dateModified: OffsetDateTime = OffsetDateTime.now(),
-    val isDeleted: Boolean = false,
-    val dateDeleted: OffsetDateTime? = null,
 )
 
-fun Contact.toContactDto() = ContactDto(
+data class ContactResponseDto(
+    override val id: Long = 0,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val phone: String,
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<ContactResponseDto>()
+
+fun Contact.toContactResponseDto() = ContactResponseDto(
     id = id,
     firstName = firstName,
     lastName = lastName,
@@ -48,9 +57,18 @@ fun Contact.toContactDto() = ContactDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun ContactDto.toContact() = Contact(
+fun ContactRequestDto.toContact(id: Long = 0) = Contact(
+    id = id,
+    firstName = firstName,
+    lastName = lastName,
+    email = email,
+    phone = phone,
+)
+
+fun ContactResponseDto.toContact() = Contact(
     id = id,
     firstName = firstName,
     lastName = lastName,
@@ -60,4 +78,5 @@ fun ContactDto.toContact() = Contact(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
