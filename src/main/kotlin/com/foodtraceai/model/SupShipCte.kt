@@ -98,6 +98,7 @@ data class SupShipCte(
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
     override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 
     // (b) You must provide (in electronic, paper, or other written form) the
     // information in paragraphs (a)(1) through (7) of this section
@@ -111,8 +112,7 @@ data class SupShipCte(
         get() = shipToLocation.foodBus
 }
 
-data class SupShipCteDto(
-    val id: Long,
+data class SupShipCteRequestDto(
     val sscc: String?,
     val logSerialNo: String?,
     val supCteStatus: SupCteStatus,
@@ -130,13 +130,35 @@ data class SupShipCteDto(
     val tlcSourceReference: String?,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
-    val dateCreated: OffsetDateTime,
-    val dateModified: OffsetDateTime,
-    val isDeleted: Boolean,
-    val dateDeleted: OffsetDateTime?,
 )
 
-fun SupShipCte.toSupShipCteDto() = SupShipCteDto(
+data class SupShipCteResponseDto(
+    override var id: Long,
+    val sscc: String?,
+    val logSerialNo: String?,
+    val supCteStatus: SupCteStatus,
+    val cteReceiveId: Long?,
+    val ftlItem: FtlItem,
+    val variety: String,
+    val tlcId: Long,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val prodDesc: String,
+    val shipToLocationId: Long,
+    val shipFromLocationId: Long,
+    val shipDate: LocalDate,
+    val tlcSourceId: Long,
+    val tlcSourceReference: String?,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<SupShipCteResponseDto>()
+
+fun SupShipCte.toSupShipCteResponseDto() = SupShipCteResponseDto(
     id = id,
     sscc = sscc,
     logSerialNo = logSerialNo,
@@ -159,9 +181,11 @@ fun SupShipCte.toSupShipCteDto() = SupShipCteDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun SupShipCteDto.toSupCteShip(
+fun SupShipCteRequestDto.toSupCteShip(
+    id: Long = 0,
     cteReceive: CteReceive?,
     tlc: TraceLotCode,
     shipToLocation: Location,
@@ -186,8 +210,4 @@ fun SupShipCteDto.toSupCteShip(
     tlcSourceReference = tlcSourceReference,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

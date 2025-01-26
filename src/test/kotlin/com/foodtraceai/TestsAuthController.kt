@@ -4,7 +4,7 @@
 package com.foodtraceai
 
 import com.foodtraceai.auth.AuthLogin
-import com.foodtraceai.model.FsmaUserDto
+import com.foodtraceai.model.FsmaUserResponseDto
 import com.foodtraceai.util.Role
 import org.hamcrest.Matchers.equalToIgnoringCase
 import org.junit.jupiter.api.Test
@@ -27,7 +27,7 @@ class TestsAuthController : TestsBase() {
 
     @Test
     fun `get root admin`() {
-        val rootDto = FsmaUserDto(
+        val rootDto = FsmaUserResponseDto(
             id = 1,
             foodBusId = 1,//foodBusinessList[0].id,
             locationId = 1,

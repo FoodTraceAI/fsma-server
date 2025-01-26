@@ -4,14 +4,12 @@
 package com.foodtraceai.controller
 
 import com.foodtraceai.model.*
-import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.net.URI
-import java.time.LocalDate
 
 private const val TRACE_LOT_CODE_BASE_URL = "/api/v1/tlc"
 private const val TRACE_LOT_CODE_ALT_BASE_URL = "/api/v1/trace-lot-code"
@@ -28,23 +26,25 @@ class TraceLotCodeController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<TraceLotCodeDto> {
+    ): ResponseEntity<TraceLotCodeResponseDto> {
         val traceLotCode = getTraceLotCode(id, fsmaUser)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
-        return ResponseEntity.ok(traceLotCode.toTraceLotCodeDto())
+        return ResponseEntity.ok(traceLotCode.toTraceLotCodeResponseDto())
     }
 
     // -- Create a new TraceLotCode
     @PostMapping
     fun create(
-        @Valid @RequestBody traceLotCodeDto: TraceLotCodeDto,
+        @Valid @RequestBody traceLotCodeRequestDto: TraceLotCodeRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<TraceLotCodeDto> {
-        val traceLotCode = traceLotCodeDto.toTraceLotCode(
-            tlcSource = getLocation(traceLotCodeDto.tlcSourceId)
+    ): ResponseEntity<TraceLotCodeResponseDto> {
+        val tlcSource = getLocation(traceLotCodeRequestDto.tlcSourceId)
+        val traceLotCode = traceLotCodeRequestDto.toTraceLotCode(
+            id = 0, tlcSource = tlcSource
         )
-        val traceLotCodeResponse = traceLotCodeService.insert(traceLotCode).toTraceLotCodeDto()
-        return ResponseEntity.created(URI.create(TRACE_LOT_CODE_BASE_URL.plus("/${traceLotCodeResponse.id}")))
+        val traceLotCodeResponse = traceLotCodeService.insert(traceLotCode).toTraceLotCodeResponseDto()
+        return ResponseEntity
+            .created(URI.create(TRACE_LOT_CODE_BASE_URL.plus("/${traceLotCodeResponse.id}")))
             .body(traceLotCodeResponse)
     }
 
@@ -52,15 +52,14 @@ class TraceLotCodeController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody traceLotCodeDto: TraceLotCodeDto,
+        @Valid @RequestBody traceLotCodeRequestDto: TraceLotCodeRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<TraceLotCodeDto> {
-        if (traceLotCodeDto.id <= 0L || traceLotCodeDto.id != id)
-            throw UnauthorizedRequestException("Conflicting TraceLotCodeIds specified: $id != ${traceLotCodeDto.id}")
-        val traceLotCode = traceLotCodeDto.toTraceLotCode(
-            tlcSource = getLocation(traceLotCodeDto.tlcSourceId)
+    ): ResponseEntity<TraceLotCodeResponseDto> {
+        val tlcSource = getLocation(traceLotCodeRequestDto.tlcSourceId)
+        val traceLotCode = traceLotCodeRequestDto.toTraceLotCode(
+            id = 0, tlcSource = tlcSource,
         )
-        val traceLotCodeResponseDto = traceLotCodeService.update(traceLotCode).toTraceLotCodeDto()
+        val traceLotCodeResponseDto = traceLotCodeService.update(traceLotCode).toTraceLotCodeResponseDto()
         return ResponseEntity.ok().body(traceLotCodeResponseDto)
     }
 
@@ -70,51 +69,9 @@ class TraceLotCodeController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
-       getTraceLotCode(id, fsmaUser).let { traceLotCode ->
+        getTraceLotCode(id, fsmaUser).let { traceLotCode ->
             traceLotCodeService.delete(traceLotCode) // soft delete?
         }
         return ResponseEntity.noContent().build()
-    }
-
-    data class TraceLotCodeArgs(
-        val tlcVal: String,
-
-        // PTI Recommended
-        val gtin: String? = null,
-        val batchLot: String? = null,
-
-        // Optional
-        val sscc: String? = null,   // AI(00) - Pallet Serial Shipping Container Code
-        val packDate: LocalDate? = null,    // AI(13)
-        val harvestDate: LocalDate? = null, // AI(13)
-        val bestByDate: LocalDate? = null,  // AI(15)
-        val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
-
-        // Extra parameters that seem to belong to the TLC
-        val tlcSourceId: Long,  // Location where this TLC was assigned
-        val tlcSourceReference: String? = null,
-    )
-
-    @PostMapping("/makeTraceLotCode")
-    private fun makeTraceLotCode(
-        @Valid @RequestBody traceLotCodeArgs: TraceLotCodeArgs,
-        @AuthenticationPrincipal fsmaUser: FsmaUser,
-    ): ResponseEntity<TraceLotCodeDto> {
-        val traceLotCodeResponse = traceLotCodeService.insert(
-            TraceLotCode(
-                tlcVal = traceLotCodeArgs.tlcVal,
-                gtin = traceLotCodeArgs.gtin,
-                batchLot = traceLotCodeArgs.batchLot,
-                sscc = traceLotCodeArgs.sscc,
-                packDate = traceLotCodeArgs.packDate,
-                harvestDate = traceLotCodeArgs.harvestDate,
-                bestByDate = traceLotCodeArgs.bestByDate,
-                logSerialNo = traceLotCodeArgs.logSerialNo,
-                tlcSource = getLocation(traceLotCodeArgs.tlcSourceId),
-                tlcSourceReference = traceLotCodeArgs.tlcSourceReference,
-            )
-        )
-        return ResponseEntity.created(URI.create(TRACE_LOT_CODE_BASE_URL.plus("/${traceLotCodeResponse.id}")))
-            .body(traceLotCodeResponse.toTraceLotCodeDto())
     }
 }

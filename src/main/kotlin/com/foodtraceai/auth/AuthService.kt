@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.auth
 
-import com.foodtraceai.model.FsmaUserDto
+import com.foodtraceai.model.FsmaUserRequestDto
 import com.foodtraceai.model.toFsmaUser
 import com.foodtraceai.repository.FoodBusRepository
 import com.foodtraceai.repository.FsmaUserRepository
@@ -49,19 +49,22 @@ class AuthService {
     private val expiresIn: Duration = 2.hours
 
     // Register a new user
-    fun createNewFsmaUser(newFsmaUserDto: FsmaUserDto): AuthResponse {
+    fun createNewFsmaUser(newFsmaUserRequestDto: FsmaUserRequestDto): AuthResponse {
         // Check to make sure user does not already exist
-        if (fsmaUserService.findByEmailIgnoreCase(newFsmaUserDto.email) != null)
-            throw EntityExistsException("User already exists: ${newFsmaUserDto.email}")
+        if (fsmaUserService.findByEmailIgnoreCase(newFsmaUserRequestDto.email) != null)
+            throw EntityExistsException("User already exists: ${newFsmaUserRequestDto.email}")
 
-        val foodBusiness = foodBusRepository.findByIdOrNull(newFsmaUserDto.foodBusId)
-            ?: throw EntityNotFoundException("FoodBus not found: ${newFsmaUserDto.foodBusId}")
+        val foodBusiness = foodBusRepository.findByIdOrNull(newFsmaUserRequestDto.foodBusId)
+            ?: throw EntityNotFoundException("FoodBus not found: ${newFsmaUserRequestDto.foodBusId}")
 
-        val location = locationRepository.findByIdOrNull(newFsmaUserDto.foodBusId)
-            ?: throw EntityNotFoundException("FoodBus not found: ${newFsmaUserDto.foodBusId}")
+        val location = locationRepository.findByIdOrNull(newFsmaUserRequestDto.foodBusId)
+            ?: throw EntityNotFoundException("FoodBus not found: ${newFsmaUserRequestDto.foodBusId}")
 
-        val newFsmaUser = newFsmaUserDto.toFsmaUser(foodBusiness, location)
-            .copy(password = passwordEncoder.encode(newFsmaUserDto.password), email = newFsmaUserDto.email.lowercase())
+        val newFsmaUser = newFsmaUserRequestDto.toFsmaUser(id=0, foodBusiness, location)
+            .copy(
+                password = passwordEncoder.encode(newFsmaUserRequestDto.password),
+                email = newFsmaUserRequestDto.email.lowercase()
+            )
         val newFsmaUserId = fsmaUserService.save(newFsmaUser).id
 
         // Embed the resellerId, clientId, userId in the token

@@ -61,7 +61,7 @@ data class FsmaUser(
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
     override var dateDeleted: OffsetDateTime? = null,
-//) : BaseModel<FsmaUser>(), UserDetails {
+    override var authUsername: String? = null,
 ) : BaseFoodBusModel<FsmaUser>(), UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
         roles.map { SimpleGrantedAuthority(it.name) }.toMutableList()
@@ -90,8 +90,7 @@ data class FsmaUser(
     fun isMobile() = isFoodBusUser() || roles.contains(Role.Mobile)
 }
 
-data class FsmaUserDto(
-    val id: Long = 0,
+data class FsmaUserRequestDto(
     val foodBusId: Long,
     val locationId: Long,
     @field:Email(message = "A valid email is required")
@@ -108,13 +107,34 @@ data class FsmaUserDto(
     val lastname: String,
     val notes: String? = null,
     val phone: String? = null,
-    val dateCreated: OffsetDateTime = OffsetDateTime.now(),
-    val dateModified: OffsetDateTime = OffsetDateTime.now(),
-    val isDeleted: Boolean = false,
-    val dateDeleted: OffsetDateTime? = null,
 )
 
-fun FsmaUser.toFsmaUserDto() = FsmaUserDto(
+data class FsmaUserResponseDto(
+    override val id: Long,
+    val foodBusId: Long,
+    val locationId: Long,
+    @field:Email(message = "A valid email is required")
+    val email: String,
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    val password: String = "",
+    val isAccountNonExpired: Boolean = true,
+    val isAccountNonLocked: Boolean = true,
+    val isCredentialsNonExpired: Boolean = true,
+    var isEnabled: Boolean = true,
+    val roles: List<Role>,
+    // ************* User stuff goes here **************
+    val firstname: String,
+    val lastname: String,
+    val notes: String? = null,
+    val phone: String? = null,
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<FsmaUser>()
+
+fun FsmaUser.toFsmaUserResponseDto() = FsmaUserResponseDto(
     id = id,
     foodBusId = foodBus.id,
     locationId = location.id,
@@ -133,9 +153,10 @@ fun FsmaUser.toFsmaUserDto() = FsmaUserDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun FsmaUserDto.toFsmaUser(foodBus: FoodBus, location: Location) = FsmaUser(
+fun FsmaUserRequestDto.toFsmaUser(id: Long = 0, foodBus: FoodBus, location: Location) = FsmaUser(
     id = id,
     foodBus = foodBus,
     location = location,

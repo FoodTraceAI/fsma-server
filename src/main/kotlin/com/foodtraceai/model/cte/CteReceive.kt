@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model.cte
 
+import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.util.CteType
@@ -85,6 +86,7 @@ data class CteReceive(
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
     override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 
     //(c) This section does not apply to receipt of a food that occurs
     // before the food is initially packed (if the food is a raw agricultural
@@ -93,8 +95,25 @@ data class CteReceive(
     // from a fishing vessel).
 ) : CteBase<CteReceive>()
 
-data class CteReceiveDto(
-    val id: Long,
+data class CteReceiveRequestDto(
+    val locationId: Long,   // Receive location
+    val ftlItem: FtlItem,
+    val variety: String,
+    val tlcId: Long,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val prodDesc: String,
+    val ipsLocationId: Long,
+    val receiveDate: LocalDate,
+    val receiveTime: OffsetDateTime?,
+    val tlcSourceId: Long,
+    val tlcSourceReference: String?,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+)
+
+data class CteReceiveResponseDto(
+    override var id: Long,
     val cteType: CteType = CteType.Receive,
     val locationId: Long,   // Receive location
     val ftlItem: FtlItem,
@@ -110,13 +129,14 @@ data class CteReceiveDto(
     val tlcSourceReference: String?,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
-    val dateCreated: OffsetDateTime,
-    val dateModified: OffsetDateTime,
-    val isDeleted: Boolean,
-    val dateDeleted: OffsetDateTime?,
-)
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<CteReceiveResponseDto>()
 
-fun CteReceive.toCteReceiveDto() = CteReceiveDto(
+fun CteReceive.toCteReceiveResponseDto() = CteReceiveResponseDto(
     id = id,
     cteType = cteType,
     locationId = location.id,
@@ -137,16 +157,17 @@ fun CteReceive.toCteReceiveDto() = CteReceiveDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun CteReceiveDto.toCteReceive(
+fun CteReceiveRequestDto.toCteReceive(
+    id: Long,
     location: Location,
     traceLotCode: TraceLotCode,
     ipsLocation: Location,
     tlcSource: Location,
 ) = CteReceive(
     id = id,
-    cteType = cteType,
     location = location,
     ftlItem = ftlItem,
     variety = variety,
@@ -161,8 +182,4 @@ fun CteReceiveDto.toCteReceive(
     tlcSourceReference = tlcSourceReference,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

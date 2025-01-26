@@ -61,21 +61,8 @@ open class BaseModel<T> {
     }
 }
 
-open class BaseResponse<T> {
-    open val id: Long = 0L
-
-    open var dateCreated: OffsetDateTime = OffsetDateTime.now()
-    open var dateModified: OffsetDateTime = OffsetDateTime.now()
-    open var isDeleted: Boolean = false
-    open var dateDeleted: OffsetDateTime? = null
-    open var authUsername: String? = null
-
-    open fun preSoftDelete() {
-        dateModified = OffsetDateTime.now()
-        dateDeleted = dateModified
-        authUsername = SecurityContextHolder.getContext()?.authentication?.name ?: ""
-    }
-}
+// SGE: for now BaseResponse and BaseModel are identical
+open class BaseResponse<T>:BaseModel<T>()
 
 /**
  *** Base superclass of Reseller Entity objects

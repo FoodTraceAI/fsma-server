@@ -3,11 +3,9 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai
 
-import com.foodtraceai.controller.TraceLotCodeController
-import com.foodtraceai.model.TraceLotCodeDto
+import com.foodtraceai.model.TraceLotCodeRequestDto
 import com.jayway.jsonpath.JsonPath
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
@@ -16,18 +14,19 @@ import org.springframework.test.web.servlet.post
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class TestsTraceLotCode : TestsBase() {
 
     // ------------------------------------------------------------------------
     // Test setup
-    private lateinit var traceLotCodeDto: TraceLotCodeDto
+    private lateinit var traceLotCodeRequestDto: TraceLotCodeRequestDto
     private var traceLotCodeId: Long = 0
     private lateinit var accessToken: String
 
     fun addTraceLotCode(): Long {
         val mvcResult = mockMvc.post("/api/v1/tlc") {
             header("Authorization", "Bearer $accessToken")
-            content = objectMapper.writeValueAsString(traceLotCodeDto)
+            content = objectMapper.writeValueAsString(traceLotCodeRequestDto)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isCreated() }
@@ -40,7 +39,7 @@ class TestsTraceLotCode : TestsBase() {
     fun setup() {
         accessToken = authenticate(rootAuthLogin).first
 
-        traceLotCodeDto = TraceLotCodeDto(
+        traceLotCodeRequestDto = TraceLotCodeRequestDto(
             tlcVal = "trace lot code 1",
             batchLot = "batchLot_1001",
             gtin = null,
@@ -56,6 +55,7 @@ class TestsTraceLotCode : TestsBase() {
     // ------------------------------------------------------------------------
 
     @Test
+    @Order(1)
     fun `get trace lot code`() {
         mockMvc.get("/api/v1/tlc/$traceLotCodeId") {
             header("Authorization", "Bearer $accessToken")
@@ -69,23 +69,26 @@ class TestsTraceLotCode : TestsBase() {
     }
 
     @Test
+    @Order(2)
     fun `make trace lot code`() {
-        val traceLotCodeArgs = TraceLotCodeController.TraceLotCodeArgs(
+        val traceLotCodeRequestDto = TraceLotCodeRequestDto(
             tlcVal = "tlcArgsVal",
+            gtin = "gtinForTlcArgsVal",
             batchLot = "batchLot_Args_sourceId2",
             tlcSourceId = 2
         )
 
-        mockMvc.post("/api/v1/tlc/makeTraceLotCode") {
+        mockMvc.post("/api/v1/tlc") {
             header("Authorization", "Bearer $accessToken")
-            content = objectMapper.writeValueAsString(traceLotCodeArgs)
+            content = objectMapper.writeValueAsString(traceLotCodeRequestDto)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.tlcVal") { value(traceLotCodeArgs.tlcVal) }
-            jsonPath("$.batchLot") { value(traceLotCodeArgs.batchLot) }
-            jsonPath("$.tlcSourceId") { value(traceLotCodeArgs.tlcSourceId) }
+            jsonPath("$.tlcVal") { value(traceLotCodeRequestDto.tlcVal) }
+            jsonPath("$.gtin") { value(traceLotCodeRequestDto.gtin) }
+            jsonPath("$.batchLot") { value(traceLotCodeRequestDto.batchLot) }
+            jsonPath("$.tlcSourceId") { value(traceLotCodeRequestDto.tlcSourceId) }
         }
     }
 }

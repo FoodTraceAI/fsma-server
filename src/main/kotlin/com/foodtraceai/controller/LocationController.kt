@@ -3,11 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller
 
-import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.LocationDto
-import com.foodtraceai.model.toLocation
-import com.foodtraceai.model.toLocationDto
-import com.foodtraceai.util.UnauthorizedRequestException
+import com.foodtraceai.model.*
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -30,47 +26,45 @@ class LocationController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<LocationDto> {
+    ): ResponseEntity<LocationResponseDto> {
         val location = getLocation(id, fsmaUser)
         assertFsmaUserFoodBusMatches(location.foodBus.id, fsmaUser)
-        return ResponseEntity.ok(location.toLocationDto())
+        return ResponseEntity.ok(location.toLocationResponseDto())
     }
 
     // -- Create a new Location
     @PostMapping
     fun create(
-        @Valid @RequestBody locationDto: LocationDto,
+        @Valid @RequestBody locationRequestDto: LocationRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<LocationDto> {
-        val foodBus = getFoodBus(locationDto.foodBusId, fsmaUser)
+    ): ResponseEntity<LocationResponseDto> {
+        val foodBus = getFoodBus(locationRequestDto.foodBusId, fsmaUser)
         assertFsmaUserFoodBusMatches(foodBus.id, fsmaUser)
-        val contact = getContact(locationDto.locationContactId, fsmaUser)
-        val serviceAddress = getAddress(locationDto.addressId, fsmaUser)
-        val location = locationDto.toLocation(foodBus, contact, serviceAddress)
+        val contact = getContact(locationRequestDto.locationContactId, fsmaUser)
+        val serviceAddress = getAddress(locationRequestDto.addressId, fsmaUser)
+        val location = locationRequestDto.toLocation(id = 0, foodBus, contact, serviceAddress)
         val locationResponse = locationService.insert(location)
         return ResponseEntity
             .created(URI.create(LOCATION_BASE_URL.plus("/${locationResponse.id}")))
-            .body(locationResponse.toLocationDto())
+            .body(locationResponse.toLocationResponseDto())
     }
 
     // -- Update an existing Location
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody locationDto: LocationDto,
+        @Valid @RequestBody locationRequestDto: LocationRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<LocationDto> {
-        if (locationDto.id <= 0L || locationDto.id != id)
-            throw UnauthorizedRequestException("Conflicting LocationIds specified: $id != ${locationDto.id}")
-        assertFsmaUserLocationMatches(locationDto.id, fsmaUser)
+    ): ResponseEntity<LocationResponseDto> {
+        assertFsmaUserLocationMatches(id, fsmaUser)
 
-        val foodBus = getFoodBus(locationDto.foodBusId, fsmaUser)
-        val contact = getContact(locationDto.locationContactId, fsmaUser)
-        val serviceAddress = getAddress(locationDto.addressId, fsmaUser)
+        val foodBus = getFoodBus(locationRequestDto.foodBusId, fsmaUser)
+        val contact = getContact(locationRequestDto.locationContactId, fsmaUser)
+        val serviceAddress = getAddress(locationRequestDto.addressId, fsmaUser)
 
-        val location = locationDto.toLocation(foodBus, contact, serviceAddress)
+        val location = locationRequestDto.toLocation(id = id, foodBus, contact, serviceAddress)
         val locationResponse = locationService.update(location)
-        return ResponseEntity.ok().body(locationResponse.toLocationDto())
+        return ResponseEntity.ok().body(locationResponse.toLocationResponseDto())
     }
 
     // -- Delete an existing Location

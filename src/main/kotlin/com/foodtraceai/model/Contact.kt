@@ -14,8 +14,8 @@ data class Contact(
     @Id @GeneratedValue
     override val id: Long = 0,
 
-    val firstName: String,
-    val lastName: String,
+    val firstname: String,
+    val lastname: String,
     val email: String,
     val phone: String,
 
@@ -28,16 +28,16 @@ data class Contact(
 ) : BaseModel<Contact>()
 
 data class ContactRequestDto(
-    val firstName: String,
-    val lastName: String,
+    val firstname: String,
+    val lastname: String,
     val email: String,
     val phone: String,
 )
 
 data class ContactResponseDto(
-    override val id: Long = 0,
-    val firstName: String,
-    val lastName: String,
+    override val id: Long,
+    val firstname: String,
+    val lastname: String,
     val email: String,
     val phone: String,
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
@@ -49,8 +49,8 @@ data class ContactResponseDto(
 
 fun Contact.toContactResponseDto() = ContactResponseDto(
     id = id,
-    firstName = firstName,
-    lastName = lastName,
+    firstname = firstname,
+    lastname = lastname,
     email = email,
     phone = phone,
     dateCreated = dateCreated,
@@ -62,16 +62,16 @@ fun Contact.toContactResponseDto() = ContactResponseDto(
 
 fun ContactRequestDto.toContact(id: Long = 0) = Contact(
     id = id,
-    firstName = firstName,
-    lastName = lastName,
+    firstname = firstname,
+    lastname = lastname,
     email = email,
     phone = phone,
 )
 
 fun ContactResponseDto.toContact() = Contact(
     id = id,
-    firstName = firstName,
-    lastName = lastName,
+    firstname = firstname,
+    lastname = lastname,
     email = email,
     phone = phone,
     dateCreated = dateCreated,

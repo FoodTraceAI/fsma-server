@@ -5,7 +5,7 @@ package com.foodtraceai.auth
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.FsmaUserDto
+import com.foodtraceai.model.FsmaUserRequestDto
 import com.foodtraceai.util.AuthorizationException
 import com.foodtraceai.util.UnauthorizedRequestException
 import com.foodtraceai.util.maxRole
@@ -99,8 +99,8 @@ class AuthController : BaseController() {
     @PostMapping("/register")
     @SecurityRequirement(name = "bearerAuth")
     fun createNewFsaUser(
-        @AuthenticationPrincipal fsmaUser: FsmaUser,
-        @Valid @RequestBody newUserDto: FsmaUserDto
+        @Valid @RequestBody newUserDto: FsmaUserRequestDto,
+        @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<AuthResponse> {
         // Make sure user has necessary permission
         // TODO: remove
@@ -108,7 +108,7 @@ class AuthController : BaseController() {
 //            throw UnauthorizedRequestException("FsaUser insufficient permissions id=${fsaUser.id}")
 
         if (maxRole(fsmaUser.roles) < maxRole(newUserDto.roles))
-            throw UnauthorizedRequestException("FsmaUser cannot create role with higher permissions id=${newUserDto.id}")
+            throw UnauthorizedRequestException("FsmaUser cannot create role with higher permissions id=${fsmaUser.id}")
 
         assertFsmaUserFoodBusMatches(newUserDto.foodBusId, fsmaUser)
         return ResponseEntity.ok(authService.createNewFsmaUser(newUserDto))

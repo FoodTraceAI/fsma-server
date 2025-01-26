@@ -36,11 +36,31 @@ data class TraceLotCode(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : BaseModel<TraceLotCode>()
 
-data class TraceLotCodeDto(
-    val id: Long = 0,
+data class TraceLotCodeRequestDto(
+    val tlcVal: String,
+
+    // PTI Recommended
+    val gtin: String?,
+    val batchLot: String?,
+
+    // Optional
+    val sscc: String? = null,   // AI(00) - Pallet Serial Shipping Container Code
+    val packDate: LocalDate? = null,    // AI(13)
+    val harvestDate: LocalDate? = null, // AI(13)
+    val bestByDate: LocalDate? = null,  // AI(15)
+    val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
+
+    // Extra parameters that seem to belong
+    val tlcSourceId: Long,
+    val tlcSourceReference: String? = null,
+)
+
+data class TraceLotCodeResponseDto(
+    override val id: Long,
     val tlcVal: String,
 
     // PTI Recommended
@@ -58,15 +78,14 @@ data class TraceLotCodeDto(
     val tlcSourceId: Long,
     val tlcSourceReference: String? = null,
 
-    val dateCreated: OffsetDateTime = OffsetDateTime.now(),
-    val dateModified: OffsetDateTime = OffsetDateTime.now(),
-    val isDeleted: Boolean = false,
-    val dateDeleted: OffsetDateTime? = null,
-)
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<TraceLotCodeResponseDto>()
 
-// TODO: TraceLotCode and TraceLotCodeDto are identical for now
-// but I expect this to change in the future
-fun TraceLotCode.toTraceLotCodeDto() = TraceLotCodeDto(
+fun TraceLotCode.toTraceLotCodeResponseDto() = TraceLotCodeResponseDto(
     id = id,
     tlcVal = tlcVal,
     gtin = gtin,
@@ -82,9 +101,11 @@ fun TraceLotCode.toTraceLotCodeDto() = TraceLotCodeDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun TraceLotCodeDto.toTraceLotCode(
+fun TraceLotCodeRequestDto.toTraceLotCode(
+    id: Long,
     tlcSource: Location,
 ) = TraceLotCode(
     id = id,
@@ -98,8 +119,4 @@ fun TraceLotCodeDto.toTraceLotCode(
     logSerialNo = logSerialNo,
     tlcSource = tlcSource,
     tlcSourceReference = tlcSourceReference,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

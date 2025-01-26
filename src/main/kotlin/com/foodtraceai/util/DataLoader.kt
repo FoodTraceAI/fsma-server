@@ -220,8 +220,8 @@ class DataLoader : ApplicationRunner {
 
     fun addContacts() {
         var contact = Contact(
-            firstName = "FreshFirstName",
-            lastName = "FreshLastName",
+            firstname = "FreshFirstName",
+            lastname = "FreshLastName",
             phone = "1-800-555-1212",
             email = "FirstName.Lastname@gmail.com"
         )
@@ -229,8 +229,8 @@ class DataLoader : ApplicationRunner {
         contactList.add(freshProdDistContact)
 
         contact = Contact(
-            firstName = "Happy",
-            lastName = "Restaurant",
+            firstname = "Happy",
+            lastname = "Restaurant",
             email = "happy.restaurant@gmail.com",
             phone = "800-555-1212",
         )
@@ -238,8 +238,8 @@ class DataLoader : ApplicationRunner {
         contactList.add(happyRestContact)
 
         contact = Contact(
-            firstName = "FirstName FoodProcessor",
-            lastName = "LastName FoodProcesssor",
+            firstname = "FirstName FoodProcessor",
+            lastname = "LastName FoodProcesssor",
             phone = "1-800-555-1212",
             email = "food.processor@gmail.com"
         )
@@ -247,8 +247,8 @@ class DataLoader : ApplicationRunner {
         contactList.add(pepiProcessorContact)
 
         contact = Contact(
-            firstName = "billingContactFirstName",
-            lastName = "billingContactLastName",
+            firstname = "billingContactFirstName",
+            lastname = "billingContactLastName",
             phone = "billingContactPhone",
             email = "billingContactEmail"
         )
@@ -256,8 +256,8 @@ class DataLoader : ApplicationRunner {
         contactList.add(billingContact)
 
         contact = Contact(
-            firstName = "mainContactFirstName",
-            lastName = "mainContactLastName",
+            firstname = "mainContactFirstName",
+            lastname = "mainContactLastName",
             phone = "mainContactPhone",
             email = "mainContactEmail"
         )
@@ -265,8 +265,8 @@ class DataLoader : ApplicationRunner {
         contactList.add(mainContact)
 
         contact = Contact(
-            firstName = "NewContactFirst",
-            lastName = "NewContactLast",
+            firstname = "NewContactFirst",
+            lastname = "NewContactLast",
             phone = "1-800-555-1212",
             email = "NewContact@gmail.com"
         )
@@ -274,8 +274,8 @@ class DataLoader : ApplicationRunner {
         contactList.add(newContact)
 
         contact = Contact(
-            firstName = "trace",
-            lastName = "PlanContact",
+            firstname = "trace",
+            lastname = "PlanContact",
             phone = "800-555-1212",
             email = "trace@gmail.com"
         )
@@ -371,7 +371,7 @@ class DataLoader : ApplicationRunner {
     }
 
     fun addFsmaUsers() {
-        val rootDto = FsmaUserDto(
+        val rootDto = FsmaUserRequestDto(
             foodBusId = 1,
             locationId = 1,
             email = "root@foodtraceai.com",
@@ -385,7 +385,7 @@ class DataLoader : ApplicationRunner {
             ?: throw Exception("Failed to create FsmaUser: ${rootDto.email}")
         fsmaUserList.add(fmsaUser)
 
-        var fsmaUserDto = FsmaUserDto(
+        var fsmaUserRequestDto = FsmaUserRequestDto(
             foodBusId = foodBusList[1].id,
             locationId = 2,
             email = "User0@foodtraceai.com",
@@ -394,12 +394,12 @@ class DataLoader : ApplicationRunner {
             firstname = "Root",
             lastname = "User0",
         )
-        resDto = authService.createNewFsmaUser(fsmaUserDto)
+        resDto = authService.createNewFsmaUser(fsmaUserRequestDto)
         fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
-            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserDto.email}")
+            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserRequestDto.email}")
         fsmaUserList.add(fmsaUser)
 
-        fsmaUserDto = FsmaUserDto(
+        fsmaUserRequestDto = FsmaUserRequestDto(
             foodBusId = foodBusList[2].id,
             locationId = 3,
             email = "User1@foodtraceai.com",
@@ -408,12 +408,12 @@ class DataLoader : ApplicationRunner {
             firstname = "Steve",
             lastname = "User1",
         )
-        resDto = authService.createNewFsmaUser(fsmaUserDto)
+        resDto = authService.createNewFsmaUser(fsmaUserRequestDto)
         fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
-            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserDto.email}")
+            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserRequestDto.email}")
         fsmaUserList.add(fmsaUser)
 
-        fsmaUserDto = FsmaUserDto(
+        fsmaUserRequestDto = FsmaUserRequestDto(
             foodBusId = freshProdDistBus.id,
             locationId = locationList[0].id,
             email = "fresh@foodtraceai.com",
@@ -422,12 +422,12 @@ class DataLoader : ApplicationRunner {
             firstname = "Fresh",
             lastname = "UserFresh",
         )
-        resDto = authService.createNewFsmaUser(fsmaUserDto)
+        resDto = authService.createNewFsmaUser(fsmaUserRequestDto)
         fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
-            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserDto.email}")
+            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserRequestDto.email}")
         fsmaUserList.add(fmsaUser)
 
-        fsmaUserDto = FsmaUserDto(
+        fsmaUserRequestDto = FsmaUserRequestDto(
             foodBusId = happyRestBus.id,
             locationId = locationList[1].id,
             email = "happy@foodtraceai.com",
@@ -436,12 +436,12 @@ class DataLoader : ApplicationRunner {
             firstname = "Happy",
             lastname = "UserHappy",
         )
-        resDto = authService.createNewFsmaUser(fsmaUserDto)
+        resDto = authService.createNewFsmaUser(fsmaUserRequestDto)
         fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
-            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserDto.email}")
+            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserRequestDto.email}")
         fsmaUserList.add(fmsaUser)
 
-        fsmaUserDto = FsmaUserDto(
+        fsmaUserRequestDto = FsmaUserRequestDto(
             foodBusId = pepiProcessorBus.id,
             locationId = locationList[2].id,
             email = "pepi@foodtraceai.com",
@@ -450,9 +450,9 @@ class DataLoader : ApplicationRunner {
             firstname = "Pepi",
             lastname = "UserPepi",
         )
-        resDto = authService.createNewFsmaUser(fsmaUserDto)
+        resDto = authService.createNewFsmaUser(fsmaUserRequestDto)
         fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
-            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserDto.email}")
+            ?: throw Exception("Failed to create FsmaUser: ${fsmaUserRequestDto.email}")
         fsmaUserList.add(fmsaUser)
     }
 

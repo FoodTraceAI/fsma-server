@@ -60,7 +60,7 @@ class ContactController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
-        contactService.findById(id)?.let { contact ->
+        getContact(id, fsmaUser).let { contact ->
             contactService.delete(contact) // soft delete?
         }
         return ResponseEntity.noContent().build()

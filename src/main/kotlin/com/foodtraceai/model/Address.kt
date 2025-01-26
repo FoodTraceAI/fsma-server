@@ -47,7 +47,7 @@ data class AddressRequestDto(
 )
 
 data class AddressResponseDto(
-    override val id: Long = 0,
+    override val id: Long,
     val street: String,
     val street2: String? = null,
     val city: String,

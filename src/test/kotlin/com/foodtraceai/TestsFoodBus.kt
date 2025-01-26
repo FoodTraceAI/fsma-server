@@ -5,9 +5,7 @@ package com.foodtraceai
 
 import com.foodtraceai.model.*
 import com.foodtraceai.util.EntityNotFoundException
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
@@ -18,14 +16,14 @@ import org.springframework.test.web.servlet.put
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TestsFoodBus:TestsBase() {
-    private lateinit var foodBusDto: FoodBusDto
-    private lateinit var foodBusDtoUpdated: FoodBusDto
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
+class TestsFoodBus : TestsBase() {
+    private lateinit var foodBusRequestDto: FoodBusRequestDto
+    private lateinit var foodBusRequestDtoUpdated: FoodBusRequestDto
 
     @BeforeEach
     fun localSetup() {
-        foodBusDto = FoodBusDto(
-            id = 0,
+        foodBusRequestDto = FoodBusRequestDto(
             resellerId = 1,
             mainAddressId = 1,
             foodBusContactId = 1,
@@ -34,8 +32,7 @@ class TestsFoodBus:TestsBase() {
             franchisorId = null,
         )
 
-        foodBusDtoUpdated = FoodBusDto(
-            id = 0,
+        foodBusRequestDtoUpdated = FoodBusRequestDto(
             resellerId = 1,
             mainAddressId = 1,
             foodBusContactId = 1,
@@ -51,37 +48,46 @@ class TestsFoodBus:TestsBase() {
 
     // ------------------------------------------------------------------------
 
-    private fun addFoodBus(dto: FoodBusDto): FoodBus {
+    private fun addFoodBus(dto: FoodBusRequestDto): FoodBus {
         val reseller: Reseller? = dto.resellerId?.let {
             resellerService.findById(it)
                 ?: throw EntityNotFoundException("Reseller not found = ${dto.resellerId}")
         }
 
         val mainAddress = addressService.findById(dto.mainAddressId)
-            ?: throw EntityNotFoundException("FoodBus addresssId not found = ${foodBusDto.mainAddressId}")
+            ?: throw EntityNotFoundException("FoodBus addresssId not found = ${foodBusRequestDto.mainAddressId}")
 
-        val franchisor: Franchisor? = foodBusDto.franchisorId?.let {
+        val franchisor: Franchisor? = foodBusRequestDto.franchisorId?.let {
             franchisorService.findById(it)
                 ?: throw EntityNotFoundException("Franchisor not found = $it")
         }
 
-        val foodBusContact = contactService.findById(foodBusDto.foodBusContactId)
-            ?: throw EntityNotFoundException("Contact not found = ${foodBusDto.foodBusContactId}")
+        val foodBusContact = contactService.findById(foodBusRequestDto.foodBusContactId)
+            ?: throw EntityNotFoundException("Contact not found = ${foodBusRequestDto.foodBusContactId}")
 
-        return foodBusService.insert(foodBusDto.toFoodBus(reseller, mainAddress, foodBusContact, franchisor))
+        return foodBusService.insert(
+            foodBusRequestDto.toFoodBus(
+                id = 0,
+                reseller,
+                mainAddress,
+                foodBusContact,
+                franchisor
+            )
+        )
     }
 
     @Test
+    @Order(1)
     fun `add foodBus`() {
         val (accessToken, _) = authenticate(rootAuthLogin)
         mockMvc.post("/api/v1/foodbus") {
             header("Authorization", "Bearer $accessToken")
-            content = objectMapper.writeValueAsString(foodBusDto)
+            content = objectMapper.writeValueAsString(foodBusRequestDto)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.foodBusContactId") { value(foodBusDto.foodBusContactId) }
+            jsonPath("$.foodBusContactId") { value(foodBusRequestDto.foodBusContactId) }
             jsonPath("$.foodBusName") { value("Fred's Restaurant") }
             jsonPath("$.foodBusDesc") { value("Restaurant") }
         }
@@ -89,44 +95,46 @@ class TestsFoodBus:TestsBase() {
     }
 
     @Test
+    @Order(2)
     fun `get foodBus`() {
         val (accessToken, _) = authenticate(rootAuthLogin)
-        val foodBusId = addFoodBus(foodBusDto).id
+        val foodBusId = addFoodBus(foodBusRequestDto).id
         mockMvc.get("/api/v1/foodbus/$foodBusId") {
             header("Authorization", "Bearer $accessToken")
         }.andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(foodBusId) }
-            jsonPath("$.foodBusContactId") { value(foodBusDto.foodBusContactId) }
+            jsonPath("$.foodBusContactId") { value(foodBusRequestDto.foodBusContactId) }
             jsonPath("$.foodBusName") { value("Fred's Restaurant") }
             jsonPath("$.foodBusDesc") { value("Restaurant") }
         }
     }
 
     @Test
+    @Order(3)
     fun `update foodBusiness`() {
         val (accessToken, _) = authenticate(rootAuthLogin)
-        val foodBusId: Long = addFoodBus(foodBusDto).id
-        foodBusDtoUpdated = foodBusDtoUpdated.copy(id = foodBusId)
+        val foodBusId: Long = addFoodBus(foodBusRequestDto).id
         mockMvc.put("/api/v1/foodbus/$foodBusId") {
             header("Authorization", "Bearer $accessToken")
-            content = objectMapper.writeValueAsString(foodBusDtoUpdated)
+            content = objectMapper.writeValueAsString(foodBusRequestDtoUpdated)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(foodBusId) }
-            jsonPath("$.foodBusContactId") { value(foodBusDtoUpdated.foodBusContactId) }
-            jsonPath("$.foodBusName") { value(foodBusDtoUpdated.foodBusName) }
-            jsonPath("$.foodBusDesc") { value(foodBusDtoUpdated.foodBusDesc) }
+            jsonPath("$.foodBusContactId") { value(foodBusRequestDtoUpdated.foodBusContactId) }
+            jsonPath("$.foodBusName") { value(foodBusRequestDtoUpdated.foodBusName) }
+            jsonPath("$.foodBusDesc") { value(foodBusRequestDtoUpdated.foodBusDesc) }
         }
     }
 
     @Test
+    @Order(4)
     fun `delete business`() {
         val (accessToken, _) = authenticate(rootAuthLogin)
-        val foodBusId: Long = addFoodBus(foodBusDto).id
+        val foodBusId: Long = addFoodBus(foodBusRequestDto).id
         mockMvc.delete("/api/v1/foodbus/$foodBusId") {
             header("Authorization", "Bearer $accessToken")
         }.andExpect {

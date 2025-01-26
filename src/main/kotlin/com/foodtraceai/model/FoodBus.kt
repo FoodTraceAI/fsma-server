@@ -40,13 +40,13 @@ data class FoodBus(
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
     override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : BaseResellerModel<FoodBus>() {
     val isFranchisee: Boolean
         get() = franchisor != null
 }
 
-data class FoodBusDto(
-    val id: Long = 0,
+data class FoodBusRequestDto(
     val resellerId: Long?,
     val foodBusContactId: Long,
     val mainAddressId: Long,
@@ -54,13 +54,25 @@ data class FoodBusDto(
     val foodBusDesc: String,
     val franchisorId: Long?,    // nonnull & nonzero means this is a franchisee
     val isEnabled: Boolean = true,
-    val dateCreated: OffsetDateTime = OffsetDateTime.now(),
-    val dateModified: OffsetDateTime = OffsetDateTime.now(),
-    val isDeleted: Boolean = false,
-    val dateDeleted: OffsetDateTime? = null,
 )
 
-fun FoodBus.toFoodBusDto() = FoodBusDto(
+data class FoodBusResponseDto(
+    override var id: Long,
+    val resellerId: Long?,
+    val foodBusContactId: Long,
+    val mainAddressId: Long,
+    val foodBusName: String,
+    val foodBusDesc: String,
+    val franchisorId: Long?,    // nonnull & nonzero means this is a franchisee
+    val isEnabled: Boolean = true,
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<FoodBusResponseDto>()
+
+fun FoodBus.toFoodBusResponseDto() = FoodBusResponseDto(
     id = id,
     resellerId = reseller?.id,
     foodBusContactId = foodBusContact.id,
@@ -73,9 +85,11 @@ fun FoodBus.toFoodBusDto() = FoodBusDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun FoodBusDto.toFoodBus(
+fun FoodBusRequestDto.toFoodBus(
+    id: Long = 0,
     reseller: Reseller?,
     mainAddress: Address,
     foodBusContact: Contact,

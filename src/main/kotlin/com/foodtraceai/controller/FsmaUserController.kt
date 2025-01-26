@@ -3,12 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller
 
-import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.FsmaUserDto
-import com.foodtraceai.model.toFsmaUser
-import com.foodtraceai.model.toFsmaUserDto
-import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.UnauthorizedRequestException
+import com.foodtraceai.model.*
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -30,42 +25,38 @@ class FsmaUserController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<FsmaUserDto> {
-        val fsma = fsmaUserService.findById(id)
-            ?: throw EntityNotFoundException("FsmaUser not found = $id")
-        return ResponseEntity.ok(fsma.toFsmaUserDto())
+    ): ResponseEntity<FsmaUserResponseDto> {
+        val fsmaUs = getFsmaUser(id, fsmaUser)
+        return ResponseEntity.ok(fsmaUs.toFsmaUserResponseDto())
     }
 
     // -- Create a new FsmaUser
     @PostMapping
     fun create(
-        @Valid @RequestBody fsmaUserDto: FsmaUserDto,
+        @Valid @RequestBody fsmaUsRequestDto: FsmaUserRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<FsmaUserDto> {
-        val foodBus = getFoodBus(fsmaUserDto.foodBusId,fsmaUser)
-        val location = getLocation(fsmaUserDto.locationId,fsmaUser)
-        val newFsmaUser = fsmaUserDto.toFsmaUser(foodBus, location)
-        val newFsmaUserResponse = fsmaUserService.insert(newFsmaUser).toFsmaUserDto()
-        return ResponseEntity.created(URI.create(FSMA_USER_BASE_URL.plus("/${newFsmaUserResponse.id}")))
-            .body(newFsmaUserResponse)
+    ): ResponseEntity<FsmaUserResponseDto> {
+        val foodBus = getFoodBus(fsmaUsRequestDto.foodBusId, fsmaUser)
+        val location = getLocation(fsmaUsRequestDto.locationId, fsmaUser)
+        val fsmaUs = fsmaUsRequestDto.toFsmaUser(id = 0, foodBus, location)
+        val fsmaUserResponseDto = fsmaUserService.insert(fsmaUs).toFsmaUserResponseDto()
+        return ResponseEntity
+            .created(URI.create(FSMA_USER_BASE_URL.plus("/${fsmaUserResponseDto.id}")))
+            .body(fsmaUserResponseDto)
     }
 
     // -- Update an existing FsmaUser
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody fsmaUserDto: FsmaUserDto,
+        @Valid @RequestBody fsmaUserRequestDto: FsmaUserRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<FsmaUserDto> {
-        if (fsmaUserDto.id <= 0L || fsmaUserDto.id != id)
-            throw UnauthorizedRequestException("Conflicting FsmaUserIds specified: $id != ${fsmaUserDto.id}")
-
-        val foodBus = getFoodBus(fsmaUserDto.foodBusId,fsmaUser)
-        val location = getLocation(fsmaUserDto.locationId,fsmaUser)
-
-        val fsma = fsmaUserDto.toFsmaUser(foodBus, location)
-        val fsmaUserResponse = fsmaUserService.update(fsma).toFsmaUserDto()
-        return ResponseEntity.ok().body(fsmaUserResponse)
+    ): ResponseEntity<FsmaUserResponseDto> {
+        val foodBus = getFoodBus(fsmaUserRequestDto.foodBusId, fsmaUser)
+        val location = getLocation(fsmaUserRequestDto.locationId, fsmaUser)
+        val fsmaUs = fsmaUserRequestDto.toFsmaUser(id, foodBus, location)
+        val fsmaUserResponseDto = fsmaUserService.update(fsmaUs).toFsmaUserResponseDto()
+        return ResponseEntity.ok().body(fsmaUserResponseDto)
     }
 
     // -- Delete an existing FsmaUser
@@ -74,8 +65,8 @@ class FsmaUserController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
-        fsmaUserService.findById(id)?.let { fsmaUser ->
-            fsmaUserService.delete(fsmaUser) // soft delete?
+        getFsmaUser(id, fsmaUser).let { fsmaUs ->
+            fsmaUserService.delete(fsmaUs) // soft delete?
         }
         return ResponseEntity.noContent().build()
     }

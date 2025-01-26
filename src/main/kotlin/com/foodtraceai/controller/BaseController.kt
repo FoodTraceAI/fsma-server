@@ -124,6 +124,13 @@ class BaseController {
         return franchisor
     }
 
+    fun getFsmaUser(id:Long, fsmaUser: FsmaUser): FsmaUser {
+        val fsmaUs = fsmaUserService.findById(id)
+            ?: throw EntityNotFoundException("FsmaUser not found: $id")
+        assertFsmaUserFoodBusMatches(fsmaUs.id, fsmaUser)
+        return fsmaUs
+    }
+
     fun getLocation(id: Long, fsmaUser: FsmaUser? = null): Location {
         val location = locationService.findById(id)
             ?: throw EntityNotFoundException("Location not found: $id")

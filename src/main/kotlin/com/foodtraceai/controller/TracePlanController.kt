@@ -1,10 +1,6 @@
 package com.foodtraceai.controller
 
-import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.TracePlanDto
-import com.foodtraceai.model.toTracePlan
-import com.foodtraceai.model.toTracePlanDto
-import com.foodtraceai.util.UnauthorizedRequestException
+import com.foodtraceai.model.*
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -26,39 +22,37 @@ class TracePlanController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<TracePlanDto> {
+    ): ResponseEntity<TracePlanResponseDto> {
         val tracePlan = getTracePlan(id, fsmaUser)
-        return ResponseEntity.ok(tracePlan.toTracePlanDto())
+        return ResponseEntity.ok(tracePlan.toTracePlanResponseDto())
     }
 
     // -- Create a new TracePlan
     @PostMapping
     fun create(
-        @Valid @RequestBody tracePlanDto: TracePlanDto,
+        @Valid @RequestBody tracePlanRequestDto: TracePlanRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<TracePlanDto> {
-        val location = getLocation(tracePlanDto.locationId, fsmaUser)
-        val contact = getContact(tracePlanDto.tracePlanContactId, fsmaUser)
-        val tracePlan = tracePlanDto.toTracePlan(location, contact)
+    ): ResponseEntity<TracePlanResponseDto> {
+        val location = getLocation(tracePlanRequestDto.locationId, fsmaUser)
+        val contact = getContact(tracePlanRequestDto.tracePlanContactId, fsmaUser)
+        val tracePlan = tracePlanRequestDto.toTracePlan(id = 0, location, contact)
         val tracePlanResponse = tracePlanService.insert(tracePlan)
         return ResponseEntity
             .created(URI.create(TRACE_PLAN_URL.plus("/${tracePlanResponse.id}")))
-            .body(tracePlanResponse.toTracePlanDto())
+            .body(tracePlanResponse.toTracePlanResponseDto())
     }
 
     // -- Update an existing TracePlan
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody tracePlanDto: TracePlanDto,
+        @Valid @RequestBody tracePlanResponseDto: TracePlanRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<TracePlanDto> {
-        if (tracePlanDto.id <= 0L || tracePlanDto.id != id)
-            throw UnauthorizedRequestException("Conflicting TracePlanIds specified: $id != ${tracePlanDto.id}")
-        val location = getLocation(tracePlanDto.locationId, fsmaUser)
-        val contact = getContact(tracePlanDto.tracePlanContactId, fsmaUser)
-        val tracePlan = tracePlanDto.toTracePlan(location, contact)
-        val tracePlanResponse = tracePlanService.update(tracePlan).toTracePlanDto()
+    ): ResponseEntity<TracePlanResponseDto> {
+        val location = getLocation(tracePlanResponseDto.locationId, fsmaUser)
+        val contact = getContact(tracePlanResponseDto.tracePlanContactId, fsmaUser)
+        val tracePlan = tracePlanResponseDto.toTracePlan(id=id, location, contact)
+        val tracePlanResponse = tracePlanService.update(tracePlan).toTracePlanResponseDto()
         return ResponseEntity.ok().body(tracePlanResponse)
     }
 

@@ -71,12 +71,11 @@ data class TracePlan(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
-
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : BaseLocationModel<TracePlan>()
 
-data class TracePlanDto(
-    val id: Long = 0,
+data class TracePlanRequestDto(
     val issueDate: LocalDate? = null,
     val locationId: Long,
     val descProcRecordMaintenance: String,
@@ -84,13 +83,25 @@ data class TracePlanDto(
     val descAssignTraceLotCodes: String,
     val tracePlanContactId: Long,
     val farmMap: ByteArray? = null,
-    val dateCreated: OffsetDateTime = OffsetDateTime.now(),
-    val dateModified: OffsetDateTime = OffsetDateTime.now(),
-    val isDeleted: Boolean = false,
-    val dateDeleted: OffsetDateTime? = null,
 )
 
-fun TracePlan.toTracePlanDto() = TracePlanDto(
+data class TracePlanResponseDto(
+    override val id: Long,
+    val issueDate: LocalDate? = null,
+    val locationId: Long,
+    val descProcRecordMaintenance: String,
+    val descProcIdentifyFoods: String,
+    val descAssignTraceLotCodes: String,
+    val tracePlanContactId: Long,
+    val farmMap: ByteArray? = null,
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<TracePlanResponseDto>()
+
+fun TracePlan.toTracePlanResponseDto() = TracePlanResponseDto(
     id = id,
     issueDate = issueDate,
     locationId = location.id,
@@ -103,9 +114,11 @@ fun TracePlan.toTracePlanDto() = TracePlanDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun TracePlanDto.toTracePlan(
+fun TracePlanRequestDto.toTracePlan(
+    id: Long,
     location: Location,
     contact: Contact,
 ) = TracePlan(
@@ -117,8 +130,4 @@ fun TracePlanDto.toTracePlan(
     descAssignTraceLotCodes = descAssignTraceLotCodes,
     tracePlanContact = contact,
     farmMap = farmMap,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

@@ -27,15 +27,15 @@ class TestsContact : TestsBase() {
 
         // -- Contact
         contactRequestDto = ContactRequestDto(
-            firstName = "firstName",
-            lastName = "lastName",
-            email = "firstName.lastName1@gmail.com",
+            firstname = "firstname",
+            lastname = "lastname",
+            email = "firstname.lastname1@gmail.com",
             phone = "+1 800 555 1212",
         )
         contactRequestDtoUpdated = ContactRequestDto(
-            firstName = "ChangedfirstName",
-            lastName = "ChangedlastName",
-            email = "firstName1.lastName1@gmail.com",
+            firstname = "Changedfirstname",
+            lastname = "Changedlastname",
+            email = "firstname1.lastname1@gmail.com",
             phone = "+1 800 000 0000",
         )
     }
@@ -59,8 +59,8 @@ class TestsContact : TestsBase() {
             status { isCreated() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(contactId) }
-            jsonPath("$.firstName") { value(contactRequestDto.firstName) }
-            jsonPath("$.lastName") { value(contactRequestDto.lastName) }
+            jsonPath("$.firstname") { value(contactRequestDto.firstname) }
+            jsonPath("$.lastname") { value(contactRequestDto.lastname) }
             jsonPath("$.email") { value(contactRequestDto.email) }
             jsonPath("$.phone") { value(contactRequestDto.phone) }
         }.andReturn()
@@ -78,8 +78,8 @@ class TestsContact : TestsBase() {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(contactId) }
-            jsonPath("$.firstName") { value(contactRequestDto.firstName) }
-            jsonPath("$.lastName") { value(contactRequestDto.lastName) }
+            jsonPath("$.firstname") { value(contactRequestDto.firstname) }
+            jsonPath("$.lastname") { value(contactRequestDto.lastname) }
             jsonPath("$.email") { value(contactRequestDto.email) }
             jsonPath("$.phone") { value(contactRequestDto.phone) }
         }
@@ -98,8 +98,8 @@ class TestsContact : TestsBase() {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { value(contactId) }
-            jsonPath("$.firstName") { value(contactRequestDtoUpdated.firstName) }
-            jsonPath("$.lastName") { value(contactRequestDtoUpdated.lastName) }
+            jsonPath("$.firstname") { value(contactRequestDtoUpdated.firstname) }
+            jsonPath("$.lastname") { value(contactRequestDtoUpdated.lastname) }
             jsonPath("$.email") { value(contactRequestDtoUpdated.email) }
             jsonPath("$.phone") { value(contactRequestDtoUpdated.phone) }
         }

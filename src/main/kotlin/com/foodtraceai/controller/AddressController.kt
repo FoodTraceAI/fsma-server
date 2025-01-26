@@ -35,7 +35,7 @@ class AddressController : BaseController() {
         @Valid @RequestBody addressRequestDto: AddressRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<AddressResponseDto> {
-        val address = addressRequestDto.toAddress()
+        val address = addressRequestDto.toAddress(id=0)
         val addressResponseDto = addressService.insert(address).toAddressResponseDto()
         return ResponseEntity
             .created(URI.create(ADDRESS_BASE_URL.plus("/${addressResponseDto.id}")))
@@ -59,7 +59,7 @@ class AddressController : BaseController() {
         @PathVariable id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<Void> {
-        addressService.findById(id)?.let { address ->
+        getAddress(id,fsmaUser).let { address ->
             addressService.delete(address) // soft delete?
         }
         return ResponseEntity.noContent().build()

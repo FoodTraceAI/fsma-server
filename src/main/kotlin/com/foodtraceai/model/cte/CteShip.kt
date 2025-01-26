@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model.cte
 
+import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.util.CteType
@@ -38,7 +39,7 @@ data class CteShip(
     // and linking this information to the traceability lot:
 
     // (a)(1) The traceability lot code for the food;
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne  //(cascade = [CascadeType.ALL])
     @JoinColumn
     val tlc: TraceLotCode,  // from Initial Packer or Transformer
 
@@ -54,7 +55,7 @@ data class CteShip(
 
     // (a)(4) The location description for the immediate subsequent recipient
     // (other than a transporter) of the food;
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne  //(cascade = [CascadeType.ALL])
     @JoinColumn
     val shipToLocation: Location,
 
@@ -69,7 +70,7 @@ data class CteShip(
 
     // (a)(7) The location description for the traceability lot code source,
     // or the traceability lot code source reference; and
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne  //(cascade = [CascadeType.ALL])
     @JoinColumn
     val tlcSource: Location,
     val tlcSourceReference: String? = null,
@@ -84,6 +85,7 @@ data class CteShip(
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
     override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 
     // (b) You must provide (in electronic, paper, or other written form) the
     // information in paragraphs (a)(1) through (7) of this section
@@ -95,8 +97,25 @@ data class CteShip(
     // commodity not obtained from a fishing vessel).
 ) : CteBase<CteShip>()
 
-data class CteShipDto(
-    val id: Long,
+data class CteShipRequestDto(
+    val ftlItem: FtlItem,
+    val tlcId: Long,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val prodDesc: String,
+    val variety: String = "",
+    val shipToLocationId: Long,
+    val locationId: Long,   // ShipFromLocation
+    val shipDate: LocalDate = LocalDate.now(),
+    val shipTime: OffsetDateTime = OffsetDateTime.now(),
+    val tlcSourceId: Long,
+    val tlcSourceReference: String? = null,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+)
+
+data class CteShipResponseDto(
+    override var id: Long,
     val cteType: CteType,
     val ftlItem: FtlItem,
     val tlcId: Long,
@@ -105,20 +124,21 @@ data class CteShipDto(
     val prodDesc: String,
     val variety: String,
     val shipToLocationId: Long,
-    val locationId: Long,   // ShipFromLocaion
+    val locationId: Long,   // ShipFromLocation
     val shipDate: LocalDate,
     val shipTime: OffsetDateTime,
     val tlcSourceId: Long,
     val tlcSourceReference: String?,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
-    val dateCreated: OffsetDateTime,
-    val dateModified: OffsetDateTime,
-    val isDeleted: Boolean,
-    val dateDeleted: OffsetDateTime?,
-)
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<CteShipResponseDto>()
 
-fun CteShip.toCteShipDto() = CteShipDto(
+fun CteShip.toCteShipResponseDto() = CteShipResponseDto(
     id = id,
     cteType = cteType,
     ftlItem = ftlItem,
@@ -139,16 +159,18 @@ fun CteShip.toCteShipDto() = CteShipDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun CteShipDto.toCteShip(
+fun CteShipRequestDto.toCteShip(
+    id: Long,
     tlc: TraceLotCode,
     shipToLocation: Location,
     location: Location,
     tlcSource: Location,
 ) = CteShip(
     id = id,
-    cteType = cteType,
+    cteType = CteType.Ship,
     ftlItem = ftlItem,
     tlc = tlc,
     quantity = quantity,
@@ -163,8 +185,4 @@ fun CteShipDto.toCteShip(
     tlcSourceReference = tlcSourceReference,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )
