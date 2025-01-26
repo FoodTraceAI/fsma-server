@@ -33,7 +33,7 @@ class TestsSupShipCte : TestsBase() {
     // ------------------------------------------------------------------------
 
     private fun findById(id: Int) {
-        mockMvc.get("/api/v1/supplier/shipCte/$id") {
+        mockMvc.get("/api/v1/supplier/shipcte/$id") {
             header("Authorization", "Bearer $accessToken")
         }.andExpect {
             status { isOk() }
@@ -51,7 +51,7 @@ class TestsSupShipCte : TestsBase() {
 
     @Test
     fun findAll() {
-        mockMvc.get("/api/v1/supplier/shipCte/findAll") {
+        mockMvc.get("/api/v1/supplier/shipcte/findAll") {
             header("Authorization", "Bearer $accessToken")
         }.andExpect {
             status { isOk() }
