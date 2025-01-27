@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model.cte
 
+import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.util.CteType
@@ -83,6 +84,7 @@ data class CteReceiveExempt(
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
     override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 
     //(c) This section does not apply to receipt of a food that occurs
     // before the food is initially packed (if the food is a raw agricultural
@@ -91,8 +93,24 @@ data class CteReceiveExempt(
     // from a fishing vessel).
 ) : CteBase<CteReceiveExempt>()
 
-data class CteReceiveExemptDto(
-    val id: Long,
+data class CteReceiveExemptRequestDto(
+    val ftlItem: FtlItem,
+    val traceLotCodeId: Long,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val prodDesc: String,
+    val variety: String,
+    val ipsLocationId: Long,
+    val locationId: Long,   // Receive location
+    val tlcSourceReference: String?,
+    val receiveDate: LocalDate,
+    val receiveTime: OffsetDateTime?,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+)
+
+data class CteReceiveExemptResponseDto(
+    override var id: Long,
     val cteType: CteType,
     val ftlItem: FtlItem,
     val traceLotCodeId: Long,
@@ -107,13 +125,14 @@ data class CteReceiveExemptDto(
     val receiveTime: OffsetDateTime?,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
-    val dateCreated: OffsetDateTime,
-    val dateModified: OffsetDateTime,
-    val isDeleted: Boolean,
-    val dateDeleted: OffsetDateTime?,
-)
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<CteReceiveExemptResponseDto>()
 
-fun CteReceiveExempt.toCteReceiveExemptDto() = CteReceiveExemptDto(
+fun CteReceiveExempt.toCteReceiveExemptResponseDto() = CteReceiveExemptResponseDto(
     id = id,
     cteType = cteType,
     ftlItem = ftlItem,
@@ -135,13 +154,14 @@ fun CteReceiveExempt.toCteReceiveExemptDto() = CteReceiveExemptDto(
     dateDeleted = dateDeleted,
 )
 
-fun CteReceiveExemptDto.toCteReceiveExempt(
+fun CteReceiveExemptRequestDto.toCteReceiveExempt(
+    id: Long,
     traceLotCode: TraceLotCode,
     ipsLocation: Location,
     location: Location,
 ) = CteReceiveExempt(
     id = id,
-    cteType = cteType,
+    cteType = CteType.ReceiveExempt,
     ftlItem = ftlItem,
     tlc = traceLotCode,
     quantity = quantity,
@@ -155,8 +175,4 @@ fun CteReceiveExemptDto.toCteReceiveExempt(
     tlcSourceReference = tlcSourceReference,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

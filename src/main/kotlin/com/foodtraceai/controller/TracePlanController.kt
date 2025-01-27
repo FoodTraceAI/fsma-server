@@ -51,7 +51,7 @@ class TracePlanController : BaseController() {
     ): ResponseEntity<TracePlanResponseDto> {
         val location = getLocation(tracePlanResponseDto.locationId, fsmaUser)
         val contact = getContact(tracePlanResponseDto.tracePlanContactId, fsmaUser)
-        val tracePlan = tracePlanResponseDto.toTracePlan(id=id, location, contact)
+        val tracePlan = tracePlanResponseDto.toTracePlan(id = id, location, contact)
         val tracePlanResponse = tracePlanService.update(tracePlan).toTracePlanResponseDto()
         return ResponseEntity.ok().body(tracePlanResponse)
     }

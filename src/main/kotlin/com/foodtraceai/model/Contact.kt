@@ -60,23 +60,10 @@ fun Contact.toContactResponseDto() = ContactResponseDto(
     authUsername = authUsername,
 )
 
-fun ContactRequestDto.toContact(id: Long = 0) = Contact(
+fun ContactRequestDto.toContact(id: Long) = Contact(
     id = id,
     firstname = firstname,
     lastname = lastname,
     email = email,
     phone = phone,
-)
-
-fun ContactResponseDto.toContact() = Contact(
-    id = id,
-    firstname = firstname,
-    lastname = lastname,
-    email = email,
-    phone = phone,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
-    authUsername = authUsername,
 )

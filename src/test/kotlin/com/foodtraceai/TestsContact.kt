@@ -88,7 +88,7 @@ class TestsContact : TestsBase() {
     @Test
     @Order(3)
     fun `update contact`() {
-        val contactId = contactService.insert(contactRequestDto.toContact()).id
+        val contactId = contactService.insert(contactRequestDto.toContact(id = 0)).id
         val (accessToken, _) = authenticate(rootAuthLogin)
         mockMvc.put("/api/v1/contact/$contactId") {
             header("Authorization", "Bearer $accessToken")

@@ -5,12 +5,11 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.Location
-import com.foodtraceai.model.cte.CteIPackExemptDto
+import com.foodtraceai.model.cte.CteIPackExemptRequestDto
+import com.foodtraceai.model.cte.CteIPackExemptResponseDto
 import com.foodtraceai.model.cte.toCteIPackExempt
-import com.foodtraceai.model.cte.toCteIPackExemptDto
+import com.foodtraceai.model.cte.toCteIPackExemptResponseDto
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -36,30 +35,29 @@ class CteIPackExemptController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteIPackExemptDto> {
+    ): ResponseEntity<CteIPackExemptResponseDto> {
         val cteExempt = cteIPackExemptService.findById(id)
             ?: throw EntityNotFoundException("CteExempt not found = $id")
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
-        return ResponseEntity.ok(cteExempt.toCteIPackExemptDto())
+        return ResponseEntity.ok(cteExempt.toCteIPackExemptResponseDto())
     }
 
     // -- Create a new Address
     @PostMapping
     fun create(
-        @Valid @RequestBody cteIPackExemptDto: CteIPackExemptDto,
+        @Valid @RequestBody cteIPackExemptRequestDto: CteIPackExemptRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteIPackExemptDto> {
-        val location = getLocation(cteIPackExemptDto.locationId,fsmaUser)
-        val sourceLocation = getLocation(cteIPackExemptDto.sourceLocationId,fsmaUser)
-
-        val packTlc = getTraceLotCode(cteIPackExemptDto.packTlcId,fsmaUser)
-
-        var packTlcSource: Location? = null
-        if (cteIPackExemptDto.packTlcSourceId != null)
-            packTlcSource = getLocation(cteIPackExemptDto.packTlcSourceId,fsmaUser)
-
-        val iPackExempt = cteIPackExemptDto.toCteIPackExempt(location, sourceLocation, packTlc, packTlcSource)
-        val iPackExemptResponse = cteIPackExemptService.insert(iPackExempt).toCteIPackExemptDto()
+    ): ResponseEntity<CteIPackExemptResponseDto> {
+        val location = getLocation(cteIPackExemptRequestDto.locationId, fsmaUser)
+        val sourceLocation = getLocation(cteIPackExemptRequestDto.sourceLocationId, fsmaUser)
+        val packTlc = getTraceLotCode(cteIPackExemptRequestDto.packTlcId, fsmaUser)
+        val packTlcSource = cteIPackExemptRequestDto.packTlcSourceId?.let {
+            getLocation(it, fsmaUser)
+        }
+        val iPackExempt = cteIPackExemptRequestDto.toCteIPackExempt(
+            id = 0, location, sourceLocation, packTlc, packTlcSource
+        )
+        val iPackExemptResponse = cteIPackExemptService.insert(iPackExempt).toCteIPackExemptResponseDto()
         return ResponseEntity.created(URI.create(CTE_IPACK_EXEMPT_BASE_URL.plus("/${iPackExemptResponse.id}")))
             .body(iPackExemptResponse)
     }
@@ -68,23 +66,19 @@ class CteIPackExemptController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody cteIPackExemptDto: CteIPackExemptDto,
+        @Valid @RequestBody cteIPackExemptRequestDto: CteIPackExemptRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteIPackExemptDto> {
-        if (cteIPackExemptDto.id <= 0L || cteIPackExemptDto.id != id)
-            throw UnauthorizedRequestException("Conflicting cteIPackExemptDto Ids specified: $id != ${cteIPackExemptDto.id}")
-
-        val location = getLocation(cteIPackExemptDto.locationId,fsmaUser)
-        val sourceLocation = getLocation(cteIPackExemptDto.sourceLocationId,fsmaUser)
-
-        val packTlc = getTraceLotCode(cteIPackExemptDto.packTlcId,fsmaUser)
-
-        var packTlcSource: Location? = null
-        if (cteIPackExemptDto.packTlcSourceId != null)
-            packTlcSource = getLocation(cteIPackExemptDto.packTlcSourceId,fsmaUser)
-
-        val cteIPackExempt = cteIPackExemptDto.toCteIPackExempt(location, sourceLocation, packTlc, packTlcSource)
-        val iPackExemptCto = cteIPackExemptService.update(cteIPackExempt).toCteIPackExemptDto()
+    ): ResponseEntity<CteIPackExemptResponseDto> {
+        val location = getLocation(cteIPackExemptRequestDto.locationId, fsmaUser)
+        val sourceLocation = getLocation(cteIPackExemptRequestDto.sourceLocationId, fsmaUser)
+        val packTlc = getTraceLotCode(cteIPackExemptRequestDto.packTlcId, fsmaUser)
+        val packTlcSource = cteIPackExemptRequestDto.packTlcSourceId?.let {
+            getLocation(it, fsmaUser)
+        }
+        val cteIPackExempt = cteIPackExemptRequestDto.toCteIPackExempt(
+            id = id, location, sourceLocation, packTlc, packTlcSource
+        )
+        val iPackExemptCto = cteIPackExemptService.update(cteIPackExempt).toCteIPackExemptResponseDto()
         return ResponseEntity.ok().body(iPackExemptCto)
     }
 

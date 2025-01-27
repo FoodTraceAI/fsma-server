@@ -42,8 +42,9 @@ class SupShipCteController : BaseController() {
         val shipToLocation = getLocation(supShipCteRequestDto.shipToLocationId, fsmaUser)
         val shipFromLocation = getLocation(supShipCteRequestDto.shipFromLocationId, fsmaUser)
         val tlcSource = getLocation(supShipCteRequestDto.tlcSourceId, fsmaUser)
-        val supShipCte =
-            supShipCteRequestDto.toSupCteShip(id = 0, cteReceive, tlc, shipToLocation, shipFromLocation, tlcSource)
+        val supShipCte = supShipCteRequestDto.toSupCteShip(
+            id = 0, cteReceive, tlc, shipToLocation, shipFromLocation, tlcSource
+        )
         val cteCoolResponse = supShipCteService.insert(supShipCte).toSupShipCteResponseDto()
         return ResponseEntity
             .created(URI.create(SUP_SHIP_CTE_BASE_URL.plus("/${cteCoolResponse.id}")))
@@ -62,8 +63,9 @@ class SupShipCteController : BaseController() {
         val shipToLocation = getLocation(supShipCteRequestDto.shipToLocationId, fsmaUser)
         val shipFromLocation = getLocation(supShipCteRequestDto.shipFromLocationId, fsmaUser)
         val tlcSource = getLocation(supShipCteRequestDto.tlcSourceId, fsmaUser)
-        val supShipCte =
-            supShipCteRequestDto.toSupCteShip(id=id, cteReceive, tlc, shipToLocation, shipFromLocation, tlcSource)
+        val supShipCte = supShipCteRequestDto.toSupCteShip(
+            id = id, cteReceive, tlc, shipToLocation, shipFromLocation, tlcSource
+        )
         val cteCoolResponse = supShipCteService.insert(supShipCte).toSupShipCteResponseDto()
         return ResponseEntity.ok().body(cteCoolResponse)
     }

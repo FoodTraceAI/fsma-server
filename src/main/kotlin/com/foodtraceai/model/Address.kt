@@ -84,7 +84,7 @@ fun Address.toAddressResponseDto() = AddressResponseDto(
     authUsername = authUsername,
 )
 
-fun AddressRequestDto.toAddress(id: Long = 0) = Address(
+fun AddressRequestDto.toAddress(id: Long) = Address(
     id = id,
     street = street,
     street2 = street2,

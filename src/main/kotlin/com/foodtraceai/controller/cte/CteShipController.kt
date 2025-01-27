@@ -66,7 +66,6 @@ class CteShipController : BaseController() {
         val traceLotCode = getTraceLotCode(cteShipResponseDto.tlcId, fsmaUser)
         val shipToLocation = getLocation(cteShipResponseDto.shipToLocationId, fsmaUser)
         val tlcSource = getLocation(cteShipResponseDto.tlcSourceId, fsmaUser)
-
         val cteShip = cteShipResponseDto.toCteShip(
             id = id, traceLotCode, shipToLocation, location, tlcSource
         )

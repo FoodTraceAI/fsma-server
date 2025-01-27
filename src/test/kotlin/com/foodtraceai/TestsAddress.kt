@@ -107,7 +107,7 @@ class TestsAddress : TestsBase() {
     @Test
     @Order(3)
     fun `update address`() {
-        val addressId = addressService.insert(addressRequestDto.toAddress()).id
+        val addressId = addressService.insert(addressRequestDto.toAddress(id=0)).id
         val (accessToken, _) = authenticate(rootAuthLogin)
         mockMvc.put("/api/v1/address/$addressId") {
             header("Authorization", "Bearer $accessToken")

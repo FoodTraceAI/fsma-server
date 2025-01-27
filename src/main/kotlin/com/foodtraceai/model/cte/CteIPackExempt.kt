@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model.cte
 
+import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.util.CteType
@@ -102,11 +103,33 @@ data class CteIPackExempt(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : CteBase<CteIPackExempt>()
 
-data class CteIPackExemptDto(
-    val id: Long,
+data class CteIPackExemptRequestDto(
+    val ftlItem: FtlItem,
+    val locationId: Long,
+    val prodDesc: String,
+    val variety: String,
+    val receiveDate: LocalDate,
+    val receiveTime: OffsetDateTime,
+    val receiveQuantity: Double,
+    val receiveUnitOfMeasure: UnitOfMeasure,
+    val sourceLocationId: Long,
+    val packTlcId: Long,
+    val packFoodDesc: String,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val packTlcSourceId: Long?,
+    val packTlcSourceReference: String?,
+    val packDate: LocalDate,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+)
+
+data class CteIPackExemptResponseDto(
+    override var id: Long,
     val cteType: CteType,
     val ftlItem: FtlItem,
     val locationId: Long,
@@ -126,13 +149,14 @@ data class CteIPackExemptDto(
     val packDate: LocalDate,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
-    var dateCreated: OffsetDateTime,
-    var dateModified: OffsetDateTime,
-    var isDeleted: Boolean,
-    var dateDeleted: OffsetDateTime?,
-)
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<CteIPackExemptResponseDto>()
 
-fun CteIPackExempt.toCteIPackExemptDto() = CteIPackExemptDto(
+fun CteIPackExempt.toCteIPackExemptResponseDto() = CteIPackExemptResponseDto(
     id = id,
     cteType = cteType,
     locationId = location.id,
@@ -157,16 +181,18 @@ fun CteIPackExempt.toCteIPackExemptDto() = CteIPackExemptDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun CteIPackExemptDto.toCteIPackExempt(
+fun CteIPackExemptRequestDto.toCteIPackExempt(
+    id:Long,
     location: Location,
     sourceLocation: Location,
     packTlc: TraceLotCode,
     packTlcSource: Location?,
 ) = CteIPackExempt(
     id = id,
-    cteType = cteType,
+    cteType = CteType.InitPackExempt,
     location = location,
     ftlItem = ftlItem,
     variety = variety,
@@ -185,8 +211,4 @@ fun CteIPackExemptDto.toCteIPackExempt(
     packDate = packDate,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

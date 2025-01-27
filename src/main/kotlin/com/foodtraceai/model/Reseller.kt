@@ -63,14 +63,14 @@ data class Reseller(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : BaseModel<Reseller>() {
     val hasParent: Boolean
         get() = parentReseller != null
 }
 
-data class ResellerDto(
-    val id: Long = 0,
+data class ResellerRequestDto(
     @JsonProperty("address")
     val addressResponseDto: AddressResponseDto,
     val accountRep: String?,
@@ -87,13 +87,34 @@ data class ResellerDto(
     val domain: String? = null,
     val parentResellerId: Long? = null,
     val isEnabled: Boolean = true,
-    val dateCreated: OffsetDateTime = OffsetDateTime.now(),
-    val dateModified: OffsetDateTime = OffsetDateTime.now(),
-    val isDeleted: Boolean = false,
-    val dateDeleted: OffsetDateTime? = null,
 )
 
-fun Reseller.toResellerDto() = ResellerDto(
+data class ResellerResponseDto(
+    override var id: Long,
+    @JsonProperty("address")
+    val addressResponseDto: AddressResponseDto,
+    val accountRep: String?,
+    val businessName: String,
+    val mainContactId: Long,
+    val billingContactId: Long? = null,
+    @JsonProperty("billingAddress")
+    val billingAddressDto: AddressResponseDto?,
+    val resellerType: ResellerType,
+    val password: String? = null,
+    val smtpCredentials: SmtpCredentials? = null,
+    val smsCredentials: SmsCredentials? = null,
+    val subdomain: String? = null,
+    val domain: String? = null,
+    val parentResellerId: Long? = null,
+    val isEnabled: Boolean = true,
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<ResellerResponseDto>()
+
+fun Reseller.toResellerResponseDto() = ResellerResponseDto(
     id = id,
     addressResponseDto = address.toAddressResponseDto(),
     accountRep = accountRep,
@@ -112,9 +133,11 @@ fun Reseller.toResellerDto() = ResellerDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun ResellerDto.toReseller(
+fun ResellerRequestDto.toReseller(
+    id: Long,
     mainContact: Contact,
     billingContact: Contact?,
 ): Reseller = Reseller(
@@ -131,8 +154,4 @@ fun ResellerDto.toReseller(
     subdomain = subdomain,
     domain = domain,
     isEnabled = isEnabled,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

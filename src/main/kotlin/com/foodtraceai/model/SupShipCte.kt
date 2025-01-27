@@ -185,7 +185,7 @@ fun SupShipCte.toSupShipCteResponseDto() = SupShipCteResponseDto(
 )
 
 fun SupShipCteRequestDto.toSupCteShip(
-    id: Long = 0,
+    id: Long,
     cteReceive: CteReceive?,
     tlc: TraceLotCode,
     shipToLocation: Location,

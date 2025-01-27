@@ -5,13 +5,11 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.Location
-import com.foodtraceai.model.TraceLotCode
-import com.foodtraceai.model.cte.CteIPackSproutsDto
+import com.foodtraceai.model.cte.CteIPackSproutsRequestDto
+import com.foodtraceai.model.cte.CteIPackSproutsResponseDto
 import com.foodtraceai.model.cte.toCteIPackSprouts
-import com.foodtraceai.model.cte.toCteIPackSproutsDto
+import com.foodtraceai.model.cte.toCteIPackSproutsResponseDto
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -24,8 +22,10 @@ private const val CTE_IPACK_SPROUTS_ALT_BASE_URL = "/api/v1/cte/ipack-sprouts"
 private const val CTE_IPACK_SPROUTS_ALT2_BASE_URL = "/api/v1/cte/ipack/sprouts"
 
 @RestController
-@RequestMapping(value = [CTE_IPACK_SPROUTS_BASE_URL,CTE_IPACK_SPROUTS_ALT_BASE_URL,
-    CTE_IPACK_SPROUTS_ALT2_BASE_URL])
+@RequestMapping(
+    value = [CTE_IPACK_SPROUTS_BASE_URL, CTE_IPACK_SPROUTS_ALT_BASE_URL,
+        CTE_IPACK_SPROUTS_ALT2_BASE_URL]
+)
 @SecurityRequirement(name = "bearerAuth")
 class CteIPackSproutsController : BaseController() {
 
@@ -35,60 +35,52 @@ class CteIPackSproutsController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteIPackSproutsDto> {
+    ): ResponseEntity<CteIPackSproutsResponseDto> {
         val cteSprouts = cteIPackSproutsService.findById(id)
             ?: throw EntityNotFoundException("CteSprouts not found = $id")
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
-        return ResponseEntity.ok(cteSprouts.toCteIPackSproutsDto())
+        return ResponseEntity.ok(cteSprouts.toCteIPackSproutsResponseDto())
     }
 
     // -- Create a new Address
     @PostMapping
     fun create(
-        @Valid @RequestBody cteIPackSproutsDto: CteIPackSproutsDto,
+        @Valid @RequestBody cteIPackSproutsRequestDto: CteIPackSproutsRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteIPackSproutsDto> {
-        val location = getLocation(cteIPackSproutsDto.locationId,fsmaUser)
-        val harvestLocation = getLocation(cteIPackSproutsDto.harvestLocationId,fsmaUser)
-
-        val harvestFoodBus = getFoodBus(cteIPackSproutsDto.harvestBusinessId,fsmaUser)
-
-        var coolLocation: Location? = null
-        if (cteIPackSproutsDto.coolLocationId != null)
-            coolLocation = getLocation(cteIPackSproutsDto.coolLocationId,fsmaUser)
-
-        val packTlc = getTraceLotCode(cteIPackSproutsDto.packTlcId,fsmaUser)
-
-        var packTlcSource: Location? = null
-        if (cteIPackSproutsDto.packTlcSourceId != null)
-            packTlcSource = getLocation(cteIPackSproutsDto.packTlcSourceId,fsmaUser)
-
-        var seedGrowerLocation: Location? = null
-        if (cteIPackSproutsDto.seedGrowerLocationId != null)
-            seedGrowerLocation = getLocation(cteIPackSproutsDto.seedGrowerLocationId,fsmaUser)
-        val seedConditionerLocation = getLocation(cteIPackSproutsDto.seedConditionerLocationId,fsmaUser)
-
-        val seedTlc = getTraceLotCode(cteIPackSproutsDto.seedTlcId,fsmaUser)
-
-        val seedPackingHouseLocation = getLocation(cteIPackSproutsDto.seedPackingHouseLocationId,fsmaUser)
-
-        var seedPackingHouseTlc: TraceLotCode? = null
-        if (cteIPackSproutsDto.seedPackingHouseTlcId != null)
-            seedPackingHouseTlc = getTraceLotCode(cteIPackSproutsDto.seedPackingHouseTlcId,fsmaUser)
-
-        val seedSupplierLocation = getLocation(cteIPackSproutsDto.seedSupplierLocationId,fsmaUser)
-
-        var seedSupplierTlc: TraceLotCode? = null
-        if (cteIPackSproutsDto.seedSupplierTlcId != null)
-            seedSupplierTlc = getTraceLotCode(cteIPackSproutsDto.seedSupplierTlcId,fsmaUser)
-
-        val cteIPackSprouts = cteIPackSproutsDto.toCteIPackSprouts(
-            location, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
+    ): ResponseEntity<CteIPackSproutsResponseDto> {
+        val location = getLocation(cteIPackSproutsRequestDto.locationId, fsmaUser)
+        val harvestLocation = getLocation(cteIPackSproutsRequestDto.harvestLocationId, fsmaUser)
+        val harvestFoodBus = getFoodBus(cteIPackSproutsRequestDto.harvestBusinessId, fsmaUser)
+        val coolLocation = cteIPackSproutsRequestDto.coolLocationId?.let {
+            getLocation(it, fsmaUser)
+        }
+        val packTlc = getTraceLotCode(cteIPackSproutsRequestDto.packTlcId, fsmaUser)
+        val packTlcSource = cteIPackSproutsRequestDto.packTlcSourceId?.let {
+            getLocation(it, fsmaUser)
+        }
+        val seedGrowerLocation = cteIPackSproutsRequestDto.seedGrowerLocationId?.let {
+            getLocation(it, fsmaUser)
+        }
+        val seedConditionerLocation = getLocation(cteIPackSproutsRequestDto.seedConditionerLocationId, fsmaUser)
+        val seedTlc = getTraceLotCode(cteIPackSproutsRequestDto.seedTlcId, fsmaUser)
+        val seedPackingHouseLocation = getLocation(
+            cteIPackSproutsRequestDto.seedPackingHouseLocationId, fsmaUser
+        )
+        val seedPackingHouseTlc = cteIPackSproutsRequestDto.seedPackingHouseTlcId?.let {
+            getTraceLotCode(it, fsmaUser)
+        }
+        val seedSupplierLocation = getLocation(cteIPackSproutsRequestDto.seedSupplierLocationId, fsmaUser)
+        val seedSupplierTlc = cteIPackSproutsRequestDto.seedSupplierTlcId?.let {
+            getTraceLotCode(it, fsmaUser)
+        }
+        val cteIPackSprouts = cteIPackSproutsRequestDto.toCteIPackSprouts(
+            id = 0, location, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
             seedGrowerLocation, seedConditionerLocation, seedTlc, seedPackingHouseLocation, seedPackingHouseTlc,
             seedSupplierLocation, seedSupplierTlc,
         )
-        val cteIPackSproutsResponse = cteIPackSproutsService.insert(cteIPackSprouts).toCteIPackSproutsDto()
-        return ResponseEntity.created(URI.create(CTE_IPACK_SPROUTS_BASE_URL.plus("/${cteIPackSproutsResponse.id}")))
+        val cteIPackSproutsResponse = cteIPackSproutsService.insert(cteIPackSprouts).toCteIPackSproutsResponseDto()
+        return ResponseEntity
+            .created(URI.create(CTE_IPACK_SPROUTS_BASE_URL.plus("/${cteIPackSproutsResponse.id}")))
             .body(cteIPackSproutsResponse)
     }
 
@@ -96,53 +88,40 @@ class CteIPackSproutsController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody cteIPackSproutsDto: CteIPackSproutsDto,
+        @Valid @RequestBody cteIPackSproutsRequestDto: CteIPackSproutsRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteIPackSproutsDto> {
-        if (cteIPackSproutsDto.id <= 0L || cteIPackSproutsDto.id != id)
-            throw UnauthorizedRequestException("Conflicting cteIPackSproutsDto Ids specified: $id != ${cteIPackSproutsDto.id}")
-
-        val location = getLocation(cteIPackSproutsDto.locationId,fsmaUser)
-         val harvestLocation = getLocation(cteIPackSproutsDto.harvestLocationId,fsmaUser)
-
-        val harvestFoodBus = getFoodBus(cteIPackSproutsDto.harvestBusinessId,fsmaUser)
-
-        var coolLocation: Location? = null
-        if (cteIPackSproutsDto.coolLocationId != null)
-            coolLocation = getLocation(cteIPackSproutsDto.coolLocationId,fsmaUser)
-
-        val packTlc = getTraceLotCode(cteIPackSproutsDto.packTlcId,fsmaUser)
-
-        var packTlcSource: Location? = null
-        if (cteIPackSproutsDto.packTlcSourceId != null)
-            packTlcSource = getLocation(cteIPackSproutsDto.packTlcSourceId,fsmaUser)
-
-        var seedGrowerLocation: Location? = null
-        if (cteIPackSproutsDto.seedGrowerLocationId != null)
-            seedGrowerLocation = getLocation(cteIPackSproutsDto.seedGrowerLocationId,fsmaUser)
-
-        val seedConditionerLocation = getLocation(cteIPackSproutsDto.seedConditionerLocationId,fsmaUser)
-
-        val seedTlc = getTraceLotCode(cteIPackSproutsDto.seedTlcId,fsmaUser)
-
-        val seedPackingHouseLocation = getLocation(cteIPackSproutsDto.seedPackingHouseLocationId,fsmaUser)
-
-        var seedPackingHouseTlc: TraceLotCode? = null
-        if (cteIPackSproutsDto.seedPackingHouseTlcId != null)
-            seedPackingHouseTlc = getTraceLotCode(cteIPackSproutsDto.seedPackingHouseTlcId,fsmaUser)
-
-        val seedSupplierLocation = getLocation(cteIPackSproutsDto.seedSupplierLocationId,fsmaUser)
-
-        var seedSupplierTlc: TraceLotCode? = null
-        if (cteIPackSproutsDto.seedSupplierTlcId != null)
-            seedSupplierTlc = getTraceLotCode(cteIPackSproutsDto.seedSupplierTlcId,fsmaUser)
-
-        val cteIPackSprouts = cteIPackSproutsDto.toCteIPackSprouts(
-            location, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
+    ): ResponseEntity<CteIPackSproutsResponseDto> {
+        val location = getLocation(cteIPackSproutsRequestDto.locationId, fsmaUser)
+        val harvestLocation = getLocation(cteIPackSproutsRequestDto.harvestLocationId, fsmaUser)
+        val harvestFoodBus = getFoodBus(cteIPackSproutsRequestDto.harvestBusinessId, fsmaUser)
+        val coolLocation = cteIPackSproutsRequestDto.coolLocationId?.let {
+            getLocation(it, fsmaUser)
+        }
+        val packTlc = getTraceLotCode(cteIPackSproutsRequestDto.packTlcId, fsmaUser)
+        val packTlcSource = cteIPackSproutsRequestDto.packTlcSourceId?.let {
+            getLocation(it, fsmaUser)
+        }
+        val seedGrowerLocation = cteIPackSproutsRequestDto.seedGrowerLocationId?.let {
+            getLocation(it, fsmaUser)
+        }
+        val seedConditionerLocation = getLocation(cteIPackSproutsRequestDto.seedConditionerLocationId, fsmaUser)
+        val seedTlc = getTraceLotCode(cteIPackSproutsRequestDto.seedTlcId, fsmaUser)
+        val seedPackingHouseLocation = getLocation(
+            cteIPackSproutsRequestDto.seedPackingHouseLocationId, fsmaUser
+        )
+        val seedPackingHouseTlc = cteIPackSproutsRequestDto.seedPackingHouseTlcId?.let {
+            getTraceLotCode(it, fsmaUser)
+        }
+        val seedSupplierLocation = getLocation(cteIPackSproutsRequestDto.seedSupplierLocationId, fsmaUser)
+        val seedSupplierTlc = cteIPackSproutsRequestDto.seedSupplierTlcId?.let {
+            getTraceLotCode(it, fsmaUser)
+        }
+        val cteIPackSprouts = cteIPackSproutsRequestDto.toCteIPackSprouts(
+            id = id, location, harvestLocation, harvestFoodBus, coolLocation, packTlc, packTlcSource,
             seedGrowerLocation, seedConditionerLocation, seedTlc, seedPackingHouseLocation, seedPackingHouseTlc,
             seedSupplierLocation, seedSupplierTlc,
         )
-        val cteIPackSproutsResponse = cteIPackSproutsService.update(cteIPackSprouts).toCteIPackSproutsDto()
+        val cteIPackSproutsResponse = cteIPackSproutsService.update(cteIPackSprouts).toCteIPackSproutsResponseDto()
         return ResponseEntity.ok().body(cteIPackSproutsResponse)
     }
 

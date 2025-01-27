@@ -35,7 +35,7 @@ class ContactController : BaseController() {
         @Valid @RequestBody contactRequestDto: ContactRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<ContactResponseDto> {
-        val contact = contactRequestDto.toContact()
+        val contact = contactRequestDto.toContact(id = 0)
         val contactResponseDto = contactService.insert(contact).toContactResponseDto()
         return ResponseEntity
             .created(URI.create(CONTACT_BASE_URL.plus("/${contactResponseDto.id}")))

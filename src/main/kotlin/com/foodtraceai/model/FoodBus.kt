@@ -89,7 +89,7 @@ fun FoodBus.toFoodBusResponseDto() = FoodBusResponseDto(
 )
 
 fun FoodBusRequestDto.toFoodBus(
-    id: Long = 0,
+    id: Long,
     reseller: Reseller?,
     mainAddress: Address,
     foodBusContact: Contact,

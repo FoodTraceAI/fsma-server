@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model.cte
 
+import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.Location
 import com.foodtraceai.util.CteType
 import com.foodtraceai.util.FtlItem
@@ -84,11 +85,27 @@ data class CteCool(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : CteBase<CteCool>()
 
-data class CteCoolDto(
-    val id: Long,
+data class CteCoolRequestDto(
+    val ftlItem: FtlItem,
+    val locationId: Long,
+    val isrLocationId: Long,
+    val prodDesc: String,
+    val variety: String?,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val coolLocationId: Long,
+    val coolDate: LocalDate,
+    val harvestLocationId: Long,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+)
+
+data class CteCoolResponseDto(
+    override var id: Long,
     val cteType: CteType = CteType.Cool,
     val ftlItem: FtlItem,
     val locationId: Long,
@@ -102,13 +119,14 @@ data class CteCoolDto(
     val harvestLocation: Location,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
-    val dateCreated: OffsetDateTime,
-    val dateModified: OffsetDateTime,
-    val isDeleted: Boolean,
-    val dateDeleted: OffsetDateTime?,
-)
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<CteCoolResponseDto>()
 
-fun CteCool.toCteCoolDto() = CteCoolDto(
+fun CteCool.toCteCoolResponseDto() = CteCoolResponseDto(
     id = id,
     cteType = cteType,
     ftlItem = ftlItem,
@@ -127,14 +145,18 @@ fun CteCool.toCteCoolDto() = CteCoolDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun CteCoolDto.toCteCool(
+fun CteCoolRequestDto.toCteCool(
+    id: Long,
     location: Location,
     isrLocation: Location,
+    coolLocation: Location,
+    harvestLocation: Location,
 ) = CteCool(
     id = id,
-    cteType = cteType,
+    cteType = CteType.Cool,
     ftlItem = ftlItem,
     location = location,
     isrLocation = isrLocation,
@@ -147,8 +169,4 @@ fun CteCoolDto.toCteCool(
     harvestLocation = harvestLocation,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

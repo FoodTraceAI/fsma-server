@@ -57,11 +57,9 @@ class LocationController : BaseController() {
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<LocationResponseDto> {
         assertFsmaUserLocationMatches(id, fsmaUser)
-
         val foodBus = getFoodBus(locationRequestDto.foodBusId, fsmaUser)
         val contact = getContact(locationRequestDto.locationContactId, fsmaUser)
         val serviceAddress = getAddress(locationRequestDto.addressId, fsmaUser)
-
         val location = locationRequestDto.toLocation(id = id, foodBus, contact, serviceAddress)
         val locationResponse = locationService.update(location)
         return ResponseEntity.ok().body(locationResponse.toLocationResponseDto())

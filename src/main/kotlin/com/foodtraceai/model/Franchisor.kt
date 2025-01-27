@@ -39,11 +39,11 @@ data class Franchisor(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : BaseModel<Franchisor>()
 
-data class FranchisorDto(
-    val id: Long = 0,
+data class FranchisorRequestDto(
     val addressId: Long,
     val franchisorName: String,
     val mainContactId: Long,
@@ -52,13 +52,26 @@ data class FranchisorDto(
     val subdomain: String?,
     val accessKey: Long? = null,
     val isEnabled: Boolean,
-    val dateCreated: OffsetDateTime = OffsetDateTime.now(),
-    val dateModified: OffsetDateTime = OffsetDateTime.now(),
-    val isDeleted: Boolean = false,
-    val dateDeleted: OffsetDateTime? = null,
 )
 
-fun Franchisor.toFranchisorDto() = FranchisorDto(
+data class FranchisorResponseDto(
+    override var id: Long,
+    val addressId: Long,
+    val franchisorName: String,
+    val mainContactId: Long,
+    val billingContactId: Long? = null,
+    val billingAddressId: Long?,
+    val subdomain: String?,
+    val accessKey: Long? = null,
+    val isEnabled: Boolean,
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<FranchisorResponseDto>()
+
+fun Franchisor.toFranchisorResponseDto() = FranchisorResponseDto(
     id = id,
     addressId = address.id,
     franchisorName = franchisorName,
@@ -72,9 +85,11 @@ fun Franchisor.toFranchisorDto() = FranchisorDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun FranchisorDto.toFranchisor(
+fun FranchisorRequestDto.toFranchisor(
+    id: Long,
     address: Address,
     mainContact: Contact,
     billingAddress: Address?,

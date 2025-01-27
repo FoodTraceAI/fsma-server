@@ -178,7 +178,7 @@ class DataLoader : ApplicationRunner {
             lat = 35.1268133,
             lon = -90.0087413
         )
-        foodTraceAddress = addressRequestDto.toAddress()
+        foodTraceAddress = addressRequestDto.toAddress(id = 0)
         addressList.add(addressService.insert(foodTraceAddress))
 
         addressRequestDto = AddressRequestDto(
@@ -190,7 +190,7 @@ class DataLoader : ApplicationRunner {
             lat = 35.1268133,
             lon = -90.0087413
         )
-        freshProdDistAddress = addressRequestDto.toAddress()
+        freshProdDistAddress = addressRequestDto.toAddress(id = 0)
         addressList.add(addressService.insert(freshProdDistAddress))
 
         addressRequestDto = AddressRequestDto(
@@ -202,7 +202,7 @@ class DataLoader : ApplicationRunner {
             lat = 35.1268133,
             lon = -90.0087413
         )
-        happyRestAddress = addressRequestDto.toAddress()
+        happyRestAddress = addressRequestDto.toAddress(id = 0)
         addressList.add(addressService.insert(happyRestAddress))
 
         addressRequestDto = AddressRequestDto(
@@ -214,7 +214,7 @@ class DataLoader : ApplicationRunner {
             lat = 35.1268133,
             lon = -90.0087413
         )
-        pepiProcessorAddress = addressRequestDto.toAddress()
+        pepiProcessorAddress = addressRequestDto.toAddress(id = 0)
         addressList.add(addressService.insert(pepiProcessorAddress))
     }
 
@@ -284,7 +284,7 @@ class DataLoader : ApplicationRunner {
     }
 
     fun addResellers() {
-        var resellerDto = ResellerDto(
+        var resellerResponseDto = ResellerRequestDto(
             addressResponseDto = addressList[0].toAddressResponseDto(),
             accountRep = "FoodTraceAI Account Rep",
             businessName = "FoodTraceAI",
@@ -293,10 +293,10 @@ class DataLoader : ApplicationRunner {
             billingAddressDto = addressList[0].toAddressResponseDto(),
             resellerType = ResellerType.Distributor,
         )
-        foodTraceReseller = resellerDto.toReseller(mainContact, billingContact)
+        foodTraceReseller = resellerResponseDto.toReseller(id = 0, mainContact, billingContact)
         resellerList.add(resellerService.insert(foodTraceReseller))
 
-        resellerDto = ResellerDto(
+        resellerResponseDto = ResellerRequestDto(
             addressResponseDto = addressList[1].toAddressResponseDto(),
             accountRep = "Account Rep",
             businessName = "Fresh Produce",
@@ -305,7 +305,7 @@ class DataLoader : ApplicationRunner {
             billingAddressDto = addressList[1].toAddressResponseDto(),
             resellerType = ResellerType.Distributor,
         )
-        freshProduceReseller = resellerDto.toReseller(mainContact, billingContact)
+        freshProduceReseller = resellerResponseDto.toReseller(id = 0, mainContact, billingContact)
         resellerList.add(resellerService.insert(freshProduceReseller))
     }
 

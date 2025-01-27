@@ -40,7 +40,7 @@ class FoodBusController : BaseController() {
         val mainAddress = getAddress(foodBusRequestDto.mainAddressId, fsmaUser)
         val contact = getContact(foodBusRequestDto.foodBusContactId, fsmaUser)
         val franchisor = foodBusRequestDto.franchisorId?.let { getFranchisor(it, fsmaUser) }
-        val foodBus = foodBusRequestDto.toFoodBus(id=0,reseller, mainAddress, contact, franchisor)
+        val foodBus = foodBusRequestDto.toFoodBus(id = 0, reseller, mainAddress, contact, franchisor)
         val foodBusResponse = foodBusService.insert(foodBus)
         return ResponseEntity
             .created(URI.create(FOOD_BUS_BASE_URL.plus("/${foodBusResponse.id}")))
@@ -54,12 +54,12 @@ class FoodBusController : BaseController() {
         @Valid @RequestBody foodBusRequestDto: FoodBusRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<FoodBusResponseDto> {
-       assertFsmaUserFoodBusMatches(id, fsmaUser)
+        assertFsmaUserFoodBusMatches(id, fsmaUser)
         val reseller: Reseller? = foodBusRequestDto.resellerId?.let { getReseller(it, fsmaUser) }
         val mainAddress = getAddress(foodBusRequestDto.mainAddressId, fsmaUser)
         val foodBusContact = getContact(foodBusRequestDto.foodBusContactId, fsmaUser)
         val franchisor = foodBusRequestDto.franchisorId?.let { getFranchisor(it, fsmaUser) }
-        val foodBus = foodBusRequestDto.toFoodBus(id, reseller, mainAddress, foodBusContact, franchisor)
+        val foodBus = foodBusRequestDto.toFoodBus(id = id, reseller, mainAddress, foodBusContact, franchisor)
         val foodBusResponse = foodBusService.update(foodBus)
         return ResponseEntity.ok().body(foodBusResponse.toFoodBusResponseDto())
     }

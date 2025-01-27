@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model.cte
 
+import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.FoodBus
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
@@ -138,11 +139,42 @@ data class CteIPackProd(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : CteBase<CteIPackProd>()
 
-data class CteIPackProdDto(
-    val id: Long,
+data class CteIPackProdRequestDto(
+    val ftlItem: FtlItem,
+    val locationId: Long,
+    val cteHarvestId: Long,
+    val prodDesc: String,
+    val variety: String?,
+    val receiveDate: LocalDate,
+    val receiveTime: OffsetDateTime,
+    val receiveQuantity: Double,
+    val receiveUnitOfMeasure: UnitOfMeasure,
+    val harvestLocationId: Long,
+    val fieldName: String,
+    val fieldDesc: String,
+    val containerName: String,
+    val containerDesc: String,
+    val harvestBusinessId: Long,
+    val harvestDate: LocalDate,
+    val coolLocationId: Long?,
+    val coolDate: LocalDate?,
+    val packTlcId: Long,
+    val packFoodDesc: String,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val packTlcSourceId: Long?,
+    val packTlcSourceReference: String? = null,
+    val packDate: LocalDate,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+)
+
+data class CteIPackProdResponseDto(
+    override var id: Long,
     val cteType: CteType,
     val ftlItem: FtlItem,
     val locationId: Long,
@@ -171,13 +203,14 @@ data class CteIPackProdDto(
     val packDate: LocalDate,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
-    val dateCreated: OffsetDateTime,
-    val dateModified: OffsetDateTime,
-    val isDeleted: Boolean,
-    val dateDeleted: OffsetDateTime?,
-)
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<CteIPackProdResponseDto>()
 
-fun CteIPackProd.toCteIPackProdDto() = CteIPackProdDto(
+fun CteIPackProd.toCteIPackProdResponseDto() = CteIPackProdResponseDto(
     id = id,
     cteType = cteType,
     ftlItem = ftlItem,
@@ -211,9 +244,11 @@ fun CteIPackProd.toCteIPackProdDto() = CteIPackProdDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun CteIPackProdDto.toCteIPackProd(
+fun CteIPackProdRequestDto.toCteIPackProd(
+    id: Long,
     location: Location,
     harvestLocation: Location,
     harvestFoodBus: FoodBus,
@@ -222,7 +257,7 @@ fun CteIPackProdDto.toCteIPackProd(
     packTlcSource: Location?,
 ) = CteIPackProd(
     id = id,
-    cteType = cteType,
+    cteType = CteType.InitPackProduce,
     location = location,
     cteHarvestId = cteHarvestId,
     ftlItem = ftlItem,
@@ -250,8 +285,4 @@ fun CteIPackProdDto.toCteIPackProd(
     packDate = packDate,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

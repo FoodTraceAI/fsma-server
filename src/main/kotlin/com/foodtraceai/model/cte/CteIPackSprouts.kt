@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model.cte
 
+import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.FoodBus
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
@@ -196,15 +197,14 @@ data class CteIPackSprouts(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : CteBase<CteIPackSprouts>()
 
-data class CteIPackSproutsDto(
-    val id: Long,
-    val cteType: CteType,
+data class CteIPackSproutsRequestDto(
     val ftlItem: FtlItem,
     val locationId: Long,
-    val cteHarvestId: Long=0,
+    val cteHarvestId: Long = 0,
     val prodDesc: String,
     val variety: String? = null,
     val receiveDate: LocalDate,
@@ -250,13 +250,67 @@ data class CteIPackSproutsDto(
     val seedReceiveTime: OffsetDateTime,    // Not required but useful
     val seedReferenceDocumentType: ReferenceDocumentType,
     val seedReferenceDocumentNum: String,
-    val dateCreated: OffsetDateTime,
-    val dateModified: OffsetDateTime,
-    val isDeleted: Boolean,
-    val dateDeleted: OffsetDateTime?,
 )
 
-fun CteIPackSprouts.toCteIPackSproutsDto() = CteIPackSproutsDto(
+data class CteIPackSproutsResponseDto(
+    override var id: Long,
+    val cteType: CteType,
+    val ftlItem: FtlItem,
+    val locationId: Long,
+    val cteHarvestId: Long = 0,
+    val prodDesc: String,
+    val variety: String? = null,
+    val receiveDate: LocalDate,
+    val receiveTime: OffsetDateTime,
+    val receiveQuantity: Double,
+    val receiveUnitOfMeasure: UnitOfMeasure,
+    val harvestLocationId: Long,
+    val fieldName: String,
+    val fieldDesc: String,
+    val containerName: String,
+    val containerDesc: String,
+    val harvestBusinessId: Long,
+    val harvestDate: LocalDate,
+    val coolLocationId: Long?,
+    val coolDate: LocalDate?,
+    val packTlcId: Long,
+    val packFoodDesc: String,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val packTlcSourceId: Long?,
+    val packTlcSourceReference: String? = null,
+    val packDate: LocalDate,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+
+    // Seeds - part (b)
+    val seedGrowerLocationId: Long?,
+    val seedHarvestingDate: LocalDate?,
+    val seedConditionerLocationId: Long,
+    val seedTlcId: Long,
+    val seedConditioningDate: LocalDate,
+    val seedPackingHouseLocationId: Long,
+    val seedRepackingDate: LocalDate?,
+    val seedPackingHouseTlcId: Long?,
+    val seedSupplierLocationId: Long,
+    val seedSupplierTlcId: Long?,
+    val seedDesc: String,
+    val seedTaxonomicName: String,
+    val seedGrowingSpecs: String,
+    val seedTypeOfPacking: String,
+    val seedAntimicrobialTreatment: String?,
+    val seedReceiveDate: LocalDate,
+    val seedReceiveTime: OffsetDateTime,    // Not required but useful
+    val seedReferenceDocumentType: ReferenceDocumentType,
+    val seedReferenceDocumentNum: String,
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<CteIPackSproutsResponseDto>()
+
+fun CteIPackSprouts.toCteIPackSproutsResponseDto() = CteIPackSproutsResponseDto(
     id = id,
     cteType = cteType,
     ftlItem = ftlItem,
@@ -310,9 +364,11 @@ fun CteIPackSprouts.toCteIPackSproutsDto() = CteIPackSproutsDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun CteIPackSproutsDto.toCteIPackSprouts(
+fun CteIPackSproutsRequestDto.toCteIPackSprouts(
+    id: Long,
     location: Location,
     harvestLocation: Location,
     harvestFoodBus: FoodBus,
@@ -328,7 +384,7 @@ fun CteIPackSproutsDto.toCteIPackSprouts(
     seedSupplierTlc: TraceLotCode?,
 ) = CteIPackSprouts(
     id = id,
-    cteType = cteType,
+    cteType = CteType.InitPackSprouts,
     ftlItem = ftlItem,
     location = location,
     cteHarvestId = cteHarvestId,
@@ -376,8 +432,4 @@ fun CteIPackSproutsDto.toCteIPackSprouts(
     seedReceiveTime = seedReceiveTime,
     seedReferenceDocumentType = seedReferenceDocumentType,
     seedReferenceDocumentNum = seedReferenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

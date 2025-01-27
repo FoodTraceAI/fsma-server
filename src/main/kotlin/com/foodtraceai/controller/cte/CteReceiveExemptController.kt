@@ -5,11 +5,11 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.cte.CteReceiveExemptDto
+import com.foodtraceai.model.cte.CteReceiveExemptRequestDto
+import com.foodtraceai.model.cte.CteReceiveExemptResponseDto
 import com.foodtraceai.model.cte.toCteReceiveExempt
-import com.foodtraceai.model.cte.toCteReceiveExemptDto
+import com.foodtraceai.model.cte.toCteReceiveExemptResponseDto
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -35,30 +35,28 @@ class cteReceiveExemptController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteReceiveExemptDto> {
+    ): ResponseEntity<CteReceiveExemptResponseDto> {
         val cteReceiveExempt = cteReceiveExemptService.findById(id)
             ?: throw EntityNotFoundException("cteReceiveExempt not found = $id")
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
-        return ResponseEntity.ok(cteReceiveExempt.toCteReceiveExemptDto())
+        return ResponseEntity.ok(cteReceiveExempt.toCteReceiveExemptResponseDto())
     }
 
     // -- Create a new Address
     @PostMapping
     fun create(
-        @Valid @RequestBody cteReceiveExemptDto: CteReceiveExemptDto,
+        @Valid @RequestBody cteReceiveExemptRequestDto: CteReceiveExemptRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteReceiveExemptDto> {
-        val location = getLocation(cteReceiveExemptDto.locationId,fsmaUser)
-
-        val traceLotCode = getTraceLotCode(cteReceiveExemptDto.traceLotCodeId,fsmaUser)
-
-        val shipFromLocation = getLocation(cteReceiveExemptDto.ipsLocationId,fsmaUser)
-
-        val cteReceiveExempt = cteReceiveExemptDto.toCteReceiveExempt(
-            traceLotCode, shipFromLocation, location
+    ): ResponseEntity<CteReceiveExemptResponseDto> {
+        val location = getLocation(cteReceiveExemptRequestDto.locationId, fsmaUser)
+        val traceLotCode = getTraceLotCode(cteReceiveExemptRequestDto.traceLotCodeId, fsmaUser)
+        val shipFromLocation = getLocation(cteReceiveExemptRequestDto.ipsLocationId, fsmaUser)
+        val cteReceiveExempt = cteReceiveExemptRequestDto.toCteReceiveExempt(
+            id = 0, traceLotCode, shipFromLocation, location
         )
-        val cteReceiveExemptResponse = cteReceiveExemptService.insert(cteReceiveExempt).toCteReceiveExemptDto()
-        return ResponseEntity.created(URI.create(CTE_RECEIVE_EXEMPT_BASE_URL.plus("/${cteReceiveExemptResponse.id}")))
+        val cteReceiveExemptResponse = cteReceiveExemptService.insert(cteReceiveExempt).toCteReceiveExemptResponseDto()
+        return ResponseEntity
+            .created(URI.create(CTE_RECEIVE_EXEMPT_BASE_URL.plus("/${cteReceiveExemptResponse.id}")))
             .body(cteReceiveExemptResponse)
     }
 
@@ -66,21 +64,17 @@ class cteReceiveExemptController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody cteReceiveExemptDto: CteReceiveExemptDto,
+        @Valid @RequestBody cteReceiveExemptRequestDto: CteReceiveExemptRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteReceiveExemptDto> {
-        if (cteReceiveExemptDto.id <= 0L || cteReceiveExemptDto.id != id)
-            throw UnauthorizedRequestException("Conflicting cteReceiveExempt Ids specified: $id != ${cteReceiveExemptDto.id}")
-
-        val location = getLocation(cteReceiveExemptDto.locationId,fsmaUser)
-
-        val traceLotCode = getTraceLotCode(cteReceiveExemptDto.traceLotCodeId,fsmaUser)
-
-        val shipFromLocation = getLocation(cteReceiveExemptDto.ipsLocationId,fsmaUser)
-
-        val cteReceiveExempt = cteReceiveExemptDto.toCteReceiveExempt(traceLotCode, shipFromLocation, location)
-        val cteReceiveExemptCto = cteReceiveExemptService.update(cteReceiveExempt).toCteReceiveExemptDto()
-        return ResponseEntity.ok().body(cteReceiveExemptCto)
+    ): ResponseEntity<CteReceiveExemptResponseDto> {
+        val location = getLocation(cteReceiveExemptRequestDto.locationId, fsmaUser)
+        val traceLotCode = getTraceLotCode(cteReceiveExemptRequestDto.traceLotCodeId, fsmaUser)
+        val shipFromLocation = getLocation(cteReceiveExemptRequestDto.ipsLocationId, fsmaUser)
+        val cteReceiveExempt = cteReceiveExemptRequestDto.toCteReceiveExempt(
+            id = id, traceLotCode, shipFromLocation, location
+        )
+        val cteReceiveExemptResponse = cteReceiveExemptService.insert(cteReceiveExempt).toCteReceiveExemptResponseDto()
+        return ResponseEntity.ok().body(cteReceiveExemptResponse)
     }
 
     // -- Delete an existing Address

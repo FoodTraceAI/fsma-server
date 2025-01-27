@@ -67,9 +67,8 @@ class CteReceiveController : BaseController() {
         val traceLotCode = getTraceLotCode(cteReceiveRequestDto.tlcId, fsmaUser)
         val shipFromLocation = getLocation(cteReceiveRequestDto.ipsLocationId, fsmaUser)
         val tlcSource = getLocation(cteReceiveRequestDto.tlcSourceId, fsmaUser)
-
         val cteReceive = cteReceiveRequestDto.toCteReceive(
-            id=id, location, traceLotCode, shipFromLocation, tlcSource
+            id = id, location, traceLotCode, shipFromLocation, tlcSource
         )
         val cteReceiveResponse = cteReceiveService.update(cteReceive).toCteReceiveResponseDto()
         return ResponseEntity.ok().body(cteReceiveResponse)
@@ -104,6 +103,7 @@ class CteReceiveController : BaseController() {
         val receiveTime: OffsetDateTime,
     )
 
+    // API call for mobile scanning of product on loading dock
     @PostMapping("/makeCteReceive")
     private fun makeCteReceive(
         @Valid @RequestBody supShipArgs: SupShipArgs,

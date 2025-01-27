@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model.cte
 
+import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.util.CteType
@@ -101,6 +102,7 @@ data class CteTrans(
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
     override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 
     // (b) For each traceability lot produced through transformation of a raw
     // agricultural commodity (other than a food obtained from a fishing vessel)
@@ -115,8 +117,27 @@ data class CteTrans(
 
 ) : CteBase<CteTrans>()
 
-data class CteTransDto(
-    val id: Long,
+data class CteTransRequestDto(
+    val locationId: Long,
+    val ftlItem: FtlItem,
+    val variety: String,
+    val inputTlcId: Long,  // from Initial Packer or previous Transformer
+    val inputFoodDesc: String, // from Initial Packer or previous Transformer
+    val inputQuantity: Double,   // from Initial Packer
+    val inputUnitOfMeasure: UnitOfMeasure,   // from Initial Packer
+    val newTlcId: Long,  // the new Tlc
+    val newTlcLocationId: Long,
+    val newTlcSourceReference: String? = null,
+    val transDate: LocalDate,
+    val prodDesc: String,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+)
+
+data class CteTransResponseDto(
+    override var id: Long,
     val cteType: CteType,
     val locationId: Long,
     val ftlItem: FtlItem,
@@ -134,13 +155,14 @@ data class CteTransDto(
     val unitOfMeasure: UnitOfMeasure,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
-    val dateCreated: OffsetDateTime,
-    val dateModified: OffsetDateTime,
-    val isDeleted: Boolean,
-    val dateDeleted: OffsetDateTime?,
-)
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<CteTransResponseDto>()
 
-fun CteTrans.toCteTransDto() = CteTransDto(
+fun CteTrans.toCteTransResponseDto() = CteTransResponseDto(
     id = id,
     cteType = cteType,
     locationId = location.id,
@@ -163,16 +185,18 @@ fun CteTrans.toCteTransDto() = CteTransDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun CteTransDto.toCteTrans(
+fun CteTransRequestDto.toCteTrans(
+    id: Long,
     location: Location,
     inputTlc: TraceLotCode,
     newTlc: TraceLotCode,
     newTlcLocation: Location,
 ) = CteTrans(
     id = id,
-    cteType = cteType,
+    cteType = CteType.Transform,
     location = location,
     ftlItem = ftlItem,
     variety = variety,
@@ -189,8 +213,4 @@ fun CteTransDto.toCteTrans(
     unitOfMeasure = unitOfMeasure,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

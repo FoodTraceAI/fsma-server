@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model.cte
 
+import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.Location
 import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.util.CteType
@@ -66,7 +67,7 @@ data class CteFirstLand(
     // the traceability lot code source reference;
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn
-    val tlcSource: Location? = null,
+    val tlcSource: Location,
     val tlcSourceReference: String? = null,
 
     //(f) The date the food was landed; and
@@ -82,11 +83,31 @@ data class CteFirstLand(
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
-    override var dateDeleted: OffsetDateTime? = null
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : CteBase<CteFirstLand>()
 
-data class CteFirstLandDto(
-    val id: Long,
+data class CteFirstLandRequestDto(
+    val ftlItem: FtlItem,
+    val locationId: Long,
+    val tlcId: Long,
+    val prodDesc: String,
+    val variety: String,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val harvestDateBegin: LocalDate,
+    val harvestDateEnd: LocalDate,
+    val harvestArea: String,
+    val tlcSourceId: Long,
+    val tlcSourceReference: String?,
+    val landedDate: LocalDate,
+    val landedTime: OffsetDateTime,    // not required
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+)
+
+data class CteFirstLandResponseDto(
+    override var id: Long,
     val cteType: CteType,
     val ftlItem: FtlItem,
     val locationId: Long,
@@ -104,13 +125,14 @@ data class CteFirstLandDto(
     val landedTime: OffsetDateTime,    // not required
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
-    val dateCreated: OffsetDateTime,
-    val dateModified: OffsetDateTime,
-    val isDeleted: Boolean,
-    val dateDeleted: OffsetDateTime?,
-)
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<CteFirstLandResponseDto>()
 
-fun CteFirstLand.toCteFirstLandDto() = CteFirstLandDto(
+fun CteFirstLand.toCteFirstLandResponseDto() = CteFirstLandResponseDto(
     id = id,
     cteType = cteType,
     ftlItem = ftlItem,
@@ -123,7 +145,7 @@ fun CteFirstLand.toCteFirstLandDto() = CteFirstLandDto(
     harvestDateBegin = harvestDateBegin,
     harvestDateEnd = harvestDateEnd,
     harvestArea = harvestArea,
-    tlcSourceId = tlcSource?.id,
+    tlcSourceId = tlcSource.id,
     tlcSourceReference = tlcSourceReference,
     landedDate = landedDate,
     landedTime = landedTime,    // not required
@@ -132,15 +154,18 @@ fun CteFirstLand.toCteFirstLandDto() = CteFirstLandDto(
     dateCreated = dateCreated,
     dateModified = dateModified,
     isDeleted = isDeleted,
-    dateDeleted = dateDeleted
+    dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun CteFirstLandDto.toCteFirstLand(
+fun CteFirstLandRequestDto.toCteFirstLand(
+    id: Long,
     location: Location,
-    tlcSource: Location?,
+    tlc: TraceLotCode,
+    tlcSource: Location,
 ) = CteFirstLand(
     id = id,
-    cteType = cteType,
+    cteType = CteType.FirstLandReceive,
     ftlItem = ftlItem,
     location = location,
     tlc = tlc,
@@ -157,8 +182,4 @@ fun CteFirstLandDto.toCteFirstLand(
     landedTime = landedTime,    // not required
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted
 )

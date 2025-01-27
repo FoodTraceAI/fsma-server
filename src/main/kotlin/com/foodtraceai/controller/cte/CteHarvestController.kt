@@ -5,11 +5,11 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.cte.CteHarvestDto
+import com.foodtraceai.model.cte.CteHarvestRequestDto
+import com.foodtraceai.model.cte.CteHarvestResponseDto
 import com.foodtraceai.model.cte.toCteHarvest
-import com.foodtraceai.model.cte.toCteHarvestDto
+import com.foodtraceai.model.cte.toCteHarvestResponseDto
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -30,25 +30,26 @@ class CteHarvestController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteHarvestDto> {
+    ): ResponseEntity<CteHarvestResponseDto> {
         val cteHarvest = cteHarvestService.findById(id)
             ?: throw EntityNotFoundException("CteHarvest not found = $id")
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
-        return ResponseEntity.ok(cteHarvest.toCteHarvestDto())
+        return ResponseEntity.ok(cteHarvest.toCteHarvestResponseDto())
     }
 
     // -- Create a new Address
     @PostMapping
     fun create(
-        @Valid @RequestBody cteHarvestDto: CteHarvestDto,
+        @Valid @RequestBody cteHarvestRequestDto: CteHarvestRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteHarvestDto> {
-        val location = getLocation(cteHarvestDto.locationId, fsmaUser)
-        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId, fsmaUser)
-        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId, fsmaUser)
-
-        val cteHarvest = cteHarvestDto.toCteHarvest(location, subsequentRecipient, harvestLocation)
-        val cteHarvestResponse = cteHarvestService.insert(cteHarvest).toCteHarvestDto()
+    ): ResponseEntity<CteHarvestResponseDto> {
+        val location = getLocation(cteHarvestRequestDto.locationId, fsmaUser)
+        val subsequentRecipient = getLocation(cteHarvestRequestDto.isrLocationId, fsmaUser)
+        val harvestLocation = getLocation(cteHarvestRequestDto.harvestLocationId, fsmaUser)
+        val cteHarvest = cteHarvestRequestDto.toCteHarvest(
+            id = 0, location, subsequentRecipient, harvestLocation
+        )
+        val cteHarvestResponse = cteHarvestService.insert(cteHarvest).toCteHarvestResponseDto()
         return ResponseEntity.created(URI.create(CTE_HARVEST_BASE_URL.plus("/${cteHarvestResponse.id}")))
             .body(cteHarvestResponse)
     }
@@ -57,18 +58,16 @@ class CteHarvestController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody cteHarvestDto: CteHarvestDto,
+        @Valid @RequestBody cteHarvestRequestDto: CteHarvestRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteHarvestDto> {
-        if (cteHarvestDto.id <= 0L || cteHarvestDto.id != id)
-            throw UnauthorizedRequestException("Conflicting CteHarvest Ids specified: $id != ${cteHarvestDto.id}")
-
-        val location = getLocation(cteHarvestDto.locationId, fsmaUser)
-        val subsequentRecipient = getLocation(cteHarvestDto.isrLocationId, fsmaUser)
-        val harvestLocation = getLocation(cteHarvestDto.harvestLocationId, fsmaUser)
-
-        val cteHarvest = cteHarvestDto.toCteHarvest(location, subsequentRecipient, harvestLocation)
-        val cteHarvestCto = cteHarvestService.update(cteHarvest).toCteHarvestDto()
+    ): ResponseEntity<CteHarvestResponseDto> {
+        val location = getLocation(cteHarvestRequestDto.locationId, fsmaUser)
+        val subsequentRecipient = getLocation(cteHarvestRequestDto.isrLocationId, fsmaUser)
+        val harvestLocation = getLocation(cteHarvestRequestDto.harvestLocationId, fsmaUser)
+        val cteHarvest = cteHarvestRequestDto.toCteHarvest(
+            id = id, location, subsequentRecipient, harvestLocation
+        )
+        val cteHarvestCto = cteHarvestService.update(cteHarvest).toCteHarvestResponseDto()
         return ResponseEntity.ok().body(cteHarvestCto)
     }
 

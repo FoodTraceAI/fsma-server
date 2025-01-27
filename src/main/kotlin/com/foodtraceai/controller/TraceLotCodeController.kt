@@ -57,7 +57,7 @@ class TraceLotCodeController : BaseController() {
     ): ResponseEntity<TraceLotCodeResponseDto> {
         val tlcSource = getLocation(traceLotCodeRequestDto.tlcSourceId)
         val traceLotCode = traceLotCodeRequestDto.toTraceLotCode(
-            id = 0, tlcSource = tlcSource,
+            id = id, tlcSource = tlcSource,
         )
         val traceLotCodeResponseDto = traceLotCodeService.update(traceLotCode).toTraceLotCodeResponseDto()
         return ResponseEntity.ok().body(traceLotCodeResponseDto)

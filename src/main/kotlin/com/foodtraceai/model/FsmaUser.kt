@@ -156,7 +156,7 @@ fun FsmaUser.toFsmaUserResponseDto() = FsmaUserResponseDto(
     authUsername = authUsername,
 )
 
-fun FsmaUserRequestDto.toFsmaUser(id: Long = 0, foodBus: FoodBus, location: Location) = FsmaUser(
+fun FsmaUserRequestDto.toFsmaUser(id: Long, foodBus: FoodBus, location: Location) = FsmaUser(
     id = id,
     foodBus = foodBus,
     location = location,

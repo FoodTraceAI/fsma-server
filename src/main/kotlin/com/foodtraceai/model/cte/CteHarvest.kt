@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.model.cte
 
+import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.Location
 import com.foodtraceai.util.CteType
 import com.foodtraceai.util.FtlItem
@@ -99,10 +100,29 @@ data class CteHarvest(
     override var dateModified: OffsetDateTime = OffsetDateTime.now(),
     override var isDeleted: Boolean = false,
     override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
 ) : CteBase<CteHarvest>()
 
-data class CteHarvestDto(
-    val id: Long,
+data class CteHarvestRequestDto(
+    val ftlItem: FtlItem,
+    val locationId: Long,
+    val isrLocationId: Long,
+    val prodDesc: String,   // Commodity
+    val variety: String?,
+    val quantity: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val harvestLocationId: Long,
+    val fieldName: String,
+    val fieldDesc: String,
+    val containerName: String?,
+    val containerDesc: String?,
+    val harvestDate: LocalDate,
+    val referenceDocumentType: ReferenceDocumentType,
+    val referenceDocumentNum: String,
+)
+
+data class CteHarvestResponseDto(
+    override var id: Long,
     val cteType: CteType,
     val ftlItem: FtlItem,
     val locationId: Long,
@@ -119,13 +139,14 @@ data class CteHarvestDto(
     val harvestDate: LocalDate,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
-    val dateCreated: OffsetDateTime,
-    val dateModified: OffsetDateTime,
-    val isDeleted: Boolean,
-    val dateDeleted: OffsetDateTime?,
-)
+    override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
+    override var dateModified: OffsetDateTime = OffsetDateTime.now(),
+    override var isDeleted: Boolean = false,
+    override var dateDeleted: OffsetDateTime? = null,
+    override var authUsername: String? = null,
+) : BaseResponse<CteHarvestResponseDto>()
 
-fun CteHarvest.toCteHarvestDto() = CteHarvestDto(
+fun CteHarvest.toCteHarvestResponseDto() = CteHarvestResponseDto(
     id = id,
     cteType = cteType,
     ftlItem = ftlItem,
@@ -147,15 +168,17 @@ fun CteHarvest.toCteHarvestDto() = CteHarvestDto(
     dateModified = dateModified,
     isDeleted = isDeleted,
     dateDeleted = dateDeleted,
+    authUsername = authUsername,
 )
 
-fun CteHarvestDto.toCteHarvest(
+fun CteHarvestRequestDto.toCteHarvest(
+    id: Long,
     location: Location,
     isrLocation: Location,
     harvestLocation: Location,
 ) = CteHarvest(
     id = id,
-    cteType = cteType,
+    cteType = CteType.Harvest,
     ftlItem = ftlItem,
     location = location,
     isrLocation = isrLocation,
@@ -171,8 +194,4 @@ fun CteHarvestDto.toCteHarvest(
     harvestDate = harvestDate,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
-    dateCreated = dateCreated,
-    dateModified = dateModified,
-    isDeleted = isDeleted,
-    dateDeleted = dateDeleted,
 )

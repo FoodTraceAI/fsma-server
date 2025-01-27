@@ -5,12 +5,11 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.Location
-import com.foodtraceai.model.cte.CteFirstLandDto
+import com.foodtraceai.model.cte.CteFirstLandRequestDto
+import com.foodtraceai.model.cte.CteFirstLandResponseDto
 import com.foodtraceai.model.cte.toCteFirstLand
-import com.foodtraceai.model.cte.toCteFirstLandDto
+import com.foodtraceai.model.cte.toCteFirstLandResponseDto
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -32,28 +31,26 @@ class CteFirstLandController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteFirstLandDto> {
+    ): ResponseEntity<CteFirstLandResponseDto> {
         val cteFirstLand = cteFirstLandService.findById(id)
             ?: throw EntityNotFoundException("CteFirstLand not found = $id")
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
-        return ResponseEntity.ok(cteFirstLand.toCteFirstLandDto())
+        return ResponseEntity.ok(cteFirstLand.toCteFirstLandResponseDto())
     }
 
     // -- Create a new Address
     @PostMapping
     fun create(
-        @Valid @RequestBody cteFirstLandDto: CteFirstLandDto,
+        @Valid @RequestBody cteFirstLandRequestDto: CteFirstLandRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteFirstLandDto> {
-        val location = getLocation(cteFirstLandDto.locationId, fsmaUser)
-
-        var tlcSource: Location? = null
-        if (cteFirstLandDto.tlcSourceId != null)
-            tlcSource = getLocation(cteFirstLandDto.tlcSourceId, fsmaUser)
-
-        val cteFirstLand = cteFirstLandDto.toCteFirstLand(location, tlcSource)
-        val cteFirstLandResponse = cteFirstLandService.insert(cteFirstLand).toCteFirstLandDto()
-        return ResponseEntity.created(URI.create(CTE_FIRST_LAND_BASE_URL.plus("/${cteFirstLandResponse.id}")))
+    ): ResponseEntity<CteFirstLandResponseDto> {
+        val location = getLocation(cteFirstLandRequestDto.locationId, fsmaUser)
+        val tlc = getTraceLotCode(cteFirstLandRequestDto.tlcId, fsmaUser)
+        val tlcSource = getLocation(cteFirstLandRequestDto.tlcSourceId, fsmaUser)
+        val cteFirstLand = cteFirstLandRequestDto.toCteFirstLand(id = 0, location, tlc, tlcSource)
+        val cteFirstLandResponse = cteFirstLandService.insert(cteFirstLand).toCteFirstLandResponseDto()
+        return ResponseEntity
+            .created(URI.create(CTE_FIRST_LAND_BASE_URL.plus("/${cteFirstLandResponse.id}")))
             .body(cteFirstLandResponse)
     }
 
@@ -61,20 +58,14 @@ class CteFirstLandController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody cteFirstLandDto: CteFirstLandDto,
+        @Valid @RequestBody cteFirstLandRequestDto: CteFirstLandRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteFirstLandDto> {
-        if (cteFirstLandDto.id <= 0L || cteFirstLandDto.id != id)
-            throw UnauthorizedRequestException("Conflicting CteFirstLandDto Ids specified: $id != ${cteFirstLandDto.id}")
-
-        val location = getLocation(cteFirstLandDto.locationId, fsmaUser)
-
-        var tlcSource: Location? = null
-        if (cteFirstLandDto.tlcSourceId != null)
-            tlcSource = getLocation(cteFirstLandDto.tlcSourceId, fsmaUser)
-
-        val cteFirstLand = cteFirstLandDto.toCteFirstLand(location, tlcSource)
-        val cteFirstLandResponse = cteFirstLandService.update(cteFirstLand).toCteFirstLandDto()
+    ): ResponseEntity<CteFirstLandResponseDto> {
+        val location = getLocation(cteFirstLandRequestDto.locationId, fsmaUser)
+        val tlc = getTraceLotCode(cteFirstLandRequestDto.tlcId, fsmaUser)
+        val tlcSource = getLocation(cteFirstLandRequestDto.tlcSourceId, fsmaUser)
+        val cteFirstLand = cteFirstLandRequestDto.toCteFirstLand(id = id, location, tlc, tlcSource)
+        val cteFirstLandResponse = cteFirstLandService.update(cteFirstLand).toCteFirstLandResponseDto()
         return ResponseEntity.ok().body(cteFirstLandResponse)
     }
 

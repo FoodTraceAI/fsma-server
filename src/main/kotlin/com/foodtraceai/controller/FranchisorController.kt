@@ -3,12 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller
 
-import com.foodtraceai.model.FranchisorDto
-import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.toFranchisor
-import com.foodtraceai.model.toFranchisorDto
-import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.UnauthorizedRequestException
+import com.foodtraceai.model.*
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -30,27 +25,28 @@ class FranchisorController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<FranchisorDto> {
-        val franchisor = getFranchisor(id,fsmaUser)
+    ): ResponseEntity<FranchisorResponseDto> {
+        val franchisor = getFranchisor(id, fsmaUser)
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
-        return ResponseEntity.ok(franchisor.toFranchisorDto())
+        return ResponseEntity.ok(franchisor.toFranchisorResponseDto())
     }
 
     // -- Create a new Franchisor
     @PostMapping
     fun create(
-        @Valid @RequestBody franchisorDto: FranchisorDto,
+        @Valid @RequestBody franchisorRequestDto: FranchisorRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<FranchisorDto> {
-        val address = getAddress(franchisorDto.addressId, fsmaUser)
-            ?: throw EntityNotFoundException("Franchisor Address not found: ${franchisorDto.addressId}")
-        val billingAddress = franchisorDto.billingAddressId?.let { getAddress(it, fsmaUser) }
-        val mainContact = getContact(franchisorDto.mainContactId, fsmaUser)
-        val billingContact = franchisorDto.billingContactId?.let { getContact(it, fsmaUser)        }
-
-        val franchisor = franchisorDto.toFranchisor(address, mainContact, billingAddress, billingContact)
-        val franchisorResponse = franchisorService.insert(franchisor).toFranchisorDto()
-        return ResponseEntity.created(URI.create(FRANCHISOR_BASE_URL.plus("/${franchisorResponse.id}")))
+    ): ResponseEntity<FranchisorResponseDto> {
+        val address = getAddress(franchisorRequestDto.addressId, fsmaUser)
+        val billingAddress = franchisorRequestDto.billingAddressId?.let { getAddress(it, fsmaUser) }
+        val mainContact = getContact(franchisorRequestDto.mainContactId, fsmaUser)
+        val billingContact = franchisorRequestDto.billingContactId?.let { getContact(it, fsmaUser) }
+        val franchisor = franchisorRequestDto.toFranchisor(
+            id = 0, address, mainContact, billingAddress, billingContact
+        )
+        val franchisorResponse = franchisorService.insert(franchisor).toFranchisorResponseDto()
+        return ResponseEntity
+            .created(URI.create(FRANCHISOR_BASE_URL.plus("/${franchisorResponse.id}")))
             .body(franchisorResponse)
     }
 
@@ -58,19 +54,17 @@ class FranchisorController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody franchisorDto: FranchisorDto,
+        @Valid @RequestBody franchisorRequestDto: FranchisorRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<FranchisorDto> {
-        if (franchisorDto.id <= 0L || franchisorDto.id != id)
-            throw UnauthorizedRequestException("Conflicting FranchisorIds specified: $id != ${franchisorDto.id}")
-
-        val address = getAddress(franchisorDto.addressId, fsmaUser)
-        val billingAddress = franchisorDto.billingAddressId?.let {getAddress(it,fsmaUser)}
-        val mainContact = getContact(franchisorDto.mainContactId, fsmaUser)
-        val billingContact = franchisorDto.billingContactId?.let { getContact(it, fsmaUser)        }
-
-        val franchisor = franchisorDto.toFranchisor(address, mainContact, billingAddress, billingContact)
-        val franchisorResponse = franchisorService.update(franchisor).toFranchisorDto()
+    ): ResponseEntity<FranchisorResponseDto> {
+        val address = getAddress(franchisorRequestDto.addressId, fsmaUser)
+        val billingAddress = franchisorRequestDto.billingAddressId?.let { getAddress(it, fsmaUser) }
+        val mainContact = getContact(franchisorRequestDto.mainContactId, fsmaUser)
+        val billingContact = franchisorRequestDto.billingContactId?.let { getContact(it, fsmaUser) }
+        val franchisor = franchisorRequestDto.toFranchisor(
+            id = id, address, mainContact, billingAddress, billingContact
+        )
+        val franchisorResponse = franchisorService.update(franchisor).toFranchisorResponseDto()
         return ResponseEntity.ok().body(franchisorResponse)
     }
 

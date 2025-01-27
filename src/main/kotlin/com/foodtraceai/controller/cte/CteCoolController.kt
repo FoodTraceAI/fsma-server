@@ -3,21 +3,21 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller.cte
 
+// ----------------------------------------------------------------------------
+// Copyright 2025 FoodTraceAI LLC or its affiliates. All Rights Reserved.
+// ----------------------------------------------------------------------------
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.cte.CteCoolDto
+import com.foodtraceai.model.cte.CteCoolRequestDto
+import com.foodtraceai.model.cte.CteCoolResponseDto
 import com.foodtraceai.model.cte.toCteCool
-import com.foodtraceai.model.cte.toCteCoolDto
+import com.foodtraceai.model.cte.toCteCoolResponseDto
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
-// ----------------------------------------------------------------------------
-// Copyright 2025 FoodTraceAI LLC or its affiliates. All Rights Reserved.
-// ----------------------------------------------------------------------------
 import java.net.URI
 
 private const val CTE_COOL_BASE_URL = "/api/v1/cte/cool"
@@ -33,25 +33,29 @@ class CteCoolController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteCoolDto> {
+    ): ResponseEntity<CteCoolResponseDto> {
         val cteCool = cteCoolService.findById(id)
             ?: throw EntityNotFoundException("CteCool not found = $id")
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
-        return ResponseEntity.ok(cteCool.toCteCoolDto())
+        return ResponseEntity.ok(cteCool.toCteCoolResponseDto())
     }
 
     // -- Create a new Address
     @PostMapping
     fun create(
-        @Valid @RequestBody cteCoolDto: CteCoolDto,
+        @Valid @RequestBody cteCoolRequestDto: CteCoolRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteCoolDto> {
-        val location = getLocation(cteCoolDto.locationId, fsmaUser)
-        val subsequentRecipient = getLocation(cteCoolDto.isrLocationId, fsmaUser)
-
-        val cteCool = cteCoolDto.toCteCool(location, subsequentRecipient)
-        val cteCoolResponse = cteCoolService.insert(cteCool).toCteCoolDto()
-        return ResponseEntity.created(URI.create(CTE_COOL_BASE_URL.plus("/${cteCoolResponse.id}")))
+    ): ResponseEntity<CteCoolResponseDto> {
+        val location = getLocation(cteCoolRequestDto.locationId, fsmaUser)
+        val isrLocation = getLocation(cteCoolRequestDto.isrLocationId, fsmaUser)
+        val coolLocation = getLocation(cteCoolRequestDto.coolLocationId, fsmaUser)
+        val harvestLocation = getLocation(cteCoolRequestDto.harvestLocationId, fsmaUser)
+        val cteCool = cteCoolRequestDto.toCteCool(
+            id = 0, location, isrLocation, coolLocation, harvestLocation
+        )
+        val cteCoolResponse = cteCoolService.insert(cteCool).toCteCoolResponseDto()
+        return ResponseEntity
+            .created(URI.create(CTE_COOL_BASE_URL.plus("/${cteCoolResponse.id}")))
             .body(cteCoolResponse)
     }
 
@@ -59,17 +63,17 @@ class CteCoolController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody cteCoolDto: CteCoolDto,
+        @Valid @RequestBody cteCoolRequestDto: CteCoolRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteCoolDto> {
-        if (cteCoolDto.id <= 0L || cteCoolDto.id != id)
-            throw UnauthorizedRequestException("Conflicting CtcCool Ids specified: $id != ${cteCoolDto.id}")
-
-        val location = getLocation(cteCoolDto.locationId, fsmaUser)
-        val subsequentRecipient = getLocation(cteCoolDto.isrLocationId, fsmaUser)
-
-        val cteCool = cteCoolDto.toCteCool(location, subsequentRecipient)
-        val cteCoolResponse = cteCoolService.update(cteCool).toCteCoolDto()
+    ): ResponseEntity<CteCoolResponseDto> {
+        val location = getLocation(cteCoolRequestDto.locationId, fsmaUser)
+        val isrLocation = getLocation(cteCoolRequestDto.isrLocationId, fsmaUser)
+        val coolLocation = getLocation(cteCoolRequestDto.coolLocationId, fsmaUser)
+        val harvestLocation = getLocation(cteCoolRequestDto.harvestLocationId, fsmaUser)
+        val cteCool = cteCoolRequestDto.toCteCool(
+            id = 81, location, isrLocation, coolLocation, harvestLocation
+        )
+        val cteCoolResponse = cteCoolService.update(cteCool).toCteCoolResponseDto()
         return ResponseEntity.ok().body(cteCoolResponse)
     }
 

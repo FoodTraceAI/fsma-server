@@ -5,11 +5,11 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.cte.CteTransDto
+import com.foodtraceai.model.cte.CteTransRequestDto
+import com.foodtraceai.model.cte.CteTransResponseDto
 import com.foodtraceai.model.cte.toCteTrans
-import com.foodtraceai.model.cte.toCteTransDto
+import com.foodtraceai.model.cte.toCteTransResponseDto
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -30,30 +30,29 @@ class CteTransController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteTransDto> {
+    ): ResponseEntity<CteTransResponseDto> {
         val cteTransform = cteTransService.findById(id)
             ?: throw EntityNotFoundException("CteTransform not found = $id")
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
-        return ResponseEntity.ok(cteTransform.toCteTransDto())
+        return ResponseEntity.ok(cteTransform.toCteTransResponseDto())
     }
 
     // -- Create a new Address
     @PostMapping
     fun create(
-        @Valid @RequestBody cteTransDto: CteTransDto,
+        @Valid @RequestBody cteTransRequestDto: CteTransRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteTransDto> {
-        val location = getLocation(cteTransDto.locationId,fsmaUser)
-
-        val traceLotCode = getTraceLotCode(cteTransDto.inputTlcId,fsmaUser)
-
-        val transformLotCode = getTraceLotCode(cteTransDto.newTlcId,fsmaUser)
-
-        val transformFromLocation = getLocation(cteTransDto.newTlcLocationId,fsmaUser)
-
-        val cteTransform = cteTransDto.toCteTrans(location, traceLotCode, transformLotCode, transformFromLocation)
-        val cteTransformResponse = cteTransService.insert(cteTransform).toCteTransDto()
-        return ResponseEntity.created(URI.create(CTE_TRANSFORM_BASE_URL.plus("/${cteTransformResponse.id}")))
+    ): ResponseEntity<CteTransResponseDto> {
+        val location = getLocation(cteTransRequestDto.locationId, fsmaUser)
+        val traceLotCode = getTraceLotCode(cteTransRequestDto.inputTlcId, fsmaUser)
+        val transformLotCode = getTraceLotCode(cteTransRequestDto.newTlcId, fsmaUser)
+        val transformFromLocation = getLocation(cteTransRequestDto.newTlcLocationId, fsmaUser)
+        val cteTransform = cteTransRequestDto.toCteTrans(
+            id = 0, location, traceLotCode, transformLotCode, transformFromLocation
+        )
+        val cteTransformResponse = cteTransService.insert(cteTransform).toCteTransResponseDto()
+        return ResponseEntity
+            .created(URI.create(CTE_TRANSFORM_BASE_URL.plus("/${cteTransformResponse.id}")))
             .body(cteTransformResponse)
     }
 
@@ -61,23 +60,18 @@ class CteTransController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody cteTransDto: CteTransDto,
+        @Valid @RequestBody cteTransRequestDto: CteTransRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteTransDto> {
-        if (cteTransDto.id <= 0L || cteTransDto.id != id)
-            throw UnauthorizedRequestException("Conflicting cteTransDto Ids specified: $id != ${cteTransDto.id}")
-
-        val location = getLocation(cteTransDto.locationId,fsmaUser)
-
-        val traceLotCode = getTraceLotCode(cteTransDto.inputTlcId,fsmaUser)
-
-        val transformLotCode = getTraceLotCode(cteTransDto.newTlcId,fsmaUser)
-
-        val transformFromLocation = getLocation(cteTransDto.newTlcLocationId,fsmaUser)
-
-        val cteTransform = cteTransDto.toCteTrans(location, traceLotCode, transformLotCode, transformFromLocation)
-        val cteTransformCto = cteTransService.update(cteTransform).toCteTransDto()
-        return ResponseEntity.ok().body(cteTransformCto)
+    ): ResponseEntity<CteTransResponseDto> {
+        val location = getLocation(cteTransRequestDto.locationId, fsmaUser)
+        val traceLotCode = getTraceLotCode(cteTransRequestDto.inputTlcId, fsmaUser)
+        val transformLotCode = getTraceLotCode(cteTransRequestDto.newTlcId, fsmaUser)
+        val transformFromLocation = getLocation(cteTransRequestDto.newTlcLocationId, fsmaUser)
+        val cteTransform = cteTransRequestDto.toCteTrans(
+            id = id, location, traceLotCode, transformLotCode, transformFromLocation
+        )
+        val cteTransformResponse = cteTransService.insert(cteTransform).toCteTransResponseDto()
+        return ResponseEntity.ok().body(cteTransformResponse)
     }
 
     // -- Delete an existing Address

@@ -3,11 +3,7 @@
 // ----------------------------------------------------------------------------
 package com.foodtraceai.controller
 
-import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.ResellerDto
-import com.foodtraceai.model.toReseller
-import com.foodtraceai.model.toResellerDto
-import com.foodtraceai.util.UnauthorizedRequestException
+import com.foodtraceai.model.*
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -28,23 +24,26 @@ class ResellerController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<ResellerDto> {
-        val reseller = getReseller(id,fsmaUser)
+    ): ResponseEntity<ResellerResponseDto> {
+        val reseller = getReseller(id, fsmaUser)
 //        assertResellerClientMatchesToken(fsaUser, business.resellerId)
-        return ResponseEntity.ok(reseller.toResellerDto())
+        return ResponseEntity.ok(reseller.toResellerResponseDto())
     }
 
     // -- Create a new business
     @PostMapping
     fun create(
-        @Valid @RequestBody resellerDto: ResellerDto,
+        @Valid @RequestBody resellerRequestDto: ResellerRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<ResellerDto> {
-        val mainContact = getContact(resellerDto.mainContactId, fsmaUser)
-        val billingContact = resellerDto.billingContactId?.let { getContact(it, fsmaUser) }
-        val reseller = resellerDto.toReseller(mainContact = mainContact, billingContact = billingContact)
-        val resellerResponse = resellerService.insert(reseller).toResellerDto()
-        return ResponseEntity.created(URI.create(RESELLER_BASE_URL.plus("/${resellerResponse.id}")))
+    ): ResponseEntity<ResellerResponseDto> {
+        val mainContact = getContact(resellerRequestDto.mainContactId, fsmaUser)
+        val billingContact = resellerRequestDto.billingContactId?.let { getContact(it, fsmaUser) }
+        val reseller = resellerRequestDto.toReseller(
+            id = 0, mainContact = mainContact, billingContact = billingContact
+        )
+        val resellerResponse = resellerService.insert(reseller).toResellerResponseDto()
+        return ResponseEntity
+            .created(URI.create(RESELLER_BASE_URL.plus("/${resellerResponse.id}")))
             .body(resellerResponse)
     }
 
@@ -52,16 +51,16 @@ class ResellerController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody resellerDto: ResellerDto,
+        @Valid @RequestBody resellerRequestDto: ResellerRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<ResellerDto> {
-        if (resellerDto.id <= 0L || resellerDto.id != id)
-            throw UnauthorizedRequestException("Conflicting ResellerDtos specified: $id != ${resellerDto.id}")
-        val mainContact = getContact(resellerDto.mainContactId, fsmaUser)
-        val billingContact = resellerDto.billingContactId?.let { getContact(it, fsmaUser) }
-        val reseller = resellerDto.toReseller(mainContact = mainContact, billingContact = billingContact)
-        val resellerResponse = resellerService.update(reseller)
-        return ResponseEntity.ok().body(resellerResponse.toResellerDto())
+    ): ResponseEntity<ResellerResponseDto> {
+        val mainContact = getContact(resellerRequestDto.mainContactId, fsmaUser)
+        val billingContact = resellerRequestDto.billingContactId?.let { getContact(it, fsmaUser) }
+        val reseller = resellerRequestDto.toReseller(
+            id = id, mainContact = mainContact, billingContact = billingContact
+        )
+        val resellerResponse = resellerService.insert(reseller).toResellerResponseDto()
+        return ResponseEntity.ok().body(resellerResponse)
     }
 
     // -- Delete an existing business

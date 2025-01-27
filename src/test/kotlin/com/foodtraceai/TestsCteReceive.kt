@@ -73,17 +73,19 @@ class TestsCteReceive : TestsBase() {
     fun teardown() {
     }
 
-    private fun addCte(dto: CteReceiveRequestDto): CteReceive {
-        val location = locationService.findById(dto.locationId)
-            ?: throw EntityNotFoundException("CteReceive locationId: ${dto.locationId} not found")
-        val tlc = traceLotCodeService.findById(dto.tlcId)
-            ?: throw EntityNotFoundException("CteReceive tlcId: ${dto.tlcId} not found")
-        val ipsLocation = locationService.findById(dto.ipsLocationId)
-            ?: throw EntityNotFoundException("CteReceive ipsLocationId: ${dto.ipsLocationId} not found")
-        val tlcSource = locationService.findById(dto.tlcSourceId)
-            ?: throw EntityNotFoundException("CteReceive tlcSourceId: ${dto.tlcSourceId} not found")
+    private fun addCte(requestDto: CteReceiveRequestDto): CteReceive {
+        val location = locationService.findById(requestDto.locationId)
+            ?: throw EntityNotFoundException("CteReceive locationId: ${requestDto.locationId} not found")
+        val tlc = traceLotCodeService.findById(requestDto.tlcId)
+            ?: throw EntityNotFoundException("CteReceive tlcId: ${requestDto.tlcId} not found")
+        val ipsLocation = locationService.findById(requestDto.ipsLocationId)
+            ?: throw EntityNotFoundException("CteReceive ipsLocationId: ${requestDto.ipsLocationId} not found")
+        val tlcSource = locationService.findById(requestDto.tlcSourceId)
+            ?: throw EntityNotFoundException("CteReceive tlcSourceId: ${requestDto.tlcSourceId} not found")
         return cteReceiveService.insert(
-            dto.toCteReceive(id = 0, location, tlc, ipsLocation, tlcSource)
+            requestDto.toCteReceive(
+                id = 0, location, tlc, ipsLocation, tlcSource
+            )
         )
     }
 

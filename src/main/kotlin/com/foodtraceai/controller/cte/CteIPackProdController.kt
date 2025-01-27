@@ -5,11 +5,11 @@ package com.foodtraceai.controller.cte
 
 import com.foodtraceai.controller.BaseController
 import com.foodtraceai.model.FsmaUser
-import com.foodtraceai.model.cte.CteIPackProdDto
+import com.foodtraceai.model.cte.CteIPackProdRequestDto
+import com.foodtraceai.model.cte.CteIPackProdResponseDto
 import com.foodtraceai.model.cte.toCteIPackProd
-import com.foodtraceai.model.cte.toCteIPackProdDto
+import com.foodtraceai.model.cte.toCteIPackProdResponseDto
 import com.foodtraceai.util.EntityNotFoundException
-import com.foodtraceai.util.UnauthorizedRequestException
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -32,38 +32,33 @@ class CteIPackProdController : BaseController() {
     fun findById(
         @PathVariable(value = "id") id: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteIPackProdDto> {
+    ): ResponseEntity<CteIPackProdResponseDto> {
         val cteIPackProd = cteIPackProdService.findById(id)
             ?: throw EntityNotFoundException("CteIPackProd not found = $id")
 //        assertResellerClientMatchesToken(fsaUser, address.resellerId)
-        return ResponseEntity.ok(cteIPackProd.toCteIPackProdDto())
+        return ResponseEntity.ok(cteIPackProd.toCteIPackProdResponseDto())
     }
 
     // -- Create a new Address
     @PostMapping
     fun create(
-        @Valid @RequestBody cteIPackProdDto: CteIPackProdDto,
+        @Valid @RequestBody cteIPackProdRequestDto: CteIPackProdRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteIPackProdDto> {
-        val location = getLocation(cteIPackProdDto.locationId, fsmaUser)
-        val harvestLocation = getLocation(cteIPackProdDto.harvestLocationId, fsmaUser)
-
-        val harvestBusiness = getFoodBus(cteIPackProdDto.harvestBusinessId, fsmaUser)
-
-        val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it, fsmaUser) }
-
-        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId, fsmaUser)
-
-        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let {
+    ): ResponseEntity<CteIPackProdResponseDto> {
+        val location = getLocation(cteIPackProdRequestDto.locationId, fsmaUser)
+        val harvestLocation = getLocation(cteIPackProdRequestDto.harvestLocationId, fsmaUser)
+        val harvestBusiness = getFoodBus(cteIPackProdRequestDto.harvestBusinessId, fsmaUser)
+        val coolLocation = cteIPackProdRequestDto.coolLocationId?.let { getLocation(it, fsmaUser) }
+        val packTlc = getTraceLotCode(cteIPackProdRequestDto.packTlcId, fsmaUser)
+        val packTlcSource = cteIPackProdRequestDto.packTlcSourceId?.let {
             getLocation(it, fsmaUser)
         }
-
-        val cteIPackProd = cteIPackProdDto.toCteIPackProd(
-            location, harvestLocation, harvestBusiness,
-            coolLocation, packTlc, packTlcSource
+        val cteIPackProd = cteIPackProdRequestDto.toCteIPackProd(
+            id = 0, location, harvestLocation, harvestBusiness, coolLocation, packTlc, packTlcSource
         )
-        val cteIPackProdDtoResponse = cteIPackProdService.insert(cteIPackProd).toCteIPackProdDto()
-        return ResponseEntity.created(URI.create(CTE_IPACK_PROD_BASE_URL.plus("/${cteIPackProdDto.id}")))
+        val cteIPackProdDtoResponse = cteIPackProdService.insert(cteIPackProd).toCteIPackProdResponseDto()
+        return ResponseEntity
+            .created(URI.create(CTE_IPACK_PROD_BASE_URL.plus("/${cteIPackProdDtoResponse.id}")))
             .body(cteIPackProdDtoResponse)
     }
 
@@ -71,26 +66,19 @@ class CteIPackProdController : BaseController() {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody cteIPackProdDto: CteIPackProdDto,
+        @Valid @RequestBody cteIPackProdRequestDto: CteIPackProdRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<CteIPackProdDto> {
-        if (cteIPackProdDto.id <= 0L || cteIPackProdDto.id != id)
-            throw UnauthorizedRequestException("Conflicting CteIPackProd Ids specified: $id != ${cteIPackProdDto.id}")
-
-        val location = getLocation(cteIPackProdDto.locationId, fsmaUser)
-        val harvestLocation = getLocation(cteIPackProdDto.harvestLocationId, fsmaUser)
-
-        val harvestBusiness = getFoodBus(cteIPackProdDto.harvestBusinessId, fsmaUser)
-        val coolLocation = cteIPackProdDto.coolLocationId?.let { getLocation(it, fsmaUser) }
-
-        val packTlc = getTraceLotCode(cteIPackProdDto.packTlcId, fsmaUser)
-        val packTlcSource = cteIPackProdDto.packTlcSourceId?.let { getLocation(it, fsmaUser) }
-
-        val cteIPackProd = cteIPackProdDto.toCteIPackProd(
-            location, harvestLocation, harvestBusiness,
-            coolLocation, packTlc, packTlcSource
+    ): ResponseEntity<CteIPackProdResponseDto> {
+        val location = getLocation(cteIPackProdRequestDto.locationId, fsmaUser)
+        val harvestLocation = getLocation(cteIPackProdRequestDto.harvestLocationId, fsmaUser)
+        val harvestBusiness = getFoodBus(cteIPackProdRequestDto.harvestBusinessId, fsmaUser)
+        val coolLocation = cteIPackProdRequestDto.coolLocationId?.let { getLocation(it, fsmaUser) }
+        val packTlc = getTraceLotCode(cteIPackProdRequestDto.packTlcId, fsmaUser)
+        val packTlcSource = cteIPackProdRequestDto.packTlcSourceId?.let { getLocation(it, fsmaUser) }
+        val cteIPackProd = cteIPackProdRequestDto.toCteIPackProd(
+            id = id, location, harvestLocation, harvestBusiness, coolLocation, packTlc, packTlcSource
         )
-        val cteIPackProdCto = cteIPackProdService.update(cteIPackProd).toCteIPackProdDto()
+        val cteIPackProdCto = cteIPackProdService.update(cteIPackProd).toCteIPackProdResponseDto()
         return ResponseEntity.ok().body(cteIPackProdCto)
     }
 
