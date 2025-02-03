@@ -78,6 +78,9 @@ class BaseController {
     protected lateinit var locationService: LocationService
 
     @Autowired
+    protected lateinit var portalService: PortalService
+
+    @Autowired
     protected lateinit var resellerService: ResellerService
 
     @Autowired
