@@ -29,7 +29,7 @@ data class TraceLotCode(
     // or the traceability lot code source reference; and
     @ManyToOne  //(cascade = [CascadeType.ALL])
     @JoinColumn
-    val tlcSource: Location,
+    val tlcSourceLoc: Location,
     val tlcSourceReference: String? = null,
 
     @Column(updatable = false)
@@ -55,7 +55,7 @@ data class TraceLotCodeRequestDto(
     val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
 
     // Extra parameters that seem to belong
-    val tlcSourceId: Long,
+    val tlcSourceLocId: Long,
     val tlcSourceReference: String? = null,
 )
 
@@ -75,7 +75,7 @@ data class TraceLotCodeResponseDto(
     val logSerialNo: String? = null, // AI(21) - Logistics Serial Number
 
     // Extra parameters that seem to belong
-    val tlcSourceId: Long,
+    val tlcSourceLocId: Long,
     val tlcSourceReference: String? = null,
 
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
@@ -95,7 +95,7 @@ fun TraceLotCode.toTraceLotCodeResponseDto() = TraceLotCodeResponseDto(
     harvestDate = harvestDate,
     bestByDate = bestByDate,
     logSerialNo = logSerialNo,
-    tlcSourceId = tlcSource.id,
+    tlcSourceLocId = tlcSourceLoc.id,
     tlcSourceReference = tlcSourceReference,
     dateCreated = dateCreated,
     dateModified = dateModified,
@@ -117,6 +117,6 @@ fun TraceLotCodeRequestDto.toTraceLotCode(
     harvestDate = harvestDate,
     bestByDate = bestByDate,
     logSerialNo = logSerialNo,
-    tlcSource = tlcSource,
+    tlcSourceLoc = tlcSource,
     tlcSourceReference = tlcSourceReference,
 )

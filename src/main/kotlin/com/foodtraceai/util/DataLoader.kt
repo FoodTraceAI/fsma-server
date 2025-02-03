@@ -464,7 +464,7 @@ class DataLoader : ApplicationRunner {
             batchLot = "187",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
-            tlcSource = pepiLocation,
+            tlcSourceLoc = pepiLocation,
         )
         val response = tlcService.insert(tlc)
         tlcList.add(response)
@@ -476,7 +476,7 @@ class DataLoader : ApplicationRunner {
             batchLot = "188",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
-            tlcSource = pepiLocation,
+            tlcSourceLoc = pepiLocation,
         )
         tlcList.add(tlcService.insert(tlc))
 
@@ -487,7 +487,7 @@ class DataLoader : ApplicationRunner {
             batchLot = "123456",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
-            tlcSource = pepiLocation,
+            tlcSourceLoc = pepiLocation,
         )
         tlcList.add(tlcService.insert(tlc))
     }

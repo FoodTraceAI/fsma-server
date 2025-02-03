@@ -48,7 +48,7 @@ fun SupShipCte.toArrivingShipmentsResponseDto(): ArrivingShipmentsResponseDto {
         logSerialNo = logSerialNo,
         tlcId = tlc.id,
         tlcVal = tlc.tlcVal,
-        tlcSrc = tlc.tlcSource.foodBus.foodBusName + " " + tlc.tlcSource.address.city,
+        tlcSrc = tlc.tlcSourceLoc.foodBus.foodBusName + " " + tlc.tlcSourceLoc.address.city,
         tlcSrcRef = tlc.tlcSourceReference,
         ftlItem = ftlItem,
         variety = variety,

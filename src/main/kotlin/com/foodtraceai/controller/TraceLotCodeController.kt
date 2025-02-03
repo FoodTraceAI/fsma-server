@@ -38,7 +38,7 @@ class TraceLotCodeController : BaseController() {
         @Valid @RequestBody traceLotCodeRequestDto: TraceLotCodeRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TraceLotCodeResponseDto> {
-        val tlcSource = getLocation(traceLotCodeRequestDto.tlcSourceId)
+        val tlcSource = getLocation(traceLotCodeRequestDto.tlcSourceLocId)
         val traceLotCode = traceLotCodeRequestDto.toTraceLotCode(
             id = 0, tlcSource = tlcSource
         )
@@ -55,7 +55,7 @@ class TraceLotCodeController : BaseController() {
         @Valid @RequestBody traceLotCodeRequestDto: TraceLotCodeRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<TraceLotCodeResponseDto> {
-        val tlcSource = getLocation(traceLotCodeRequestDto.tlcSourceId)
+        val tlcSource = getLocation(traceLotCodeRequestDto.tlcSourceLocId)
         val traceLotCode = traceLotCodeRequestDto.toTraceLotCode(
             id = id, tlcSource = tlcSource,
         )

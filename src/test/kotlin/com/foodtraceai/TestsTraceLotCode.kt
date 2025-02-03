@@ -46,7 +46,7 @@ class TestsTraceLotCode : TestsBase() {
             packDate = null,
             harvestDate = null,
             sscc = null,
-            tlcSourceId = 1
+            tlcSourceLocId = 1
         )
 
         traceLotCodeId = addTraceLotCode()
@@ -75,7 +75,7 @@ class TestsTraceLotCode : TestsBase() {
             tlcVal = "tlcArgsVal",
             gtin = "gtinForTlcArgsVal",
             batchLot = "batchLot_Args_sourceId2",
-            tlcSourceId = 2
+            tlcSourceLocId = 2
         )
 
         mockMvc.post("/api/v1/tlc") {
@@ -88,7 +88,7 @@ class TestsTraceLotCode : TestsBase() {
             jsonPath("$.tlcVal") { value(traceLotCodeRequestDto.tlcVal) }
             jsonPath("$.gtin") { value(traceLotCodeRequestDto.gtin) }
             jsonPath("$.batchLot") { value(traceLotCodeRequestDto.batchLot) }
-            jsonPath("$.tlcSourceId") { value(traceLotCodeRequestDto.tlcSourceId) }
+            jsonPath("$.tlcSourceLocId") { value(traceLotCodeRequestDto.tlcSourceLocId) }
         }
     }
 }
