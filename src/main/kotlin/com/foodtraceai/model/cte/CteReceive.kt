@@ -40,9 +40,8 @@ data class CteReceive(
     // information and linking this information to the traceability lot:
 
     // (a)(1) The traceability lot code for the food;
-    @ManyToOne
-    @JoinColumn
-    val tlc: TraceLotCode,
+    @ManyToOne @JoinColumn
+    override val tlc: TraceLotCode,
 
     // (a)(2) The quantity and unit of measure of the food
     // (e.g., 6 cases, 25 reusable plastic containers, 100 tanks, 200 pounds);
@@ -56,13 +55,11 @@ data class CteReceive(
 
     // (a)(4) The location description for the immediate previous source
     // (other than a transporter) for the food;
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne @JoinColumn
     val ipsLocation: Location,   // e.g. ShipFromLocation on CteShip
 
     // (a)(5) The location description for where the food was received;
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne @JoinColumn
     override val location: Location,
 
     // (a)(6) The date you received the food;
@@ -71,8 +68,7 @@ data class CteReceive(
 
     // (a)(7) The location description for the traceability lot code source,
     // or the traceability lot code source reference; and
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne @JoinColumn
     val tlcSource: Location,
     val tlcSourceReference: String? = null,
 

@@ -42,9 +42,8 @@ data class CteReceiveExempt(
     // (b)(1) The traceability lot code for the food, which you must assign if
     // one has not already been assigned (except that this paragraph does not
     // apply if you are a retail food establishment or restaurant);
-    @ManyToOne
-    @JoinColumn
-    val tlc: TraceLotCode,
+    @ManyToOne @JoinColumn
+    override val tlc: TraceLotCode,
 
     // (b)(2) The quantity and unit of measure of the food
     // (e.g., 6 cases, 25 reusable plastic containers, 100 tanks, 200 pounds);
@@ -58,16 +57,17 @@ data class CteReceiveExempt(
 
     // (b)(4) The location description for the immediate previous source
     // (other than a transporter) for the food;
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne @JoinColumn
     val ipsLocation: Location,   // e.g. ShipFromLocation on CteShip
 
     // (b)(5) The location description for where the food was received
     // (i.e., the traceability lot code source), and (if applicable)
     // the traceability lot code source reference;
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne @JoinColumn
     override val location: Location,    // location = tlcSource for this Cte
+
+    @ManyToOne @JoinColumn
+    val tlcSource: Location,    // same as location
     val tlcSourceReference: String? = null,
 
     // (b)(6) The date you received the food;
@@ -102,6 +102,7 @@ data class CteReceiveExemptRequestDto(
     val variety: String,
     val ipsLocationId: Long,
     val locationId: Long,   // Receive location
+    val tlcSourceId: Long,
     val tlcSourceReference: String?,
     val receiveDate: LocalDate,
     val receiveTime: OffsetDateTime?,
@@ -120,6 +121,7 @@ data class CteReceiveExemptResponseDto(
     val variety: String,
     val ipsLocationId: Long,
     val locationId: Long,   // Receive location
+    val tlcSourceId: Long,
     val tlcSourceReference: String?,
     val receiveDate: LocalDate,
     val receiveTime: OffsetDateTime?,
@@ -145,6 +147,7 @@ fun CteReceiveExempt.toCteReceiveExemptResponseDto() = CteReceiveExemptResponseD
     locationId = location.id,
     receiveDate = receiveDate,
     receiveTime = receiveTime,
+    tlcSourceId = tlcSource.id,
     tlcSourceReference = tlcSourceReference,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
@@ -159,6 +162,7 @@ fun CteReceiveExemptRequestDto.toCteReceiveExempt(
     traceLotCode: TraceLotCode,
     ipsLocation: Location,
     location: Location,
+    tlcSource: Location,
 ) = CteReceiveExempt(
     id = id,
     cteType = CteType.ReceiveExempt,
@@ -172,6 +176,7 @@ fun CteReceiveExemptRequestDto.toCteReceiveExempt(
     location = location,
     receiveDate = receiveDate,
     receiveTime = receiveTime,
+    tlcSource = tlcSource,
     tlcSourceReference = tlcSourceReference,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,

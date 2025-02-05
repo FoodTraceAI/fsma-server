@@ -45,8 +45,8 @@ class CteTransController : BaseController() {
     ): ResponseEntity<CteTransResponseDto> {
         val location = getLocation(cteTransRequestDto.locationId, fsmaUser)
         val traceLotCode = getTraceLotCode(cteTransRequestDto.inputTlcId, fsmaUser)
-        val transformLotCode = getTraceLotCode(cteTransRequestDto.newTlcId, fsmaUser)
-        val transformFromLocation = getLocation(cteTransRequestDto.newTlcLocationId, fsmaUser)
+        val transformLotCode = getTraceLotCode(cteTransRequestDto.tlcId, fsmaUser)
+        val transformFromLocation = getLocation(cteTransRequestDto.tlcSourceId, fsmaUser)
         val cteTransform = cteTransRequestDto.toCteTrans(
             id = 0, location, traceLotCode, transformLotCode, transformFromLocation
         )
@@ -65,8 +65,8 @@ class CteTransController : BaseController() {
     ): ResponseEntity<CteTransResponseDto> {
         val location = getLocation(cteTransRequestDto.locationId, fsmaUser)
         val traceLotCode = getTraceLotCode(cteTransRequestDto.inputTlcId, fsmaUser)
-        val transformLotCode = getTraceLotCode(cteTransRequestDto.newTlcId, fsmaUser)
-        val transformFromLocation = getLocation(cteTransRequestDto.newTlcLocationId, fsmaUser)
+        val transformLotCode = getTraceLotCode(cteTransRequestDto.tlcId, fsmaUser)
+        val transformFromLocation = getLocation(cteTransRequestDto.tlcSourceId, fsmaUser)
         val cteTransform = cteTransRequestDto.toCteTrans(
             id = id, location, traceLotCode, transformLotCode, transformFromLocation
         )

@@ -100,7 +100,7 @@ data class CteIPackSprouts(
 
     // (a)(11) The traceability lot code you assigned;
     @ManyToOne @JoinColumn
-    val packTlc: TraceLotCode,
+    override val tlc: TraceLotCode,
 
     // (a)(12) The product description of the packed food;
     // TODO From PTI This is the description for the Case,
@@ -124,8 +124,8 @@ data class CteIPackSprouts(
     // Either the tlcSource or the tlcSourceReference should be null.
     // Only one of these should be populated in production
     @ManyToOne @JoinColumn
-    val packTlcSource: Location? = null,    // i.e., the packLocation since TLC is created at this CTE
-    val packTlcSourceReference: String? = null,
+    val tlcSource: Location? = null,    // i.e., Location since TLC is created at this CTE
+    val tlcSourceReference: String? = null,
 
     // (a)(15) The date of initial packing; and
     val packDate: LocalDate,
@@ -273,12 +273,12 @@ data class CteIPackSproutsResponseDto(
     val harvestDate: LocalDate,
     val coolLocationId: Long?,
     val coolDate: LocalDate?,
-    val packTlcId: Long,
+    val tlcId: Long,
     val packFoodDesc: String,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
-    val packTlcSourceId: Long?,
-    val packTlcSourceReference: String? = null,
+    val tlcSourceId: Long?,
+    val tlcSourceReference: String? = null,
     val packDate: LocalDate,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
@@ -331,12 +331,12 @@ fun CteIPackSprouts.toCteIPackSproutsResponseDto() = CteIPackSproutsResponseDto(
     harvestDate = harvestDate,
     coolLocationId = coolLocation?.id,
     coolDate = coolDate,
-    packTlcId = packTlc.id,
+    tlcId = tlc.id,
     packFoodDesc = packFoodDesc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    packTlcSourceId = packTlcSource?.id,
-    packTlcSourceReference = packTlcSourceReference,
+    tlcSourceId = tlcSource?.id,
+    tlcSourceReference = tlcSourceReference,
     packDate = packDate,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
@@ -373,8 +373,8 @@ fun CteIPackSproutsRequestDto.toCteIPackSprouts(
     harvestLocation: Location,
     harvestFoodBus: FoodBus,
     coolLocation: Location?,
-    packTlc: TraceLotCode,
-    packTlcSource: Location?,
+    tlc: TraceLotCode,
+    tlcSource: Location?,
     seedGrowerLocation: Location?,
     seedConditionerLocation: Location,
     seedTlc: TraceLotCode,
@@ -403,12 +403,12 @@ fun CteIPackSproutsRequestDto.toCteIPackSprouts(
     harvestDate = harvestDate,
     coolLocation = coolLocation,
     coolDate = coolDate,
-    packTlc = packTlc,
+    tlc = tlc,
     packFoodDesc = packFoodDesc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    packTlcSource = packTlcSource,
-    packTlcSourceReference = packTlcSourceReference,
+    tlcSource = tlcSource,
+    tlcSourceReference = packTlcSourceReference,
     packDate = packDate,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,

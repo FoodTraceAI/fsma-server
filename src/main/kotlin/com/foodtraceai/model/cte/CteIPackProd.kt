@@ -75,7 +75,7 @@ data class CteIPackProd(
     val fieldName: String,
     val fieldDesc: String,
 
-    // (a)(6) For aquacultured food, the name of the container
+    // (a)(6) For aqua-cultured food, the name of the container
     // (e.g., pond, pool, tank, cage) from which the food was harvested
     // (which must correspond to the container name
     // used by the aquaculture farmer) or other information identifying the harvest
@@ -100,7 +100,7 @@ data class CteIPackProd(
 
     // (a)(11) The traceability lot code you assigned;
     @ManyToOne @JoinColumn
-    val packTlc: TraceLotCode,
+    override val tlc: TraceLotCode,
 
     // (a)(12) The product description of the packed food;
     // TODO From PTI This is the description for the Case,
@@ -124,8 +124,8 @@ data class CteIPackProd(
     // Either the tlcSource or the tlcSourceReference should be null.
     // Only one of these should be populated in production
     @ManyToOne @JoinColumn
-    val packTlcSource: Location? = null,    // i.e., the packLocation since TLC is created at this CTE
-    val packTlcSourceReference: String? = null,
+    val tlcSource: Location?,    // i.e., the packLocation since TLC is created at this CTE
+    val tlcSourceReference: String? = null,
 
     // (a)(15) The date of initial packing; and
     val packDate: LocalDate,
@@ -162,12 +162,12 @@ data class CteIPackProdRequestDto(
     val harvestDate: LocalDate,
     val coolLocationId: Long?,
     val coolDate: LocalDate?,
-    val packTlcId: Long,
+    val tlcId: Long,
     val packFoodDesc: String,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
-    val packTlcSourceId: Long?,
-    val packTlcSourceReference: String? = null,
+    val tlcSourceId: Long?,
+    val tlcSourceReference: String? = null,
     val packDate: LocalDate,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
@@ -194,12 +194,12 @@ data class CteIPackProdResponseDto(
     val harvestDate: LocalDate,
     val coolLocationId: Long?,
     val coolDate: LocalDate?,
-    val packTlcId: Long,
+    val tlcId: Long,
     val packFoodDesc: String,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
-    val packTlcSourceId: Long?,
-    val packTlcSourceReference: String? = null,
+    val tlcSourceId: Long?,
+    val tlcSourceReference: String? = null,
     val packDate: LocalDate,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
@@ -231,12 +231,12 @@ fun CteIPackProd.toCteIPackProdResponseDto() = CteIPackProdResponseDto(
     harvestDate = harvestDate,
     coolLocationId = coolLocation?.id,
     coolDate = coolDate,
-    packTlcId = packTlc.id,
+    tlcId = tlc.id,
     packFoodDesc = packFoodDesc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    packTlcSourceId = packTlcSource?.id,
-    packTlcSourceReference = packTlcSourceReference,
+    tlcSourceId = tlcSource?.id,
+    tlcSourceReference = tlcSourceReference,
     packDate = packDate,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
@@ -253,8 +253,8 @@ fun CteIPackProdRequestDto.toCteIPackProd(
     harvestLocation: Location,
     harvestFoodBus: FoodBus,
     coolLocation: Location?,
-    packTlc: TraceLotCode,
-    packTlcSource: Location?,
+    tlc: TraceLotCode,
+    tlcSource: Location?,
 ) = CteIPackProd(
     id = id,
     cteType = CteType.InitPackProduce,
@@ -276,12 +276,12 @@ fun CteIPackProdRequestDto.toCteIPackProd(
     harvestDate = harvestDate,
     coolLocation = coolLocation,
     coolDate = coolDate,
-    packTlc = packTlc,
+    tlc = tlc,
     packFoodDesc = packFoodDesc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    packTlcSource = packTlcSource,
-    packTlcSourceReference = packTlcSourceReference,
+    tlcSource = tlcSource,
+    tlcSourceReference = tlcSourceReference,
     packDate = packDate,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,

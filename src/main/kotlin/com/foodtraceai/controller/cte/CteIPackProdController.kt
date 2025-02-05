@@ -49,8 +49,8 @@ class CteIPackProdController : BaseController() {
         val harvestLocation = getLocation(cteIPackProdRequestDto.harvestLocationId, fsmaUser)
         val harvestBusiness = getFoodBus(cteIPackProdRequestDto.harvestBusinessId, fsmaUser)
         val coolLocation = cteIPackProdRequestDto.coolLocationId?.let { getLocation(it, fsmaUser) }
-        val packTlc = getTraceLotCode(cteIPackProdRequestDto.packTlcId, fsmaUser)
-        val packTlcSource = cteIPackProdRequestDto.packTlcSourceId?.let {
+        val packTlc = getTraceLotCode(cteIPackProdRequestDto.tlcId, fsmaUser)
+        val packTlcSource = cteIPackProdRequestDto.tlcSourceId?.let {
             getLocation(it, fsmaUser)
         }
         val cteIPackProd = cteIPackProdRequestDto.toCteIPackProd(
@@ -73,8 +73,8 @@ class CteIPackProdController : BaseController() {
         val harvestLocation = getLocation(cteIPackProdRequestDto.harvestLocationId, fsmaUser)
         val harvestBusiness = getFoodBus(cteIPackProdRequestDto.harvestBusinessId, fsmaUser)
         val coolLocation = cteIPackProdRequestDto.coolLocationId?.let { getLocation(it, fsmaUser) }
-        val packTlc = getTraceLotCode(cteIPackProdRequestDto.packTlcId, fsmaUser)
-        val packTlcSource = cteIPackProdRequestDto.packTlcSourceId?.let { getLocation(it, fsmaUser) }
+        val packTlc = getTraceLotCode(cteIPackProdRequestDto.tlcId, fsmaUser)
+        val packTlcSource = cteIPackProdRequestDto.tlcSourceId?.let { getLocation(it, fsmaUser) }
         val cteIPackProd = cteIPackProdRequestDto.toCteIPackProd(
             id = id, location, harvestLocation, harvestBusiness, coolLocation, packTlc, packTlcSource
         )

@@ -48,11 +48,12 @@ class cteReceiveExemptController : BaseController() {
         @Valid @RequestBody cteReceiveExemptRequestDto: CteReceiveExemptRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveExemptResponseDto> {
-        val location = getLocation(cteReceiveExemptRequestDto.locationId, fsmaUser)
         val traceLotCode = getTraceLotCode(cteReceiveExemptRequestDto.traceLotCodeId, fsmaUser)
         val shipFromLocation = getLocation(cteReceiveExemptRequestDto.ipsLocationId, fsmaUser)
+        val location = getLocation(cteReceiveExemptRequestDto.locationId, fsmaUser)
+        val tlcSource = getLocation(cteReceiveExemptRequestDto.tlcSourceId, fsmaUser)
         val cteReceiveExempt = cteReceiveExemptRequestDto.toCteReceiveExempt(
-            id = 0, traceLotCode, shipFromLocation, location
+            id = 0, traceLotCode, shipFromLocation, location, tlcSource,
         )
         val cteReceiveExemptResponse = cteReceiveExemptService.insert(cteReceiveExempt).toCteReceiveExemptResponseDto()
         return ResponseEntity
@@ -67,11 +68,12 @@ class cteReceiveExemptController : BaseController() {
         @Valid @RequestBody cteReceiveExemptRequestDto: CteReceiveExemptRequestDto,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<CteReceiveExemptResponseDto> {
-        val location = getLocation(cteReceiveExemptRequestDto.locationId, fsmaUser)
         val traceLotCode = getTraceLotCode(cteReceiveExemptRequestDto.traceLotCodeId, fsmaUser)
         val shipFromLocation = getLocation(cteReceiveExemptRequestDto.ipsLocationId, fsmaUser)
+        val location = getLocation(cteReceiveExemptRequestDto.locationId, fsmaUser)
+        val tlcSource = getLocation(cteReceiveExemptRequestDto.tlcSourceId, fsmaUser)
         val cteReceiveExempt = cteReceiveExemptRequestDto.toCteReceiveExempt(
-            id = id, traceLotCode, shipFromLocation, location
+            id = id, traceLotCode, shipFromLocation, location, tlcSource,
         )
         val cteReceiveExemptResponse = cteReceiveExemptService.insert(cteReceiveExempt).toCteReceiveExemptResponseDto()
         return ResponseEntity.ok().body(cteReceiveExemptResponse)

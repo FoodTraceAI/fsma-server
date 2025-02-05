@@ -39,9 +39,8 @@ data class CteShip(
     // and linking this information to the traceability lot:
 
     // (a)(1) The traceability lot code for the food;
-    @ManyToOne  //(cascade = [CascadeType.ALL])
-    @JoinColumn
-    val tlc: TraceLotCode,  // from Initial Packer or Transformer
+    @ManyToOne @JoinColumn
+    override val tlc: TraceLotCode,  // from Initial Packer or Transformer
 
     // (a)(2) The quantity and unit of measure of the food
     // (e.g., 6 cases, 25 reusable plastic containers, 100 tanks, 200 pounds);
@@ -55,13 +54,11 @@ data class CteShip(
 
     // (a)(4) The location description for the immediate subsequent recipient
     // (other than a transporter) of the food;
-    @ManyToOne  //(cascade = [CascadeType.ALL])
-    @JoinColumn
+    @ManyToOne @JoinColumn
     val shipToLocation: Location,
 
     // (a)(5) The location description for the location from which you shipped the food;
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne @JoinColumn
     override val location: Location,    // location = shipFromLocation
 
     // (a)(6) The date you shipped the food;
@@ -70,8 +67,7 @@ data class CteShip(
 
     // (a)(7) The location description for the traceability lot code source,
     // or the traceability lot code source reference; and
-    @ManyToOne  //(cascade = [CascadeType.ALL])
-    @JoinColumn
+    @ManyToOne @JoinColumn
     val tlcSource: Location,
     val tlcSourceReference: String? = null,
 

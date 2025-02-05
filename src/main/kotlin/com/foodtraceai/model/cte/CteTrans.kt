@@ -44,8 +44,7 @@ data class CteTrans(
     // the following information:
 
     // (a)(1)(i) The traceability lot code for the food;
-    @ManyToOne(cascade = [CascadeType.ALL])
-    @JoinColumn
+    @ManyToOne @JoinColumn
     val inputTlc: TraceLotCode,  // from Initial Packer or previous Transformer
 
     // (a)(1)(ii) The product description for the food to which the traceability
@@ -62,17 +61,16 @@ data class CteTrans(
     // information:
 
     // (a)(2)(i) The new traceability lot code for the food;
-    @ManyToOne(cascade = [CascadeType.ALL])
-    @JoinColumn
-    val newTlc: TraceLotCode,  // the new Tlc
+    @ManyToOne @JoinColumn
+    override val tlc: TraceLotCode,  // the new Tlc
 
     // (a)(2)(ii) The location description for where you transformed
     // the food (i.e., the traceability lot code source),
     // and (if applicable) the traceability lot code source reference;
-    @ManyToOne(cascade = [CascadeType.ALL])
-    @JoinColumn
-    val newTlcLocation: Location,
-    val newTlcSourceReference: String? = null,
+    //@ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne @JoinColumn
+    val tlcSource: Location,
+    val tlcSourceReference: String? = null,
 
     // (a)(2)(iii) The date transformation was completed;
     val transDate: LocalDate,
@@ -125,9 +123,9 @@ data class CteTransRequestDto(
     val inputFoodDesc: String, // from Initial Packer or previous Transformer
     val inputQuantity: Double,   // from Initial Packer
     val inputUnitOfMeasure: UnitOfMeasure,   // from Initial Packer
-    val newTlcId: Long,  // the new Tlc
-    val newTlcLocationId: Long,
-    val newTlcSourceReference: String? = null,
+    val tlcId: Long,  // the new Tlc
+    val tlcSourceId: Long,
+    val tlcSourceReference: String? = null,
     val transDate: LocalDate,
     val prodDesc: String,
     val quantity: Int,
@@ -146,9 +144,9 @@ data class CteTransResponseDto(
     val inputFoodDesc: String, // from Initial Packer or previous Transformer
     val inputQuantity: Double,   // from Initial Packer
     val inputUnitOfMeasure: UnitOfMeasure,   // from Initial Packer
-    val newTlcId: Long,  // the new Tlc
-    val newTlcLocationId: Long,
-    val newTlcSourceReference: String? = null,
+    val tlcId: Long,  // the new Tlc
+    val tlcSource: Long,
+    val tlcSourceReference: String? = null,
     val transDate: LocalDate,
     val prodDesc: String,
     val quantity: Int,
@@ -172,9 +170,9 @@ fun CteTrans.toCteTransResponseDto() = CteTransResponseDto(
     inputFoodDesc = inputFoodDesc, // from Initial Packer or previous Transformer
     inputQuantity = inputQuantity,   // from Initial Packer
     inputUnitOfMeasure = inputUnitOfMeasure,   // from Initial Packer
-    newTlcId = newTlc.id,  // the new Tlc after transformation
-    newTlcLocationId = newTlcLocation.id,
-    newTlcSourceReference = newTlcSourceReference,
+    tlcId = tlc.id,  // the new Tlc after transformation
+    tlcSource = tlcSource.id,
+    tlcSourceReference = tlcSourceReference,
     transDate = transDate,
     prodDesc = prodDesc,
     quantity = quantity,
@@ -192,8 +190,8 @@ fun CteTransRequestDto.toCteTrans(
     id: Long,
     location: Location,
     inputTlc: TraceLotCode,
-    newTlc: TraceLotCode,
-    newTlcLocation: Location,
+    tlc: TraceLotCode,
+    tlcSource: Location,
 ) = CteTrans(
     id = id,
     cteType = CteType.Transform,
@@ -204,9 +202,9 @@ fun CteTransRequestDto.toCteTrans(
     inputFoodDesc = inputFoodDesc, // from Initial Packer or previous Transformer
     inputQuantity = inputQuantity,   // from Initial Packer
     inputUnitOfMeasure = inputUnitOfMeasure,   // from Initial Packer
-    newTlc = newTlc,  // the new Tlc
-    newTlcLocation = newTlcLocation,
-    newTlcSourceReference = newTlcSourceReference,
+    tlc = tlc,  // the new Tlc
+    tlcSource = tlcSource,
+    tlcSourceReference = tlcSourceReference,
     transDate = transDate,
     prodDesc = prodDesc,
     quantity = quantity,

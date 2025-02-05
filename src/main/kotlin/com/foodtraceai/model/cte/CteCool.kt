@@ -5,6 +5,7 @@ package com.foodtraceai.model.cte
 
 import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.Location
+import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.util.CteType
 import com.foodtraceai.util.FtlItem
 import com.foodtraceai.util.ReferenceDocumentType
@@ -52,6 +53,10 @@ data class CteCool(
     // (b)(1)(ii) The commodity and, if applicable, variety of the food;
     override val prodDesc: String,  // commodity for this CTE
     override val variety: String? = null,
+
+    // Not applicable to this CTE
+    @ManyToOne @JoinColumn
+    override val tlc: TraceLotCode? = null,
 
     // (b)(1)(iii) The quantity and unit of measure of the food (e.g., 75 bins, 200 pounds);
     override val quantity: Int,

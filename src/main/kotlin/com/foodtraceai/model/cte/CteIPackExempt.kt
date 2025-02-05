@@ -66,7 +66,7 @@ data class CteIPackExempt(
 
     // (c)(5) The traceability lot code you assigned;
     @ManyToOne @JoinColumn
-    val packTlc: TraceLotCode,
+    override val tlc: TraceLotCode,
 
     // (c)(6) The product description of the packed food;
     // TODO From PTI This is the description for the Case,
@@ -88,8 +88,8 @@ data class CteIPackExempt(
     // (i.e., the traceability lot code source), and (if applicable) the traceability
     // lot code source reference;
     @ManyToOne @JoinColumn
-    val packTlcSource: Location? = null,    // i.e., the packLocation since TLC is created at this CTE
-    val packTlcSourceReference: String? = null,
+    val tlcSource: Location? = null,    // i.e., the location since TLC is created at this CTE
+    val tlcSourceReference: String? = null,
 
     // (c)(9) The date of initial packing; and
     val packDate: LocalDate,
@@ -140,7 +140,7 @@ data class CteIPackExemptResponseDto(
     val receiveQuantity: Double,
     val receiveUnitOfMeasure: UnitOfMeasure,
     val sourceLocationId: Long,
-    val packTlcId: Long,
+    val tlcId: Long,
     val packFoodDesc: String,
     val quantity: Int,
     val unitOfMeasure: UnitOfMeasure,
@@ -168,12 +168,12 @@ fun CteIPackExempt.toCteIPackExemptResponseDto() = CteIPackExemptResponseDto(
     receiveQuantity = receiveQuantity,
     receiveUnitOfMeasure = receiveUnitOfMeasure,
     sourceLocationId = sourceLocation.id,
-    packTlcId = packTlc.id,
+    tlcId = tlc.id,
     packFoodDesc = packFoodDesc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    packTlcSourceId = packTlcSource?.id,
-    packTlcSourceReference = packTlcSourceReference,
+    packTlcSourceId = tlcSource?.id,
+    packTlcSourceReference = tlcSourceReference,
     packDate = packDate,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,
@@ -188,8 +188,8 @@ fun CteIPackExemptRequestDto.toCteIPackExempt(
     id:Long,
     location: Location,
     sourceLocation: Location,
-    packTlc: TraceLotCode,
-    packTlcSource: Location?,
+    tlc: TraceLotCode,
+    tlcSource: Location?,
 ) = CteIPackExempt(
     id = id,
     cteType = CteType.InitPackExempt,
@@ -202,12 +202,12 @@ fun CteIPackExemptRequestDto.toCteIPackExempt(
     receiveQuantity = receiveQuantity,
     receiveUnitOfMeasure = receiveUnitOfMeasure,
     sourceLocation = sourceLocation,
-    packTlc = packTlc,
+    tlc = tlc,
     packFoodDesc = packFoodDesc,
     quantity = quantity,
     unitOfMeasure = unitOfMeasure,
-    packTlcSource = packTlcSource,
-    packTlcSourceReference = packTlcSourceReference,
+    tlcSource = tlcSource,
+    tlcSourceReference = packTlcSourceReference,
     packDate = packDate,
     referenceDocumentType = referenceDocumentType,
     referenceDocumentNum = referenceDocumentNum,

@@ -5,6 +5,7 @@ package com.foodtraceai.model.cte
 
 import com.foodtraceai.model.BaseResponse
 import com.foodtraceai.model.Location
+import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.util.CteType
 import com.foodtraceai.util.FtlItem
 import com.foodtraceai.util.ReferenceDocumentType
@@ -37,6 +38,10 @@ data class CteHarvest(
     @ManyToOne @JoinColumn
     override val location: Location,
 
+    // Not used in this CTE
+    @ManyToOne @JoinColumn
+    override val tlc: TraceLotCode? = null,
+
     // ************** KDEs *************
     // (a)(1) For each raw agricultural commodity (not obtained from a fishing vessel)
     // on the Food Traceability List that you harvest, you must maintain records
@@ -45,8 +50,7 @@ data class CteHarvest(
     // (a)(1)(i) The location description for the immediate subsequent recipient
     // (other than a transporter) of the food;
     // Will usually be the initial packer but could be the cooler
-    @ManyToOne(cascade = [CascadeType.ALL])
-    @JoinColumn
+    @ManyToOne @JoinColumn
     val isrLocation: Location,
 
     // (a)(1)(ii) The commodity and, if applicable, variety of the food;
@@ -61,8 +65,7 @@ data class CteHarvest(
     override val unitOfMeasure: UnitOfMeasure,
 
     // (a)(1)(iv) The location description for the farm where the food was harvested;
-    @ManyToOne(cascade = [CascadeType.ALL])
-    @JoinColumn
+    @ManyToOne @JoinColumn
     val harvestLocation: Location,
 
     // (a)(1)(v) For produce, the name of the field or other growing area from which the
@@ -72,7 +75,7 @@ data class CteHarvest(
     val fieldName: String,
     val fieldDesc: String,
 
-    // (a)(1)(vi) For aquacultured food, the name of the container
+    // (a)(1)(vi) For aqua-cultured food, the name of the container
     // (e.g., pond, pool, tank, cage) from which the food was harvested
     // (which must correspond to the container name
     // used by the aquaculture farmer) or other information identifying the harvest

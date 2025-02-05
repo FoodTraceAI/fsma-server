@@ -40,7 +40,7 @@ data class CteFirstLand(
 
     // (a) The traceability lot code you assigned;
     @ManyToOne @JoinColumn
-    val tlc: TraceLotCode,
+    override val tlc: TraceLotCode,
 
     // (b) The species and/or acceptable market name for unpackaged food,
     // or the product description for packaged food;
@@ -65,8 +65,7 @@ data class CteFirstLand(
     //(e) The location description for the first land-based receiver
     // (i.e., the traceability lot code source), and (if applicable)
     // the traceability lot code source reference;
-    @ManyToOne(cascade = [CascadeType.ALL])
-    @JoinColumn
+    @ManyToOne @JoinColumn
     val tlcSource: Location,
     val tlcSourceReference: String? = null,
 
@@ -111,7 +110,7 @@ data class CteFirstLandResponseDto(
     val cteType: CteType,
     val ftlItem: FtlItem,
     val locationId: Long,
-    val tlc: TraceLotCode,
+    val tlcId: Long,
     val prodDesc: String,
     val variety: String,
     val quantity: Int,
@@ -119,7 +118,7 @@ data class CteFirstLandResponseDto(
     val harvestDateBegin: LocalDate,
     val harvestDateEnd: LocalDate,
     val harvestArea: String,
-    val tlcSourceId: Long?,
+    val tlcSourceId: Long,
     val tlcSourceReference: String?,
     val landedDate: LocalDate,
     val landedTime: OffsetDateTime,    // not required
@@ -137,7 +136,7 @@ fun CteFirstLand.toCteFirstLandResponseDto() = CteFirstLandResponseDto(
     cteType = cteType,
     ftlItem = ftlItem,
     locationId = location.id,
-    tlc = tlc,
+    tlcId = tlc.id,
     prodDesc = prodDesc,
     variety = variety,
     quantity = quantity,

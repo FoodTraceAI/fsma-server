@@ -4,6 +4,7 @@
 package com.foodtraceai.model.cte
 
 import com.foodtraceai.model.BaseLocationModel
+import com.foodtraceai.model.TraceLotCode
 import com.foodtraceai.util.CteType
 import com.foodtraceai.util.FtlItem
 import com.foodtraceai.util.ReferenceDocumentType
@@ -23,6 +24,8 @@ abstract class CteBase<T> : BaseLocationModel<T>() {
     // packaging size, packing style,
     // for fish: may include species and/or market name
     // TODO: Do it as a json text
+
+    abstract val tlc: TraceLotCode?
 
     // quantity & unitOfMeasure is the amount after CTE is finished
     abstract val quantity: Int   // from Initial Packer or Transformer
