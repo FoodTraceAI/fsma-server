@@ -31,7 +31,7 @@ interface SupShipCteRepository : BaseRepository<SupShipCte> {
     @Query(
         value = "select sup from SupShipCte sup " +
                 "where (:locationId is null or :locationId = sup.shipToLocation.id) and " +
-                "(supCteStatus is null or CAST(:supCteStatus as text) = sup.supCteStatus) and " +
+                "(:supCteStatus is null or CAST(:supCteStatus as text) = sup.supCteStatus) and " +
                 "(sup.dateDeleted is null) " +
                 "order by sup.dateCreated"
     )

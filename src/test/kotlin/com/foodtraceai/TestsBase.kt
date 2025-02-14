@@ -33,6 +33,7 @@ class TestsBase {
     @Autowired protected lateinit var locationService: LocationService
     @Autowired protected lateinit var resellerService: ResellerService
     @Autowired protected lateinit var traceLotCodeService: TraceLotCodeService
+    @Autowired protected lateinit var tracePlanService: TracePlanService
 
     protected val rootAuthLogin = AuthLogin(email = "root@foodtraceai.com", password = "123", refreshToken = null)
     protected val user0AuthLogin = AuthLogin(email = "user0@foodtraceai.com", password = "123", refreshToken = null)

@@ -98,7 +98,7 @@ class SupShipCteController : BaseController() {
         @RequestParam(value = "sscc", required = true) sscc: String,
         @RequestParam(value = "tlcId", required = true) tlcId: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
-    ): ResponseEntity<SupShipCteResponseDto?> {
+    ): ResponseEntity<List<SupShipCteResponseDto>> {
         val supShipCte = supShipCteService.findSupShipCte(
             sscc = sscc,
             tlcId = tlcId,
@@ -106,6 +106,6 @@ class SupShipCteController : BaseController() {
             supCteStatus = SupCteStatus.Pending,
         )
 
-        return ResponseEntity.ok(supShipCte?.toSupShipCteResponseDto())
+        return ResponseEntity.ok(supShipCte.map { it.toSupShipCteResponseDto() })
     }
 }

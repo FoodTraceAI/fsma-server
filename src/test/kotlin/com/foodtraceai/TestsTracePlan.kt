@@ -6,12 +6,10 @@ package com.foodtraceai
 import com.foodtraceai.model.Contact
 import com.foodtraceai.model.TracePlanRequestDto
 import com.foodtraceai.model.toTracePlan
-import com.foodtraceai.service.TracePlanService
 import com.foodtraceai.util.EntityNotFoundException
 import com.jayway.jsonpath.JsonPath
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
@@ -25,9 +23,6 @@ class TestsTracePlan : TestsBase() {
 
     private lateinit var tracePlanContact: Contact
     private lateinit var updatedTracePlanContact: Contact
-
-    @Autowired
-    private lateinit var tracePlanService: TracePlanService
 
     private lateinit var tracePlanRequestDto: TracePlanRequestDto
     private lateinit var tracePlanRequestDtoUpdated: TracePlanRequestDto

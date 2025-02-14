@@ -6,7 +6,6 @@ package com.foodtraceai.service
 import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.SupShipCte
 import com.foodtraceai.repository.SupShipCteRepository
-import com.foodtraceai.util.EntityException
 import com.foodtraceai.util.SupCteStatus
 import org.springframework.stereotype.Service
 
@@ -26,7 +25,7 @@ class SupShipCteService(
         tlcId: Long,
         shipToLocationId: Long,
         supCteStatus: SupCteStatus,
-    ): SupShipCte? {
+    ): List<SupShipCte> {
         val supShipCteList = supShipCteRepository
             .findAllBySsccAndTlcIdAndShipToLocationIdAndSupCteStatus(
                 sscc = sscc,
@@ -34,11 +33,6 @@ class SupShipCteService(
                 shipToLocationId = shipToLocationId,
                 supCteStatus = supCteStatus,
             )
-
-        return when (supShipCteList.size) {
-            0 -> null
-            1 -> supShipCteList[0]
-            else -> throw EntityException("SupShipCteList size error: ${supShipCteList.size}")
-        }
+        return supShipCteList
     }
 }

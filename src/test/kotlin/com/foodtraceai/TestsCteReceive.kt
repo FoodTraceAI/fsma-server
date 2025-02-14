@@ -95,7 +95,7 @@ class TestsCteReceive : TestsBase() {
     @Order(1)
     fun `findAll CteReceive as Root`() {
         val (accessToken, _) = authenticate(rootAuthLogin)
-        val mvcResult = mockMvc.get("/api/v1/cte/receive/findAll") {
+        mockMvc.get("/api/v1/cte/receive/findAll") {
             header("Authorization", "Bearer $accessToken")
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
@@ -112,7 +112,7 @@ class TestsCteReceive : TestsBase() {
     @Order(2)
     fun `findAll CteReceive as User1`() {
         val (accessToken, _) = authenticate(user1AuthLogin)
-        val mvcResult = mockMvc.get("/api/v1/cte/receive/findAll") {
+        mockMvc.get("/api/v1/cte/receive/findAll") {
             header("Authorization", "Bearer $accessToken")
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
@@ -127,7 +127,7 @@ class TestsCteReceive : TestsBase() {
     @Order(3)
     fun `add cteReceive`() {
         val cteReceiveId = 4   // DataLoader loads 3 contacts
-        val mvcResult = mockMvc.post("/api/v1/cte/receive") {
+        mockMvc.post("/api/v1/cte/receive") {
             header("Authorization", "Bearer $accessToken")
             content = objectMapper.writeValueAsString(cteReceiveRequestDto)
             contentType = MediaType.APPLICATION_JSON

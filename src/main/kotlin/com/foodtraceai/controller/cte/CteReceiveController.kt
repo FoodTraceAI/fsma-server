@@ -103,20 +103,26 @@ class CteReceiveController : BaseController() {
         val receiveTime: OffsetDateTime,
     )
 
+    enum class MakeCteReceiveResponse(val message: String) {
+        Created(message = "Created"),
+        AlreadyExists(message = "AlreadyExists"),
+        SupShipCteNotFound(message = "SupShipCte Not Found"),
+    }
+
     // API call for mobile scanning of product on loading dock
     @PostMapping("/makeCteReceive")
     private fun makeCteReceive(
         @Valid @RequestBody supShipArgs: SupShipArgs,
         @AuthenticationPrincipal fsmaUser: FsmaUser,
-    ): ResponseEntity<CteReceiveResponseDto> {
+    ): ResponseEntity<MakeCteReceiveResponse> {
         assertFsmaUserLocationMatches(supShipArgs.receiveLocationId, fsmaUser)
-        val cteReceive = cteReceiveService.makeCteReceiveFromSupShipCte(
+        val response = cteReceiveService.makeCteReceiveFromSupShipCte(
             supShipArgs.sscc,
             supShipArgs.tlcId,
             supShipArgs.receiveLocationId,
             supShipArgs.receiveDate,
             supShipArgs.receiveTime,
         )
-        return ResponseEntity.ok(cteReceive.toCteReceiveResponseDto())
+        return ResponseEntity.ok(response)
     }
 }
