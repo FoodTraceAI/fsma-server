@@ -4,20 +4,16 @@
 package com.foodtraceai.model.response
 
 import com.foodtraceai.model.BaseResponse
-import com.foodtraceai.model.SupShipCte
+import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.util.FtlItem
 import com.foodtraceai.util.ReferenceDocumentType
-import com.foodtraceai.util.SupCteStatus
 import com.foodtraceai.util.UnitOfMeasure
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
-data class ArrivingShipmentsResponseDto(
+data class ReceivedShipmentsResponseDto(
     override val id: Long,
-    val supShipCteId: Long,
-    val supShipStatus: SupCteStatus,
-    val sscc: String?,
-    val logSerialNo: String?,
+    val cteReceiveId: Long,
     val tlcId: Long,
     val tlcVal: String,
     val tlcSrc: String,
@@ -31,7 +27,7 @@ data class ArrivingShipmentsResponseDto(
     val shipToCity: String,
     val shipFromBus: String,
     val shipFromCity: String,
-    val shipDate: LocalDate,
+    val receiveDate: LocalDate,
     val referenceDocumentType: ReferenceDocumentType,
     val referenceDocumentNum: String,
     override var dateCreated: OffsetDateTime = OffsetDateTime.now(),
@@ -39,15 +35,12 @@ data class ArrivingShipmentsResponseDto(
     override var isDeleted: Boolean = false,
     override var dateDeleted: OffsetDateTime? = null,
     override var authUsername: String? = null,
-) : BaseResponse<ArrivingShipmentsResponseDto>()
+) : BaseResponse<ReceivedShipmentsResponseDto>()
 
-fun SupShipCte.toArrivingShipmentsResponseDto(): ArrivingShipmentsResponseDto {
-    return ArrivingShipmentsResponseDto(
+fun CteReceive.toReceivedShipmentsResponseDto(): ReceivedShipmentsResponseDto {
+    return ReceivedShipmentsResponseDto(
         id = id,
-        supShipCteId = id,
-        supShipStatus = supCteStatus,
-        sscc = sscc,
-        logSerialNo = logSerialNo,
+        cteReceiveId = id,
         tlcId = tlc.id,
         tlcVal = tlc.tlcVal,
         tlcSrc = tlc.tlcSourceLoc.foodBus.foodBusName + " " + tlc.tlcSourceLoc.address.city,
@@ -57,11 +50,11 @@ fun SupShipCte.toArrivingShipmentsResponseDto(): ArrivingShipmentsResponseDto {
         quantity = quantity,
         unitOfMeasure = unitOfMeasure,
         prodDesc = prodDesc,
-        shipToBus = shipToLocation.foodBus.foodBusName,
-        shipToCity = shipToLocation.address.city,
-        shipFromBus = shipFromLocation.foodBus.foodBusName,
-        shipFromCity = shipFromLocation.address.city,
-        shipDate = shipDate,
+        shipToBus = location.foodBus.foodBusName,
+        shipToCity = location.address.city,
+        shipFromBus = ipsLocation.foodBus.foodBusName,
+        shipFromCity = ipsLocation.address.city,
+        receiveDate = receiveDate,
         referenceDocumentNum = referenceDocumentNum,
         referenceDocumentType = referenceDocumentType,
         dateCreated = dateCreated,

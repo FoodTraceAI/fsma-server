@@ -5,6 +5,7 @@ package com.foodtraceai.controller
 
 import com.foodtraceai.model.FsmaUser
 import com.foodtraceai.model.response.ArrivingShipmentsResponseDto
+import com.foodtraceai.model.response.ReceivedShipmentsResponseDto
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -22,11 +23,21 @@ class PortalController : BaseController() {
 
     // localhost:8080/api/v1/portal/arrivingshipments?locationId=1
     @GetMapping("/arrivingshipments")
-    fun findById(
+    fun findArrivingShipments(
         @RequestParam("locationId") locationId: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<List<ArrivingShipmentsResponseDto>> {
         val arriving = portalService.arrivingShipments(locationId)
         return ResponseEntity.ok(arriving)
+    }
+
+    // localhost:8080/api/v1/portal/receivedshipments?locationId=1
+    @GetMapping("/receivedshipments")
+    fun findReceivedShipments(
+        @RequestParam("locationId") locationId: Long,
+        @AuthenticationPrincipal fsmaUser: FsmaUser
+    ): ResponseEntity<List<ReceivedShipmentsResponseDto>> {
+        val received = portalService.receivedShipments(locationId)
+        return ResponseEntity.ok(received)
     }
 }

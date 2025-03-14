@@ -62,7 +62,7 @@ open class BaseModel<T> {
 }
 
 // SGE: for now BaseResponse and BaseModel are identical
-open class BaseResponse<T>:BaseModel<T>()
+open class BaseResponse<T> : BaseModel<T>()
 
 /**
  *** Base superclass of Reseller Entity objects
