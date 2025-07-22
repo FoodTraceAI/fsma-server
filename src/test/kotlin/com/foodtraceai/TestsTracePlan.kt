@@ -25,6 +25,7 @@ class TestsTracePlan : TestsBase() {
     private lateinit var updatedTracePlanContact: Contact
 
     private lateinit var tracePlanRequestDto: TracePlanRequestDto
+    private lateinit var tracePlanRequestDto2: TracePlanRequestDto
     private lateinit var tracePlanRequestDtoUpdated: TracePlanRequestDto
 
     @BeforeEach
@@ -54,6 +55,14 @@ class TestsTracePlan : TestsBase() {
             tracePlanContactId = tracePlanContact.id
         )
 
+        tracePlanRequestDto2 = TracePlanRequestDto(
+            locationId = 2,
+            descProcRecordMaintenance = "2descProcRecordMaintenance",
+            descProcIdentifyFoods = "2descProcIdentifyFoods",
+            descAssignTraceLotCodes = "2descAssignTraceLotCodes",
+            tracePlanContactId = tracePlanContact.id
+        )
+
         tracePlanRequestDtoUpdated = TracePlanRequestDto(
             locationId = 1,
             descProcRecordMaintenance = "Updated - descProcRecordMaintenance",
@@ -78,6 +87,24 @@ class TestsTracePlan : TestsBase() {
             jsonPath("$.descProcRecordMaintenance") { value(tracePlanRequestDto.descProcRecordMaintenance) }
             jsonPath("$.descProcIdentifyFoods") { value(tracePlanRequestDto.descProcIdentifyFoods) }
             jsonPath("$.descAssignTraceLotCodes") { value(tracePlanRequestDto.descAssignTraceLotCodes) }
+            jsonPath("$.tracePlanContactId") { value(tracePlanContact.id) }
+        }.andReturn()
+        val tracePlanId: Long = JsonPath.read(mvcResult.response.contentAsString, "$.id")
+    }
+
+    @Test
+    fun `add TracePlan2`() {
+        val (accessToken, _) = authenticate(rootAuthLogin)
+        val mvcResult = mockMvc.post("/api/v1/trace-plan") {
+            header("Authorization", "Bearer $accessToken")
+            content = objectMapper.writeValueAsString(tracePlanRequestDto2)
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isCreated() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+            jsonPath("$.descProcRecordMaintenance") { value(tracePlanRequestDto2.descProcRecordMaintenance) }
+            jsonPath("$.descProcIdentifyFoods") { value(tracePlanRequestDto2.descProcIdentifyFoods) }
+            jsonPath("$.descAssignTraceLotCodes") { value(tracePlanRequestDto2.descAssignTraceLotCodes) }
             jsonPath("$.tracePlanContactId") { value(tracePlanContact.id) }
         }.andReturn()
         val tracePlanId: Long = JsonPath.read(mvcResult.response.contentAsString, "$.id")

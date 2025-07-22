@@ -45,10 +45,10 @@ class SupShipCteController : BaseController() {
         val supShipCte = supShipCteRequestDto.toSupCteShip(
             id = 0, cteReceive, tlc, shipToLocation, shipFromLocation, tlcSource
         )
-        val cteCoolResponse = supShipCteService.insert(supShipCte).toSupShipCteResponseDto()
+        val supShipCteResponse = supShipCteService.insert(supShipCte).toSupShipCteResponseDto()
         return ResponseEntity
-            .created(URI.create(SUP_SHIP_CTE_BASE_URL.plus("/${cteCoolResponse.id}")))
-            .body(cteCoolResponse)
+            .created(URI.create(SUP_SHIP_CTE_BASE_URL.plus("/${supShipCteResponse.id}")))
+            .body(supShipCteResponse)
     }
 
     // -- Update an existing SupShipCteDto

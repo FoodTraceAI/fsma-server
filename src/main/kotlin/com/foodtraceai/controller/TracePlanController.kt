@@ -35,7 +35,10 @@ class TracePlanController : BaseController() {
     ): ResponseEntity<TracePlanResponseDto> {
         val location = getLocation(tracePlanRequestDto.locationId, fsmaUser)
         val contact = getContact(tracePlanRequestDto.tracePlanContactId, fsmaUser)
-        val tracePlan = tracePlanRequestDto.toTracePlan(id = 0, location, contact)
+        val previousTracePlan = tracePlanService.findAllByLocationId(location.id).firstOrNull()
+        val tracePlan = tracePlanRequestDto.toTracePlan(
+            id = 0, location, contact, previousTracePlan?.id
+        )
         val tracePlanResponse = tracePlanService.insert(tracePlan)
         return ResponseEntity
             .created(URI.create(TRACE_PLAN_URL.plus("/${tracePlanResponse.id}")))
@@ -51,7 +54,8 @@ class TracePlanController : BaseController() {
     ): ResponseEntity<TracePlanResponseDto> {
         val location = getLocation(tracePlanResponseDto.locationId, fsmaUser)
         val contact = getContact(tracePlanResponseDto.tracePlanContactId, fsmaUser)
-        val tracePlan = tracePlanResponseDto.toTracePlan(id = id, location, contact)
+        val tracePlan = tracePlanResponseDto.toTracePlan(
+            id = id, location, contact, tracePlanResponseDto.previousTracePlanId)
         val tracePlanResponse = tracePlanService.update(tracePlan).toTracePlanResponseDto()
         return ResponseEntity.ok().body(tracePlanResponse)
     }

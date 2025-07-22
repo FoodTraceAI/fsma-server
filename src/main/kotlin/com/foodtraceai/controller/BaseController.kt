@@ -8,6 +8,7 @@ import com.foodtraceai.model.*
 import com.foodtraceai.model.cte.CteReceive
 import com.foodtraceai.service.*
 import com.foodtraceai.service.cte.*
+import com.foodtraceai.util.AuthorizationException
 import com.foodtraceai.util.BadRequestException
 import com.foodtraceai.util.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
@@ -177,7 +178,7 @@ class BaseController {
 //            isClientCheck(fsmaUser, modelResellerId, modelClientId)
         ) return
 
-        throw BadRequestException("Invalid request")    // Permissions are wrong
+        throw AuthorizationException("Unauthorized request")    // Permissions are wrong
     }
 
     protected fun assertFsmaUserFoodBusMatches(foodBusId: Long, fsmaUser: FsmaUser) {
@@ -185,7 +186,7 @@ class BaseController {
             || isFoodBusCheck(foodBusId, fsmaUser)
         ) return
 
-        throw BadRequestException("Invalid request")    // Permissions are wrong
+        throw AuthorizationException("Unauthorized request")     // Permissions are wrong
     }
 
     private fun isLocationCheck(locationId: Long, fsmaUser: FsmaUser) =

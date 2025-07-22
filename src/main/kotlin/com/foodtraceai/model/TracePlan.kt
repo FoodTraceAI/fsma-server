@@ -4,7 +4,6 @@
 package com.foodtraceai.model
 
 import jakarta.persistence.*
-import java.time.LocalDate
 import java.time.OffsetDateTime
 
 /**
@@ -29,10 +28,16 @@ data class TracePlan(
     @Id @GeneratedValue
     override val id: Long = 0,
 
-    val issueDate: LocalDate? = null,
-
     @ManyToOne @JoinColumn
     override val location: Location,
+
+    val issueDate: OffsetDateTime? = null,
+
+    // Previous version Id
+    val previousTracePlanId: Long? = null,
+
+    // Updates and changes since previous version
+    val traceabilityPlanUpdates: String? = null,
 
     // (a)(1) A description of the procedures you use to maintain the records you are required
     // to keep under this subpart, including the format and location of these records.
@@ -76,8 +81,10 @@ data class TracePlan(
 ) : BaseLocationModel<TracePlan>()
 
 data class TracePlanRequestDto(
-    val issueDate: LocalDate? = null,
     val locationId: Long,
+    val issueDate: OffsetDateTime? = null,
+    val previousTracePlanId: Long? = null,
+    val traceabilityPlanUpdates: String? = null,
     val descProcRecordMaintenance: String,
     val descProcIdentifyFoods: String,
     val descAssignTraceLotCodes: String,
@@ -87,8 +94,10 @@ data class TracePlanRequestDto(
 
 data class TracePlanResponseDto(
     override val id: Long,
-    val issueDate: LocalDate? = null,
     val locationId: Long,
+    val issueDate: OffsetDateTime? = null,
+    val previousTracePlanId: Long? = null,
+    val traceabilityPlanUpdates: String? = null,
     val descProcRecordMaintenance: String,
     val descProcIdentifyFoods: String,
     val descAssignTraceLotCodes: String,
@@ -103,8 +112,10 @@ data class TracePlanResponseDto(
 
 fun TracePlan.toTracePlanResponseDto() = TracePlanResponseDto(
     id = id,
-    issueDate = issueDate,
     locationId = location.id,
+    issueDate = issueDate,
+    previousTracePlanId = previousTracePlanId,
+    traceabilityPlanUpdates = traceabilityPlanUpdates,
     descProcRecordMaintenance = descProcRecordMaintenance,
     descProcIdentifyFoods = descProcIdentifyFoods,
     descAssignTraceLotCodes = descAssignTraceLotCodes,
@@ -121,10 +132,13 @@ fun TracePlanRequestDto.toTracePlan(
     id: Long,
     location: Location,
     contact: Contact,
+    previousTracePlanId: Long? = null,
 ) = TracePlan(
     id = id,
-    issueDate = issueDate,
     location = location,
+    issueDate = issueDate,
+    previousTracePlanId = previousTracePlanId,
+    traceabilityPlanUpdates = traceabilityPlanUpdates,
     descProcRecordMaintenance = descProcRecordMaintenance,
     descProcIdentifyFoods = descProcIdentifyFoods,
     descAssignTraceLotCodes = descAssignTraceLotCodes,

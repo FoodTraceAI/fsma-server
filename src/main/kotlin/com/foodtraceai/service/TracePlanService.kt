@@ -9,5 +9,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class TracePlanService(
-    tracePlanRepository: TracePlanRepository
-) : BaseService<TracePlan>(tracePlanRepository, "TracePlan")
+    private val tracePlanRepository: TracePlanRepository
+) : BaseService<TracePlan>(tracePlanRepository, "TracePlan") {
+
+    fun findAllByLocationId(
+        locationId: Long?,
+    ): List<TracePlan> {
+        return tracePlanRepository.findAllByLocationId(locationId)
+    }
+}

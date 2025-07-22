@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 import java.time.LocalDate
+import java.time.OffsetDateTime
 
 @Component
 @Profile("!staging && !prod")
@@ -617,6 +618,9 @@ class DataLoader : ApplicationRunner {
     fun addTracePlans() {
         val tracePlan = TracePlan(
             location = locationList[1],
+            issueDate = OffsetDateTime.now(),
+            previousTracePlanId = null,   // null since this is the first tracePlan
+            traceabilityPlanUpdates = "TraceabilityPlanUpdates from previous version",
             descProcRecordMaintenance = "(a)(1) A description of the procedures you use to maintain the records you are required" +
                     " to keep under this subpart, including the format and location of these records.",
             descProcIdentifyFoods = "(a)(2) A description of the procedures you use to identify foods on the Food" +
