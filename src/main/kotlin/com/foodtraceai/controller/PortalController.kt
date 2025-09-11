@@ -83,7 +83,7 @@ class PortalController : BaseController() {
     // localhost:8080/api/v1/portal/traceplan?locationId=2
     @GetMapping("/traceplan")
     fun findTracePlanByLocationId(
-        @RequestParam("locationId") locationId: Long?,
+        @RequestParam("locationId") locationId: Long,
         @AuthenticationPrincipal fsmaUser: FsmaUser
     ): ResponseEntity<PortalTracePlanResponse> {
         val tracePlan = tracePlanService.findAllByLocationId(locationId).firstOrNull()
