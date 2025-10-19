@@ -343,6 +343,7 @@ class DataLoader : ApplicationRunner {
     }
 
     fun addLocations() {
+        // location[0] = distributor
         var location = Location(
             foodBus = freshProdDistBus,
             locationContact = freshProdDistContact,
@@ -352,6 +353,7 @@ class DataLoader : ApplicationRunner {
         freshProdDistLocation = locationService.findById(response.id)!!
         locationList.add(freshProdDistLocation)
 
+        // location[1] = restaurant
         location = Location(
             foodBus = happyRestBus,
             locationContact = happyRestContact,
@@ -361,6 +363,7 @@ class DataLoader : ApplicationRunner {
         happyRestaurantLocation = locationService.findById(response.id)!!
         locationList.add(happyRestaurantLocation)
 
+        // location[2] = processor
         location = Location(
             foodBus = pepiProcessorBus,
             locationContact = pepiProcessorContact,
@@ -419,7 +422,7 @@ class DataLoader : ApplicationRunner {
             locationId = locationList[0].id,
             email = "fresh@foodtraceai.com",
             password = "123",
-            roles = listOf(Role.FoodBusinessUser),
+            roles = listOf(Role.FoodBusinessAdmin),
             firstname = "Fresh",
             lastname = "UserFresh",
         )
@@ -433,7 +436,7 @@ class DataLoader : ApplicationRunner {
             locationId = locationList[1].id,
             email = "happy@foodtraceai.com",
             password = "123",
-            roles = listOf(Role.FoodBusinessUser),
+            roles = listOf(Role.FoodBusinessAdmin),
             firstname = "Happy",
             lastname = "UserHappy",
         )
@@ -447,7 +450,7 @@ class DataLoader : ApplicationRunner {
             locationId = locationList[2].id,
             email = "pepi@foodtraceai.com",
             password = "123",
-            roles = listOf(Role.FoodBusinessUser),
+            roles = listOf(Role.FoodBusinessAdmin),
             firstname = "Pepi",
             lastname = "UserPepi",
         )
@@ -551,6 +554,7 @@ class DataLoader : ApplicationRunner {
     }
 
     fun addSupShipCtes() {
+        // distributor sends to restaurant
         var tlc = tlcList[0]
         var supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
@@ -563,15 +567,16 @@ class DataLoader : ApplicationRunner {
             ftlItem = FtlItem.Fruits,
             variety = "Variety of Fruits",
             prodDesc = "Food Description goes Here",
-            shipToLocation = locationList[0],
-            shipFromLocation = locationList[1],
+            shipToLocation = locationList[1],   // restaurant
+            shipFromLocation = locationList[0], // distributor
             shipDate = LocalDate.of(2026, 1, 20),
-            tlcSource = locationList[2],
+            tlcSource = locationList[2],    // processor
             referenceDocumentType = ReferenceDocumentType.BOL,
             referenceDocumentNum = "BOL-sscc1",
         )
         supShipCteList.add(supShipCteService.insert(supShipCte))
 
+        // processor sends to restaurant
         tlc = tlcList[1]
         supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
@@ -584,8 +589,8 @@ class DataLoader : ApplicationRunner {
             ftlItem = FtlItem.Cucumbers,
             variety = "Cucumbers",
             prodDesc = "Cucumbers goes Here",
-            shipToLocation = locationList[2],
-            shipFromLocation = locationList[1],
+            shipToLocation = locationList[1],   // restaurant
+            shipFromLocation = locationList[2], // processor
             shipDate = LocalDate.of(2026, 1, 21),
             tlcSource = locationList[2],
             referenceDocumentType = ReferenceDocumentType.BOL,
@@ -593,6 +598,7 @@ class DataLoader : ApplicationRunner {
         )
         supShipCteList.add(supShipCteService.insert(supShipCte))
 
+        // processer sends to distributor
         tlc = tlcList[2]
         supShipCte = SupShipCte(
             supCteStatus = SupCteStatus.Pending,
@@ -605,8 +611,10 @@ class DataLoader : ApplicationRunner {
             ftlItem = FtlItem.DeliSalads,
             variety = "Deli Salads",
             prodDesc = "Description of Deli Salad goes Here",
-            shipToLocation = locationList[2],
-            shipFromLocation = locationList[1],
+//            shipToLocation = locationList[2],
+//            shipFromLocation = locationList[1],
+            shipToLocation = locationList[0],   // distributor
+            shipFromLocation = locationList[2], // processor
             shipDate = LocalDate.of(2026, 1, 22),
             tlcSource = locationList[2],
             referenceDocumentType = ReferenceDocumentType.BOL,

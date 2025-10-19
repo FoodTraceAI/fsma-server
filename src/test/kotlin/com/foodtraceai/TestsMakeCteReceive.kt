@@ -20,7 +20,7 @@ class TestsMakeCteReceive : TestsBase() {
     private val createArgs = CteReceiveController.SupShipArgs(
         sscc = "sscc2",
         tlcId = 2,
-        receiveLocationId = 3,
+        receiveLocationId = 2,
         receiveDate = LocalDate.of(2024, 10, 18),
         receiveTime = OffsetDateTime.now(),
     )
@@ -37,7 +37,7 @@ class TestsMakeCteReceive : TestsBase() {
 
     @BeforeAll
     fun beforeAll() {
-        val (access, _) = authenticate(user1AuthLogin)
+        val (access, _) = authenticate(user0AuthLogin)
         accessToken = access
     }
 
