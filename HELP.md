@@ -24,3 +24,13 @@ These additional references should also help you:
 
 * [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
 
+Swagger API documentation
+http://localhost:8080/swagger-ui/index.html
+
+Demo
+Location 1 - distributor (FreshDist)
+Location 2 - restaurant (HappyRest)
+Location 3 - processor (PepiProc)
+
+Step 1. PepiProc sends a shipment to FreshDist
+- create supShipCte (Loc 3 -> Loc 1)

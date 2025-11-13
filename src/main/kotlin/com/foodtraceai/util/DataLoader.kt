@@ -66,7 +66,7 @@ class DataLoader : ApplicationRunner {
     private val locationList: MutableList<Location> = mutableListOf()
     private lateinit var freshProdDistLocation: Location
     private lateinit var happyRestaurantLocation: Location
-    private lateinit var pepiLocation: Location
+    private lateinit var pepiProcLocation: Location
 
     @Autowired
     private lateinit var resellerService: ResellerService
@@ -370,8 +370,8 @@ class DataLoader : ApplicationRunner {
             address = pepiProcessorAddress
         )
         response = locationService.insert(location)
-        pepiLocation = locationService.findById(response.id)!!
-        locationList.add(pepiLocation)
+        pepiProcLocation = locationService.findById(response.id)!!
+        locationList.add(pepiProcLocation)
     }
 
     fun addFsmaUsers() {
@@ -423,8 +423,8 @@ class DataLoader : ApplicationRunner {
             email = "fresh@foodtraceai.com",
             password = "123",
             roles = listOf(Role.FoodBusinessAdmin),
-            firstname = "Fresh",
-            lastname = "UserFresh",
+            firstname = "UserDist",
+            lastname = "Distributor",
         )
         resDto = authService.createNewFsmaUser(fsmaUserRequestDto)
         fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
@@ -437,8 +437,8 @@ class DataLoader : ApplicationRunner {
             email = "happy@foodtraceai.com",
             password = "123",
             roles = listOf(Role.FoodBusinessAdmin),
-            firstname = "Happy",
-            lastname = "UserHappy",
+            firstname = "UserRestHappy",
+            lastname = "Restaurant",
         )
         resDto = authService.createNewFsmaUser(fsmaUserRequestDto)
         fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
@@ -451,8 +451,8 @@ class DataLoader : ApplicationRunner {
             email = "pepi@foodtraceai.com",
             password = "123",
             roles = listOf(Role.FoodBusinessAdmin),
-            firstname = "Pepi",
-            lastname = "UserPepi",
+            firstname = "UserProcPepi",
+            lastname = "Processor",
         )
         resDto = authService.createNewFsmaUser(fsmaUserRequestDto)
         fmsaUser = fsmaUserService.findById(resDto.fsmaUserId)
@@ -468,7 +468,7 @@ class DataLoader : ApplicationRunner {
             batchLot = "187",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
-            tlcSourceLoc = pepiLocation,
+            tlcSourceLoc = pepiProcLocation,
         )
         val response = tlcService.insert(tlc)
         tlcList.add(response)
@@ -480,7 +480,7 @@ class DataLoader : ApplicationRunner {
             batchLot = "188",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
-            tlcSourceLoc = pepiLocation,
+            tlcSourceLoc = pepiProcLocation,
         )
         tlcList.add(tlcService.insert(tlc))
 
@@ -491,25 +491,26 @@ class DataLoader : ApplicationRunner {
             batchLot = "123456",
             packDate = LocalDate.of(2023, 7, 12),
             harvestDate = LocalDate.of(2024, 10, 12),
-            tlcSourceLoc = pepiLocation,
+            tlcSourceLoc = pepiProcLocation,
         )
         tlcList.add(tlcService.insert(tlc))
     }
 
     fun addCteReceives() {
-        var prevLoc = locationList[0]
-        var curLoc = locationList[1]
+        val locDist = locationList[0]
+        val locRest = locationList[1]
+        val locProc = locationList[2]
         var cteReceive = CteReceive(
-            location = curLoc,
+            location = locRest,
             tlc = tlcList[0],
             quantity = 15,
             unitOfMeasure = UnitOfMeasure.Case,
             ftlItem = FtlItem.LeafyGreens,
             prodDesc = "Iceberg Lettuce Wrapped - 24 heads",
             variety = "variety",
-            ipsLocation = prevLoc,
+            ipsLocation = locDist,
             receiveDate = LocalDate.of(2023, 7, 17),
-            tlcSource = prevLoc,
+            tlcSource = locDist,
             tlcSourceReference = null,
             referenceDocumentType = ReferenceDocumentType.BOL,
             referenceDocumentNum = "INV-12005",
@@ -517,35 +518,33 @@ class DataLoader : ApplicationRunner {
         cteReceiveList.add(cteReceiveService.insert(cteReceive))
 
         cteReceive = CteReceive(
-            location = curLoc,
+            location = locDist,
             tlc = tlcList[1],
             quantity = 10,
             unitOfMeasure = UnitOfMeasure.Case,
             ftlItem = FtlItem.LeafyGreens,
             prodDesc = "Iceberg Lettuce Wrapped - 24 heads",
             variety = "variety",
-            ipsLocation = prevLoc,
+            ipsLocation = locProc,
             receiveDate = LocalDate.of(2023, 7, 18),
-            tlcSource = prevLoc,
+            tlcSource = locDist,
             tlcSourceReference = null,
             referenceDocumentType = ReferenceDocumentType.BOL,
             referenceDocumentNum = "INV-12345",
         )
         cteReceiveList.add(cteReceiveService.insert(cteReceive))
 
-        prevLoc = locationList[0]
-        curLoc = locationList[1]
         cteReceive = CteReceive(
-            location = curLoc,
+            location = locRest,
             tlc = tlcList[2],
             quantity = 5,
             unitOfMeasure = UnitOfMeasure.Case,
             ftlItem = FtlItem.LeafyGreens,
             prodDesc = "Iceburg Lettuce Whole - Georgia Grown",
             variety = "variety",
-            ipsLocation = prevLoc,
+            ipsLocation = locDist,
             receiveDate = LocalDate.of(2023, 7, 17),
-            tlcSource = prevLoc,
+            tlcSource = locDist,
             tlcSourceReference = null,
             referenceDocumentType = ReferenceDocumentType.BOL,
             referenceDocumentNum = "BOL-023",

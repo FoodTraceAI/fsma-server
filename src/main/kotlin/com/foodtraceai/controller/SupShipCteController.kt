@@ -4,6 +4,8 @@
 package com.foodtraceai.controller
 
 import com.foodtraceai.model.*
+import com.foodtraceai.util.AuthorizationException
+import com.foodtraceai.util.EntityNotFoundException
 import com.foodtraceai.util.SupCteStatus
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
@@ -20,7 +22,7 @@ private const val SUP_SHIP_CTE_ALT_BASE_URL = "/api/v1/supshipcte"
 @SecurityRequirement(name = "bearerAuth")
 class SupShipCteController : BaseController() {
 
-    // -- Return a specific CteCool
+    // -- Return a specific SupShipCte
     // -    http://localhost:8080/api/v1/supshipcte/1
     @GetMapping("/{id}")
     fun findById(
@@ -39,8 +41,23 @@ class SupShipCteController : BaseController() {
     ): ResponseEntity<SupShipCteResponseDto> {
         val cteReceive = supShipCteRequestDto.cteReceiveId?.let { getCteReceive(it, fsmaUser) }
         val tlc = getTraceLotCode(supShipCteRequestDto.tlcId, fsmaUser)
-        val shipToLocation = getLocation(supShipCteRequestDto.shipToLocationId, fsmaUser)
-        val shipFromLocation = getLocation(supShipCteRequestDto.shipFromLocationId, fsmaUser)
+        val shipToLocationId = supShipCteRequestDto.shipToLocationId
+        val shipToLocation = locationService.findById(shipToLocationId)
+            ?: throw EntityNotFoundException("shipToLocationId not found: $shipToLocationId")
+
+        val shipFromLocationId = supShipCteRequestDto.shipFromLocationId
+        val shipFromLocation = locationService.findById(shipFromLocationId)
+            ?: throw EntityNotFoundException("shipFromLocationId not found: $shipFromLocationId")
+
+        val fsmaUserLocationId = fsmaUser.location.id
+        if (!fsmaUser.isRootAdmin() &&
+            (fsmaUserLocationId != shipToLocationId) &&
+            (fsmaUserLocationId != shipFromLocationId)
+        )
+            throw AuthorizationException(
+                "Unauthorized request, " +
+                        "shipToLocationId=$shipToLocationId, shipFromLocationId=$shipFromLocationId"
+            )
         val tlcSource = getLocation(supShipCteRequestDto.tlcSourceId, fsmaUser)
         val supShipCte = supShipCteRequestDto.toSupCteShip(
             id = 0, cteReceive, tlc, shipToLocation, shipFromLocation, tlcSource
